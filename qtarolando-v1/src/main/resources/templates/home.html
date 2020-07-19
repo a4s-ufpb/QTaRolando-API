@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Cadastrar</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle</title>
+</head>
+<body style="font-family: fantasy;">
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">QTaRolando?</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="/">Cadastrar <span class="sr-only">(Página atual)</span></a>
+                <a class="nav-item nav-link" href="/listar-todos">Ver Eventos</a>
+                <a class="nav-item nav-link" href="#">Deletar Evento</a>
+              </div>
+            </div>
+          </nav>
+    </header>
+
+    <section>
+    	<h1 style="text-align: center; padding-top: 20px">Cadastrar Evento</h1>
+    	<form method="post">
+    		<div class="container" style="width: 60%; padding-bottom: 30px; padding-top: 20px;">
+    		
+    		<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <label class="input-group-text" for="inputGroupSelect01">Categoria</label>
+			  </div>
+			  <select name="categoryId" class="custom-select" id="inputGroupSelect01">
+			    <option selected>Opções</option>
+			    <option value="1">Música (1)</option>
+			    <option value="2">Social (2)</option>
+			    <option value="3">Congresso (3)</option>
+			    <option value="4">Curso (4)</option>
+			    <option value="5">Palestra (5)</option>
+			    <option value="6">Simposio (6)</option>
+			    <option value="7">Tecnologia (7)</option>
+			  </select>
+			</div>
+			
+    		
+    		<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text" id="inputGroup-sizing-default">Título</span>
+			  </div>
+			  <input name="title" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+			</div>
+			
+			<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text" id="inputGroup-sizing-default">Descrição</span>
+			  </div>
+			  <input name="description" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+			</div>
+			
+			<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text" id="inputGroup-sizing-default">Horário</span>
+			  </div>
+			  <input name="duration" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+			</div>
+			
+			<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text" id="inputGroup-sizing-default">Caminho da Imagem</span>
+			  </div>
+			  <input name="imagePath" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+			</div>
+			
+			<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text" id="inputGroup-sizing-default">Local</span>
+			  </div>
+			  <input name="location" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+			</div>
+    		
+    		<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text" id="inputGroup-sizing-default">Texto1</span>
+			  </div>
+			  <input name="punchLine1" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+			</div>
+			
+			<div class="input-group mb-3">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text" id="inputGroup-sizing-default">Texto2</span>
+			  </div>
+			  <input name="punchLine2" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+			</div>
+			
+			<button style="text-align: center" type="submit" class="btn btn-outline-success">Cadastrar</button>	
+			<button style="text-align: center" type="reset" class="btn btn-outline-secondary">Limpar Campos</button>
+    	</div>
+   	</form>
+    	    
+    </section>
+
+</body>
+</html>
