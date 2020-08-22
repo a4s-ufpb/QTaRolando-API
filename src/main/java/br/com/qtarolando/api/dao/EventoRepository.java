@@ -7,5 +7,4 @@ import br.com.qtarolando.api.model.Evento;
 @Repository
 public interface EventoRepository extends JpaRepository<Evento, Integer>{
 	
-	
 }
