@@ -1,4 +1,4 @@
-package br.com.qtarolando.api.model;
+package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

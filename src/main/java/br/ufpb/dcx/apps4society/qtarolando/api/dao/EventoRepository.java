@@ -1,8 +1,8 @@
-package br.com.qtarolando.api.dao;
+package br.ufpb.dcx.apps4society.qtarolando.api.dao;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Evento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import br.com.qtarolando.api.model.Evento;
 
 @Repository
 public interface EventoRepository extends JpaRepository<Evento, Integer>{

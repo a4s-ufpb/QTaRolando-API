@@ -1,8 +1,10 @@
-package br.com.qtarolando.api.controller;
+package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
 import java.util.List;
 import java.util.Optional;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Evento;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,22 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import br.com.qtarolando.api.model.Evento;
-import br.com.qtarolando.api.service.EventoService;
-
 @Controller
 @RequestMapping("/api")
 public class EventoController {
 	
 	@Autowired
 	private EventoService service;
-	
-	@GetMapping("/")
-	@ResponseBody
-	public String home() {
-		return "API de Eventos - App4Society";
-	}
-	
+
 	@GetMapping("/listar-todos")
 	@ResponseBody
 	public List<Evento> getEventos(){
