@@ -28,4 +28,4 @@ Endereço da aplicação: ```http://localhost:8080/```
 - Java 8 
 - Apache Maven 3.6.3
 - Spring Boot 4
-- MySQL
+- PostgreSQL 12.3
