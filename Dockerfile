@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk
-EXPOSE 8080
+EXPOSE 8081
 COPY . .
 RUN ./mvnw clean
 RUN ./mvnw install

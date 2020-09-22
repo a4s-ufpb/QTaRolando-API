@@ -1,0 +1,49 @@
+version: '3.6'
+
+services:
+
+  qtarolando-api:
+    build:
+      context: .
+    container_name: qtarolando-api
+    restart: always
+    ports:
+    - 8081:8081
+    networks:
+      - qtarolando-api
+
+  graphql-engine:
+    image: hasura/graphql-engine:v1.3.1
+    container_name: graphql-engine-qtarolando
+    networks:
+      - qtarolando-api
+    depends_on:
+      - db
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@db:5432/qtarolando
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: "startup, http-log, webhook-log, websocket-log, query-log"
+      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+
+  db:
+    image: postgres:12.3
+    networks:
+      - qtarolando-api
+    container_name: postgres-qtarolando-api
+    restart: always
+    volumes:
+      - qtarolando:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: qtarolando
+      PGDATA: /data/postgres
+
+volumes:
+  qtarolando:
+
+networks:
+  qtarolando-api:
+    driver: bridge
