@@ -18,32 +18,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/eventos")
 public class EventoController {
 
 	@Autowired
 	private EventoService service;
 
-	@GetMapping("/listar-todos")
+	@GetMapping
 	@ResponseBody
 	public List<Evento> getEventos() {
 		return service.todosEventos();
 	}
 
-	@GetMapping("/evento/{id}")
+	@GetMapping("/{id}")
 	@ResponseBody
 	public Optional<Evento> getEventoId(@PathVariable("id") int id) {
 		return service.econtrarEventoPorId(id);
 	}
 
-	@PostMapping("/cadastrar")
+	@PostMapping
 	@ResponseBody
 	public void cadastrarEvento(@RequestBody Evento evento) {
 		service.cadastrarEvento(evento);
 	}
 
 	// Muda todos os campos na requisicao, permanecendo apenas o id
-	@PutMapping("/evento/{id}")
+	@PutMapping("{id}")
 	@ResponseBody
 	public void atualizarEvento(@PathVariable("id") int id, @RequestBody Evento novoEvento) {
 		service.atualizarEvento(id, novoEvento);
