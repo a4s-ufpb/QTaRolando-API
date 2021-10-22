@@ -17,11 +17,11 @@ Endereço da aplicação: ```http://localhost:8080/```
 
 | Método |                Path                |
 |:------:|:----------------------------------:|
-|   GET  |          /api/listar-todos         |
-|   GET  |          /api/evento/{id}          |
-|  POST  |           /api/cadastrar           |
-|   PUT  |          /api/evento/{id}          |
-| DELETE |              /api/{id}             |
+|   GET  |          /api/eventos         |
+|   GET  |          /api/eventos/{id}          |
+|  POST  |           /api/eventos           |
+|   PUT  |          /api/eventos/{id}          |
+| DELETE |              /api/eventos/{id}             |
 
 ## Tecnologias Usadas
 
