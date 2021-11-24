@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Objects;
 
-@Entity(name = "user")
-public class User implements UserDetails {
+@Entity(name = "user_account")
+public class UserAccount implements UserDetails {
 
     @Id
     @Email
@@ -21,10 +21,10 @@ public class User implements UserDetails {
     @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
     private String password;
 
-    public User(){
+    public UserAccount(){
     }
 
-    public User(String email, String userName, String password) {
+    public UserAccount(String email, String userName, String password) {
         this.email = email;
         this.userName = userName;
         this.password = password;
@@ -88,8 +88,8 @@ public class User implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
+        if (!(o instanceof UserAccount)) return false;
+        UserAccount user = (UserAccount) o;
         return email.equals(user.email);
     }
 

@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.security;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.service.UserService;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private UserService userDetailsService;
+    private UserAccountService userDetailsService;
 
     @Autowired
     private Environment env;
