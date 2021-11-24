@@ -1,14 +1,12 @@
 package br.ufpb.dcx.apps4society.qtarolando.api;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.model.Evento;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -19,7 +17,6 @@ import java.io.IOException;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -41,12 +38,12 @@ class QTaRolandoAPIApplicationTests {
 	@Test
 	@DisplayName("Deve cadastrar um evento")
 	void createEvent() throws Exception {
-		Evento evento = construirEventoPorJson();
+		Event event = createEventByJson();
 
 		mockMvc.perform(MockMvcRequestBuilders
-						.post("/api/eventos")
+						.post("/api/events")
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(evento))
+						.content(objectMapper.writeValueAsString(event))
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -56,7 +53,7 @@ class QTaRolandoAPIApplicationTests {
 	@DisplayName("Deve listar todos os eventos cadastrados no sistema")
 	void getAllEvents() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders
-						.get("/api/eventos"))
+						.get("/api/events"))
 						.andExpect(status().isOk())
 						.andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1));
 	}
@@ -66,7 +63,7 @@ class QTaRolandoAPIApplicationTests {
 	@DisplayName("Deve encontrar um evento pelo id")
 	void getEventById() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders
-						.get("/api/eventos/{id}",1))
+						.get("/api/events/{id}",1))
 						.andExpect(status().isOk())
 						.andExpect(MockMvcResultMatchers.jsonPath("id").value(1));
 	}
@@ -75,10 +72,10 @@ class QTaRolandoAPIApplicationTests {
 	@Test
 	@DisplayName("Atualizando um evento")
 	void updateEvent() throws Exception {
-//		Evento evento = construirEventoPorJson();
+//		Event event = createEventByJson();
 //
 //		mockMvc.perform(MockMvcRequestBuilders
-//						.put("/api/eventos/{id}")
+//						.put("/api/event/{id}")
 //				.contentType(MediaType.APPLICATION_JSON)
 //				.content(objectMapper.writeValueAsString(evento))
 //				.accept(MediaType.APPLICATION_JSON))
@@ -90,15 +87,15 @@ class QTaRolandoAPIApplicationTests {
 	@DisplayName("Deletando um evento")
 	void deleteEvent() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders
-						.delete("/api/eventos/{id}", 1)
+						.delete("/api/events/{id}", 1)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
-	public Evento construirEventoPorJson() throws IOException {
+	public Event createEventByJson() throws IOException {
 		String url = "src/test/java/br/ufpb/dcx/apps4society/qtarolando/api/json/evento.json";
-		Evento evento =  objectMapper.readValue(new File(url), Evento.class);
-		return evento;
+		Event event =  objectMapper.readValue(new File(url), Event.class);
+		return event;
 	}
 
 }

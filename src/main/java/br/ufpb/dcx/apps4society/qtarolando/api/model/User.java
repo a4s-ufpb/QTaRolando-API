@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Objects;
 
-@Entity(name = "usuario")
-public class Usuario implements UserDetails {
+@Entity(name = "user")
+public class User implements UserDetails {
 
     @Id
     @Email
@@ -19,15 +19,15 @@ public class Usuario implements UserDetails {
     @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
     private String userName;
     @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
-    private String senha;
+    private String password;
 
-    public Usuario(){
+    public User(){
     }
 
-    public Usuario(String email, String userName, String senha) {
+    public User(String email, String userName, String password) {
         this.email = email;
         this.userName = userName;
-        this.senha = senha;
+        this.password = password;
     }
 
     public String getEmail() {
@@ -46,12 +46,8 @@ public class Usuario implements UserDetails {
         this.userName = usuario;
     }
 
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPassword(String senha) {
+        this.password = senha;
     }
 
     @Override
@@ -61,7 +57,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.senha;
+        return this.password;
     }
 
     @Override
@@ -92,9 +88,9 @@ public class Usuario implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Usuario)) return false;
-        Usuario usuario = (Usuario) o;
-        return email.equals(usuario.email);
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return email.equals(user.email);
     }
 
     @Override

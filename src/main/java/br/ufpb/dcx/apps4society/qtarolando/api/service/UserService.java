@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dao.UsuarioRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.dao.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,10 +8,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     @Autowired
-    private UsuarioRepository repo;
+    private UserRepository repo;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

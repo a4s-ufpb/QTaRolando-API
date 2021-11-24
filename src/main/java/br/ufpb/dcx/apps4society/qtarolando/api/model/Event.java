@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity(name = "evento")
-public class Evento {
+@Entity(name = "event")
+public class Event {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +23,10 @@ public class Evento {
 	private String punchLine1;
 	private String punchLine2;
 
-	public Evento(){
+	public Event(){
 	}
 
-	public Evento(Integer id, String title, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site, String punchLine1, String punchLine2) {
+	public Event(Integer id, String title, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site, String punchLine1, String punchLine2) {
 		this.id = id;
 		this.title = title;
 		this.categoryId = categoryId;
@@ -140,9 +140,9 @@ public class Evento {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Evento)) return false;
-		Evento evento = (Evento) o;
-		return id.equals(evento.id) && categoryId.equals(evento.categoryId);
+		if (!(o instanceof Event)) return false;
+		Event event = (Event) o;
+		return id.equals(event.id) && categoryId.equals(event.categoryId);
 	}
 
 	@Override
