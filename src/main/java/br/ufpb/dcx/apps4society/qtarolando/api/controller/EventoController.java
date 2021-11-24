@@ -43,7 +43,7 @@ public class EventoController {
 	}
 
 	// Muda todos os campos na requisicao, permanecendo apenas o id
-	@PutMapping("{id}")
+	@PutMapping("/{id}")
 	@ResponseBody
 	public void atualizarEvento(@PathVariable("id") int id, @RequestBody Evento novoEvento) {
 		service.atualizarEvento(id, novoEvento);
