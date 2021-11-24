@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity(name = "usuario")
 public class Usuario implements UserDetails {
@@ -16,10 +17,18 @@ public class Usuario implements UserDetails {
     @Email
     private String email;
     @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
-    private String usuario;
+    private String userName;
     @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
     private String senha;
 
+    public Usuario(){
+    }
+
+    public Usuario(String email, String userName, String senha) {
+        this.email = email;
+        this.userName = userName;
+        this.senha = senha;
+    }
 
     public String getEmail() {
         return email;
@@ -29,12 +38,12 @@ public class Usuario implements UserDetails {
         this.email = email;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setUserName(String usuario) {
+        this.userName = usuario;
     }
 
     public String getSenha() {
@@ -57,7 +66,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.usuario;
+        return this.userName;
     }
 
     @Override
@@ -78,5 +87,18 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Usuario)) return false;
+        Usuario usuario = (Usuario) o;
+        return email.equals(usuario.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
 }

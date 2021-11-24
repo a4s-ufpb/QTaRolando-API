@@ -1,18 +1,17 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity(name = "evento")
 public class Evento {
 
 	@Id
-	@GeneratedValue
-	private int id;
-	private int categoryId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	private String title;
+	private Integer categoryId;
 	@Column(length = 2000)
 	private String description;
 	private LocalDateTime initialDate;
@@ -20,24 +19,49 @@ public class Evento {
 	private String imagePath;
 	private String location;
 	private String phone;
+	private String site;
 	private String punchLine1;
 	private String punchLine2;
-	private String site;
-	private String title;
 
-	public int getId() {
+	public Evento(){
+	}
+
+	public Evento(Integer id, String title, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site, String punchLine1, String punchLine2) {
+		this.id = id;
+		this.title = title;
+		this.categoryId = categoryId;
+		this.description = description;
+		this.initialDate = initialDate;
+		this.finalDate = finalDate;
+		this.imagePath = imagePath;
+		this.location = location;
+		this.phone = phone;
+		this.site = site;
+		this.punchLine1 = punchLine1;
+		this.punchLine2 = punchLine2;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getCategoryId() {
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Integer getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
 
@@ -65,14 +89,6 @@ public class Evento {
 		this.finalDate = finalDate;
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -87,6 +103,22 @@ public class Evento {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getSite() {
+		return site;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
 	}
 
 	public String getPunchLine1() {
@@ -105,20 +137,16 @@ public class Evento {
 		this.punchLine2 = punchLine2;
 	}
 
-	public String getSite() {
-		return site;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Evento)) return false;
+		Evento evento = (Evento) o;
+		return id.equals(evento.id) && categoryId.equals(evento.categoryId);
 	}
 
-	public void setSite(String site) {
-		this.site = site;
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, categoryId);
 	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 }
