@@ -1,10 +1,10 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.Collection;
@@ -14,11 +14,18 @@ import java.util.Objects;
 public class UserAccount implements UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @Email
+    @Column(unique = true)
     private String email;
+
     @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
     private String userName;
+
     @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
+    @JsonIgnore
     private String password;
 
     public UserAccount(){
@@ -28,6 +35,14 @@ public class UserAccount implements UserDetails {
         this.email = email;
         this.userName = userName;
         this.password = password;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -89,12 +104,12 @@ public class UserAccount implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserAccount)) return false;
-        UserAccount user = (UserAccount) o;
-        return email.equals(user.email);
+        UserAccount that = (UserAccount) o;
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email);
+        return Objects.hash(id);
     }
 }

@@ -1,4 +1,4 @@
-package br.ufpb.dcx.apps4society.qtarolando.api.dao;
+package br.ufpb.dcx.apps4society.qtarolando.api.repository;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
