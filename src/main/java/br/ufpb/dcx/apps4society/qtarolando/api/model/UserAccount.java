@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,11 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity(name = "user_account")
-public class UserAccount implements UserDetails {
+public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +29,16 @@ public class UserAccount implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @OneToMany
+    @JoinColumn(name = "user_account_id")
+    private List<Event> events = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "PROFILES")
+    private Set<Integer> profiles = new HashSet<>();
+
     public UserAccount(){
+        addProfile(Profile.MANAGER);
     }
 
     public UserAccount(String email, String userName, String password) {
@@ -61,44 +71,30 @@ public class UserAccount implements UserDetails {
         this.userName = usuario;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String senha) {
         this.password = senha;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public List<Event> getEvents() {
+        return events;
     }
 
-    @Override
-    public String getPassword() {
-        return this.password;
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 
-    @Override
-    public String getUsername() {
-        return this.userName;
+    public Set<Profile> getProfiles() {
+        return profiles.stream().map(x -> Profile.toEnum(x)).collect(Collectors.toSet());
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public void addProfile(Profile profile) {
+        profiles.add(profile.getCod());
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
     @Override
     public boolean equals(Object o) {

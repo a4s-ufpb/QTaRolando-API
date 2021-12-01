@@ -1,6 +1,8 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
 
+import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -23,6 +25,11 @@ public class UserAccountDTO implements Serializable {
     public UserAccountDTO(String email, String userName, String password) {
         this.email = email;
         this.userName = userName;
+    }
+
+    public UserAccountDTO(UserAccount obj) {
+        this.email = obj.getEmail();
+        this.userName = obj.getUserName();
     }
 
     public String getEmail() {

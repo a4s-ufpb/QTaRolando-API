@@ -3,32 +3,81 @@ package br.ufpb.dcx.apps4society.qtarolando.api.service;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.DataIntegrityException;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserAccountService implements UserDetailsService {
+public class UserAccountService {
     @Autowired
     private BCryptPasswordEncoder pe;
 
     @Autowired
     private UserAccountRepository repo;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        if (email == null || email.isEmpty()){
-            throw new RuntimeException("Informe o email!");
-        } else if (repo.findByEmail(email) == null){
-            throw new UsernameNotFoundException("Usuário não Encontrado");
+    public UserAccount find(Integer id) {
+        UserAccountSS user = UserService.authenticated();
+        if (user==null || !user.hasRole(Profile.ADMIN) && !id.equals(user.getId())) {
+            throw new AuthorizationException("Acesso negado");
         }
 
-        return repo.findByEmail(email);
+        Optional<UserAccount> obj = repo.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException(
+                "Objeto não encontrado! Id: " + id + ", Tipo: " + UserAccount.class.getName()));
+    }
+
+    @Transactional
+    public UserAccount insert(UserAccount obj) {
+        obj.setId(null);
+        obj = repo.save(obj);
+        return obj;
+    }
+
+    public UserAccount update(UserAccount obj) {
+        UserAccount newObj = find(obj.getId());
+        updateData(newObj, obj);
+        return repo.save(newObj);
+    }
+
+    public void delete(Integer id) {
+        find(id);
+        try {
+            repo.deleteById(id.toString());
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityException("Não é possível excluir porque há pedidos relacionados");
+        }
+    }
+
+    public List<UserAccount> findAll() {
+        return (List<UserAccount>) repo.findAll();
+    }
+
+    public UserAccount findByEmail(String email) {
+        UserAccountSS user = UserService.authenticated();
+        if (user == null || !user.hasRole(Profile.ADMIN) && !email.equals(user.getUsername())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        UserAccount obj = repo.findByEmail(email);
+        if (obj == null) {
+            throw new ObjectNotFoundException("Usuário não encontrado!");
+        }
+        return obj;
     }
 
     public UserAccount fromDTO(UserAccountDTO objDto){
@@ -37,5 +86,10 @@ public class UserAccountService implements UserDetailsService {
 
     public UserAccount fromDTO(UserAccountNewDTO objDto){
         return new UserAccount(objDto.getEmail(),objDto.getUserName(),pe.encode(objDto.getPassword()));
+    }
+
+    private void updateData(UserAccount newObj, UserAccount obj) {
+        newObj.setUserName(obj.getUserName());
+        newObj.setEmail(obj.getEmail());
     }
 }
