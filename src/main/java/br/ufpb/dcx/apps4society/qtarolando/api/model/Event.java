@@ -4,7 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity(name = "event")
+@Entity
+@Table(name = "event")
 public class Event {
 
 	@Id

@@ -11,7 +11,8 @@ import javax.validation.constraints.Size;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Entity(name = "user_account")
+@Entity
+@Table(name = "user_account")
 public class UserAccount {
 
     @Id

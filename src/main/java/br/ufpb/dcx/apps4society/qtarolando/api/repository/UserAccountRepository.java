@@ -13,7 +13,9 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Strin
     @Transactional(readOnly=true)
     UserAccount findByEmail(String Email);
 
+    @Transactional(readOnly=true)
     Optional<UserAccount> findById(Integer id);
 
+    @Transactional(readOnly=true)
     Page<UserAccount> findAll(Pageable pageable);
 }
