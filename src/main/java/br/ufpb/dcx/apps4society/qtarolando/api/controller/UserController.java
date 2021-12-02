@@ -3,6 +3,8 @@ package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.JWTUtil;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -22,6 +25,9 @@ public class UserController {
 
     @Autowired
     private UserAccountService service;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @GetMapping(value="/{id}")
     public ResponseEntity<UserAccount> find(@PathVariable Integer id) {
@@ -77,5 +83,13 @@ public class UserController {
         Page<UserAccount> list = service.findPage(page, linesPerPage, orderBy, direction);
         Page<UserAccountDTO> listDto = list.map(obj -> new UserAccountDTO(obj));
         return ResponseEntity.ok().body(listDto);
+    }
+
+    @RequestMapping(value="/refresh_token", method=RequestMethod.POST)
+    public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
+        UserAccountSS user = UserAccountService.getUserAuthenticated();
+        String token = jwtUtil.generateToken(user.getEmail());
+        response.addHeader("Authorization", "Bearer " + token);
+        return ResponseEntity.noContent().build();
     }
 }

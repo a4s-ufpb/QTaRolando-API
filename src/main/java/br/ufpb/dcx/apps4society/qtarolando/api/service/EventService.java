@@ -37,16 +37,23 @@ public class EventService {
 	
 	public void createEvent(Event event) {
 		repo.save(event);
+
+		UserAccountSS user = userAccountService.getUserAuthenticated();
+
+		UserAccount userAccount = userAccountService.find(user.getId());
+		userAccount.getEvents().add(event);
+		userAccountService.update(userAccount);
 	}
 	
-	public void updateEvent(Integer id, Event novoEvent) {
+	public void updateEvent(Integer id, Event newEvent) {
 		Event event = repo.findById(id).get();
-		novoEvent.setId(event.getId());
-		repo.save(novoEvent);
+		newEvent.setId(event.getId());
+		repo.save(newEvent);
 	}
 
 	public void deleteEvent(Integer id) {
-		repo.delete(repo.findById(id).get());
+		Event event = repo.findById(id).get();
+		repo.delete(event);
 	}
 
 	public Event fromDTO(Event objDto){
