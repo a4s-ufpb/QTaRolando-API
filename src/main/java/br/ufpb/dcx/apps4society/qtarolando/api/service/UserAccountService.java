@@ -11,6 +11,11 @@ import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.DataIntegrityE
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +35,7 @@ public class UserAccountService {
     private UserAccountRepository repo;
 
     public UserAccount find(Integer id) {
-        UserAccountSS user = UserService.authenticated();
+        UserAccountSS user = getUserAuthenticated();
         if (user==null || !user.hasRole(Profile.ADMIN) && !id.equals(user.getId())) {
             throw new AuthorizationException("Acesso negado");
         }
@@ -68,7 +73,7 @@ public class UserAccountService {
     }
 
     public UserAccount findByEmail(String email) {
-        UserAccountSS user = UserService.authenticated();
+        UserAccountSS user = getUserAuthenticated();
         if (user == null || !user.hasRole(Profile.ADMIN) && !email.equals(user.getUsername())) {
             throw new AuthorizationException("Acesso negado");
         }
@@ -78,6 +83,11 @@ public class UserAccountService {
             throw new ObjectNotFoundException("Usuário não encontrado!");
         }
         return obj;
+    }
+
+    public Page<UserAccount> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        return repo.findAll(pageable);
     }
 
     public UserAccount fromDTO(UserAccountDTO objDto){
@@ -91,5 +101,14 @@ public class UserAccountService {
     private void updateData(UserAccount newObj, UserAccount obj) {
         newObj.setUserName(obj.getUserName());
         newObj.setEmail(obj.getEmail());
+    }
+
+    public static UserAccountSS getUserAuthenticated() {
+        try {
+            return (UserAccountSS) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 }

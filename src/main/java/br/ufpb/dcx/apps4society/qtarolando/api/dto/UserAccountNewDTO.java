@@ -20,10 +20,15 @@ public class UserAccountNewDTO implements Serializable {
 
     @NotEmpty(message="Preenchimento obrigatório")
     @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
-    @JsonIgnore
     private String password;
 
     public UserAccountNewDTO(){}
+
+    public UserAccountNewDTO(String email, String userName, String password) {
+        this.email = email;
+        this.userName = userName;
+        this.password = password;
+    }
 
     public String getEmail() {
         return email;

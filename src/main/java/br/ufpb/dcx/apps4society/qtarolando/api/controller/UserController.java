@@ -5,6 +5,7 @@ import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,18 @@ public class UserController {
     public ResponseEntity<List<UserAccountDTO>> findAll() {
         List<UserAccount> list = service.findAll();
         List<UserAccountDTO> listDto = list.stream().map(obj -> new UserAccountDTO(obj)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(listDto);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @RequestMapping(value="/page", method=RequestMethod.GET)
+    public ResponseEntity<Page<UserAccountDTO>> findPage(
+            @RequestParam(value="page", defaultValue="0") Integer page,
+            @RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage,
+            @RequestParam(value="orderBy", defaultValue="nome") String orderBy,
+            @RequestParam(value="direction", defaultValue="ASC") String direction) {
+        Page<UserAccount> list = service.findPage(page, linesPerPage, orderBy, direction);
+        Page<UserAccountDTO> listDto = list.map(obj -> new UserAccountDTO(obj));
         return ResponseEntity.ok().body(listDto);
     }
 }

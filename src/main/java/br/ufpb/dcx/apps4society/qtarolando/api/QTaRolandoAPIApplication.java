@@ -55,6 +55,7 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 		UserAccount user1 = new UserAccount("admin@gmail.com","admin",bCryptPasswordEncoder.encode("123"));
 		UserAccount user2 = new UserAccount("manager@gmail.com","manager",bCryptPasswordEncoder.encode("321"));
 		user1.addProfile(Profile.ADMIN);
+		user1.addProfile(Profile.MANAGER);
 		user2.addProfile(Profile.MANAGER);
 
 
