@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/api/events")
 public class EventoController {
 
@@ -20,19 +20,16 @@ public class EventoController {
 	private EventService service;
 
 	@GetMapping
-	@ResponseBody
 	public List<Event> getAllEvents() {
 		return service.getAllEvents();
 	}
 
 	@GetMapping("/{id}")
-	@ResponseBody
 	public Optional<Event> getEventById(@PathVariable("id") Integer id) {
 		return service.getEventById(id);
 	}
 
 	@PostMapping
-	@ResponseBody
 	@PreAuthorize("hasAnyRole('MANAGER')")
 	public void createEvent(@RequestBody Event event) {
 		service.createEvent(event);
@@ -40,20 +37,18 @@ public class EventoController {
 
 	// Muda todos os campos na requisicao, permanecendo apenas o id
 	@PutMapping("/{id}")
-	@ResponseBody
 	@PreAuthorize("hasAnyRole('MANAGER')")
 	public void updateEvent(@PathVariable("id") Integer id, @RequestBody Event novoEvent) {
 		service.updateEvent(id, novoEvent);
 	}
 
 	@DeleteMapping("/{id}")
-	@ResponseBody
 	@PreAuthorize("hasAnyRole('MANAGER')")
 	public void deleteEvent(@PathVariable("id") Integer id) {
 		service.deleteEvent(id);
 	}
 
-	@RequestMapping(value="/page", method= RequestMethod.GET)
+	@GetMapping(value="/page")
 	public ResponseEntity<Page<Event>> findPage(
 			@RequestParam(value="page", defaultValue="0") Integer page,
 			@RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage,

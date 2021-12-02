@@ -61,7 +61,7 @@ public class UserAccountService {
     public void delete(Integer id) {
         find(id);
         try {
-            repo.deleteById(id.toString());
+            repo.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
             throw new DataIntegrityException("Não é possível excluir porque há pedidos relacionados");

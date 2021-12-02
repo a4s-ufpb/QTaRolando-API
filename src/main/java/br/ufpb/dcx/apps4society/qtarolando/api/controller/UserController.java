@@ -29,6 +29,26 @@ public class UserController {
     @Autowired
     private JWTUtil jwtUtil;
 
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<List<UserAccountDTO>> findAll() {
+        List<UserAccount> list = service.findAll();
+        List<UserAccountDTO> listDto = list.stream().map(obj -> new UserAccountDTO(obj)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(listDto);
+    }
+
+    @GetMapping(value="/page")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<Page<UserAccountDTO>> findPage(
+            @RequestParam(value="page", defaultValue="0") Integer page,
+            @RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage,
+            @RequestParam(value="orderBy", defaultValue="nome") String orderBy,
+            @RequestParam(value="direction", defaultValue="ASC") String direction) {
+        Page<UserAccount> list = service.findPage(page, linesPerPage, orderBy, direction);
+        Page<UserAccountDTO> listDto = list.map(obj -> new UserAccountDTO(obj));
+        return ResponseEntity.ok().body(listDto);
+    }
+
     @GetMapping(value="/{id}")
     public ResponseEntity<UserAccount> find(@PathVariable Integer id) {
         UserAccount obj = service.find(id);
@@ -41,7 +61,7 @@ public class UserController {
         return ResponseEntity.ok().body(obj);
     }
 
-    @RequestMapping(method=RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<Void> insert(@Valid @RequestBody UserAccountNewDTO objDto) {
         UserAccount obj = service.fromDTO(objDto);
         obj = service.insert(obj);
@@ -50,7 +70,7 @@ public class UserController {
         return ResponseEntity.created(uri).build();
     }
 
-    @RequestMapping(value="/{id}", method=RequestMethod.PUT)
+    @PutMapping(value="/{id}")
     public ResponseEntity<Void> update(@Valid @RequestBody UserAccountDTO objDto, @PathVariable Integer id) {
         UserAccount obj = service.fromDTO(objDto);
         obj.setId(id);
@@ -58,34 +78,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping(value="/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @RequestMapping(method=RequestMethod.GET)
-    public ResponseEntity<List<UserAccountDTO>> findAll() {
-        List<UserAccount> list = service.findAll();
-        List<UserAccountDTO> listDto = list.stream().map(obj -> new UserAccountDTO(obj)).collect(Collectors.toList());
-        return ResponseEntity.ok().body(listDto);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @RequestMapping(value="/page", method=RequestMethod.GET)
-    public ResponseEntity<Page<UserAccountDTO>> findPage(
-            @RequestParam(value="page", defaultValue="0") Integer page,
-            @RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage,
-            @RequestParam(value="orderBy", defaultValue="nome") String orderBy,
-            @RequestParam(value="direction", defaultValue="ASC") String direction) {
-        Page<UserAccount> list = service.findPage(page, linesPerPage, orderBy, direction);
-        Page<UserAccountDTO> listDto = list.map(obj -> new UserAccountDTO(obj));
-        return ResponseEntity.ok().body(listDto);
-    }
-
-    @RequestMapping(value="/refresh_token", method=RequestMethod.POST)
+    @PostMapping(value="/refresh_token")
     public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
         UserAccountSS user = UserAccountService.getUserAuthenticated();
         String token = jwtUtil.generateToken(user.getEmail());
