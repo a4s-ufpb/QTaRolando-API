@@ -3,7 +3,6 @@ package br.ufpb.dcx.apps4society.qtarolando.api.config;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.JWTAuthenticationFilter;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.JWTAuthorizationFilter;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.JWTUtil;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,10 +44,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/events/{id}",
     };
 
-    private static final String[] PUBLIC_MATCHERS_POST = {
-            "/api/users/**",
-    };
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
@@ -57,7 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http.authorizeRequests()
             .antMatchers(PUBLIC_MATCHERS).permitAll()
-            .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
             .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
             .anyRequest().authenticated();
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
