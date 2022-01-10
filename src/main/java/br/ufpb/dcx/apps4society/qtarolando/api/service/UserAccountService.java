@@ -74,7 +74,7 @@ public class UserAccountService {
 
     public UserAccount findByEmail(String email) {
         UserAccountSS user = getUserAuthenticated();
-        if (user == null || !user.hasRole(Profile.ADMIN) && !email.equals(user.getUsername())) {
+        if (user == null || !user.hasRole(Profile.ADMIN) && !email.equals(user.getEmail())) {
             throw new AuthorizationException("Acesso negado");
         }
 

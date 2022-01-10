@@ -2,14 +2,19 @@ package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,21 +27,26 @@ import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 public class EventService {
 	
 	@Autowired
-	private EventRepository repo;
+	private EventRepository eventRepository;
 
 	@Autowired
 	private UserAccountService userAccountService;
 	
 	public List<Event> getAllEvents(){
-		return repo.findAll();
+		return eventRepository.findAll();
 	}
 	
-	public Optional<Event> getEventById(Integer id) {
-		return repo.findById(id);
+	public Event getEventById(Integer id) throws ObjectNotFoundException{
+		Event event = eventRepository.findById(id).get();
+		if (event == null){
+			throw new ObjectNotFoundException("Evento não encontrado");
+		}
+
+		return event;
 	}
 	
 	public void createEvent(Event event) {
-		repo.save(event);
+		eventRepository.save(event);
 
 		UserAccountSS user = userAccountService.getUserAuthenticated();
 
@@ -45,15 +55,43 @@ public class EventService {
 		userAccountService.update(userAccount);
 	}
 	
-	public void updateEvent(Integer id, Event newEvent) {
-		Event event = repo.findById(id).get();
-		newEvent.setId(event.getId());
-		repo.save(newEvent);
+	public void updateEvent(Integer id, EventDTO newEventDTO) throws ObjectNotFoundException{
+		UserAccountSS userSS = UserAccountService.getUserAuthenticated();
+		if (userSS == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		Optional<Event> event = eventRepository.findById(id);
+		if (!event.isPresent()){
+			throw new ObjectNotFoundException("Evento não encontrado");
+		}
+
+		UserAccount userAccount = userAccountService.findByEmail(userSS.getEmail());
+		if (userAccount.getEvents().contains(event.get()) || userSS.hasRole(Profile.ADMIN)){
+			Event newEvent = event.get();
+			BeanUtils.copyProperties(newEventDTO, newEvent,"id");
+			eventRepository.save(newEvent);
+		} else {
+			throw new AuthorizationException("Acesso negado");
+		}
 	}
 
-	public void deleteEvent(Integer id) {
-		Event event = repo.findById(id).get();
-		repo.delete(event);
+	public void deleteEvent(Integer id) throws ObjectNotFoundException{
+		UserAccountSS userSS = UserAccountService.getUserAuthenticated();
+		if (userSS == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		Optional<Event> event = eventRepository.findById(id);
+		if (!event.isPresent()){
+			throw new ObjectNotFoundException("Evento não encontrado");
+		}
+
+		UserAccount userAccount = userAccountService.findByEmail(userSS.getEmail());
+		if (userAccount.getEvents().contains(event) || userSS.hasRole(Profile.ADMIN)){
+			eventRepository.delete(event.get());
+		} else {
+			throw new AuthorizationException("Acesso negado");
+		}
+
 	}
 
 	public Event fromDTO(Event objDto){
@@ -67,6 +105,6 @@ public class EventService {
 		}
 		Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
 		UserAccount userAccount = userAccountService.find(user.getId());
-		return repo.findByUserAccount(pageable, userAccount);
+		return eventRepository.findByUserAccount(pageable, userAccount);
 	}
 }

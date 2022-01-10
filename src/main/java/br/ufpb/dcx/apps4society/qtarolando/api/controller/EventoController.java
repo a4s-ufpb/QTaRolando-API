@@ -1,16 +1,15 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/events")
@@ -25,7 +24,7 @@ public class EventoController {
 	}
 
 	@GetMapping("/{id}")
-	public Optional<Event> getEventById(@PathVariable("id") Integer id) {
+	public Event getEventById(@PathVariable("id") Integer id) {
 		return service.getEventById(id);
 	}
 
@@ -35,11 +34,10 @@ public class EventoController {
 		service.createEvent(event);
 	}
 
-	// Muda todos os campos na requisicao, permanecendo apenas o id
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAnyRole('MANAGER')")
-	public void updateEvent(@PathVariable("id") Integer id, @RequestBody Event novoEvent) {
-		service.updateEvent(id, novoEvent);
+	public void updateEvent(@PathVariable("id") Integer id, @RequestBody EventDTO newEventDTO) {
+		service.updateEvent(id, newEventDTO);
 	}
 
 	@DeleteMapping("/{id}")
