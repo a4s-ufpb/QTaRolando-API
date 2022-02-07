@@ -14,15 +14,28 @@ Após rodar o último comando, o spring iniciará vários processos, incluindo o
 Endereço da aplicação: ```http://localhost:8080/```
 
 ## Métodos de Requisição HTTP
-
+###Métodos para eventos:
 | Método |                Path                |
 |:------:|:----------------------------------:|
-|   GET  |          /api/eventos         |
-|   GET  |          /api/eventos/{id}          |
-|  POST  |           /api/eventos           |
-|   PUT  |          /api/eventos/{id}          |
-| DELETE |              /api/eventos/{id}             |
-
+|   GET  |          /api/events         |
+|   GET  |          /api/events/page?page=&linesPerPage=&orderBy=&direction=  
+|   GET  |          /api/events/{id}   |
+|  POST  |           /api/events           |
+|   PUT  |          /api/events/{id}          |
+| DELETE |              /api/events/{id}             |
+###Métodos para usuários:
+| Método |                Path                |
+|:------:|:----------------------------------:|
+|  GET  |          /api/users/{id}         |
+|  GET  |          /api/users/email?value=         |
+|  GET  |          /api/users         |
+|  GET  |          /api/users/page?page=&linesPerPage=&orderBy=&direction=         |
+|  POST  |           /login          |
+|  POST  |           /api/users/refresh_token         |
+|  POST  |           /api/users         |
+|  PUT  |          /api/users/{id}          |
+| PATCH  |          /api/users/password         |
+| DELETE |              /api/users/{id}             |
 ## Tecnologias Usadas
 
 - Java 8 
