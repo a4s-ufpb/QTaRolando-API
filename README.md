@@ -14,7 +14,7 @@ Após rodar o último comando, o spring iniciará vários processos, incluindo o
 Endereço da aplicação: ```http://localhost:8080/```
 
 ## Métodos de Requisição HTTP
-###Métodos para eventos:
+### Métodos para eventos:
 | Método |                Path                |
 |:------:|:----------------------------------:|
 |   GET  |          /api/events         |
@@ -23,7 +23,9 @@ Endereço da aplicação: ```http://localhost:8080/```
 |  POST  |           /api/events           |
 |   PUT  |          /api/events/{id}          |
 | DELETE |              /api/events/{id}             |
-###Métodos para usuários:
+
+### Métodos para usuários:
+
 | Método |                Path                |
 |:------:|:----------------------------------:|
 |  GET  |          /api/users/{id}         |
