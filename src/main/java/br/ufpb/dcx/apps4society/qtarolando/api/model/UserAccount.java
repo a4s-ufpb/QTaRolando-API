@@ -39,7 +39,6 @@ public class UserAccount {
     private Set<Integer> profiles = new HashSet<>();
 
     public UserAccount(){
-        addProfile(Profile.MANAGER);
     }
 
     public UserAccount(String email, String userName, String password) {

@@ -52,7 +52,7 @@ public class EventService {
 
 		UserAccount userAccount = userAccountService.find(user.getId());
 		userAccount.getEvents().add(event);
-		userAccountService.update(userAccount);
+		userAccountService.updateUserEvents(userAccount);
 	}
 	
 	public void updateEvent(Integer id, EventDTO newEventDTO) throws ObjectNotFoundException{

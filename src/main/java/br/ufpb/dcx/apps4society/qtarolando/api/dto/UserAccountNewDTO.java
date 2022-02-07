@@ -1,11 +1,14 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserAccountNewDTO implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -21,6 +24,8 @@ public class UserAccountNewDTO implements Serializable {
     @NotEmpty(message="Preenchimento obrigatório")
     @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
     private String password;
+
+    private Set<Integer> profiles = new HashSet<>();
 
     public UserAccountNewDTO(){}
 
@@ -52,5 +57,13 @@ public class UserAccountNewDTO implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Profile> getProfiles() {
+        return this.profiles.stream().map(profile -> Profile.toEnum(profile)).collect(Collectors.toSet());
+    }
+
+    public void setProfiles(Set<Integer> profiles) {
+        this.profiles = profiles;
     }
 }

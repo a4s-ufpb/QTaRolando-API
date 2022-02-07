@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
@@ -16,9 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +62,7 @@ public class UserAccountService {
             repo.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityException("Não é possível excluir porque há pedidos relacionados");
+            throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
         }
     }
 
@@ -95,12 +93,32 @@ public class UserAccountService {
     }
 
     public UserAccount fromDTO(UserAccountNewDTO objDto){
-        return new UserAccount(objDto.getEmail(),objDto.getUserName(),pe.encode(objDto.getPassword()));
+        UserAccount userAccount = new UserAccount();
+        userAccount.setEmail(objDto.getEmail());
+        userAccount.setUserName(objDto.getUserName());
+        userAccount.setPassword(pe.encode(objDto.getPassword()));
+        objDto.getProfiles().forEach(profile -> userAccount.addProfile(profile));
+        return userAccount;
     }
 
     private void updateData(UserAccount newObj, UserAccount obj) {
         newObj.setUserName(obj.getUserName());
         newObj.setEmail(obj.getEmail());
+    }
+
+    public UserAccount updatePassword(UserPasswordDTO userPasswordDTO){
+        UserAccountSS userAuthenticated = getUserAuthenticated();
+        UserAccount userAccount = findByEmail(userAuthenticated.getEmail());
+
+        userAccount.setPassword(pe.encode(userPasswordDTO.getPassword()));
+
+        return repo.save(userAccount);
+    }
+
+    public void updateUserEvents(UserAccount obj){
+        UserAccount newObj = findByEmail(obj.getEmail());
+        newObj.setEvents(obj.getEvents());
+        repo.save(newObj);
     }
 
     public static UserAccountSS getUserAuthenticated() {

@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.JWTUtil;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value="api/users")
+@RequestMapping(value = "api/users")
 public class UserController {
 
     @Autowired
@@ -37,26 +38,26 @@ public class UserController {
         return ResponseEntity.ok().body(listDto);
     }
 
-    @GetMapping(value="/page")
+    @GetMapping(value = "/page")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Page<UserAccountDTO>> findPage(
-            @RequestParam(value="page", defaultValue="0") Integer page,
-            @RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage,
-            @RequestParam(value="orderBy", defaultValue="nome") String orderBy,
-            @RequestParam(value="direction", defaultValue="ASC") String direction) {
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
+            @RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
         Page<UserAccount> list = service.findPage(page, linesPerPage, orderBy, direction);
         Page<UserAccountDTO> listDto = list.map(obj -> new UserAccountDTO(obj));
         return ResponseEntity.ok().body(listDto);
     }
 
-    @GetMapping(value="/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<UserAccount> find(@PathVariable Integer id) {
         UserAccount obj = service.find(id);
         return ResponseEntity.ok().body(obj);
     }
 
-    @GetMapping(value="/email")
-    public ResponseEntity<UserAccount> find(@RequestParam(value="value") String email) {
+    @GetMapping(value = "/email")
+    public ResponseEntity<UserAccount> find(@RequestParam(value = "value") String email) {
         UserAccount obj = service.findByEmail(email);
         return ResponseEntity.ok().body(obj);
     }
@@ -71,7 +72,7 @@ public class UserController {
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping(value="/{id}")
+    @PutMapping(value = "/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> update(@Valid @RequestBody UserAccountDTO objDto, @PathVariable Integer id) {
         UserAccount obj = service.fromDTO(objDto);
@@ -80,14 +81,20 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(value="/{id}")
+    @PatchMapping(value = "/password")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody UserPasswordDTO userPasswordDTO) {
+        service.updatePassword(userPasswordDTO);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(value="/refresh_token")
+    @PostMapping(value = "/refresh_token")
     public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
         UserAccountSS user = UserAccountService.getUserAuthenticated();
         String token = jwtUtil.generateToken(user.getEmail());
