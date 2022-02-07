@@ -57,13 +57,10 @@ public class UserAccountService {
     }
 
     public void delete(Integer id) {
-        find(id);
-        try {
-            repo.deleteById(id);
-        }
-        catch (DataIntegrityViolationException e) {
+        if (!repo.findById(id).get().getEvents().isEmpty()) {
             throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
         }
+        repo.deleteById(id);
     }
 
     public List<UserAccount> findAll() {
