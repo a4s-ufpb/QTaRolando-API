@@ -56,7 +56,7 @@ public class EventService {
 	}
 	
 	public void updateEvent(Integer id, EventDTO newEventDTO) throws ObjectNotFoundException{
-		UserAccountSS userSS = UserAccountService.getUserAuthenticated();
+		UserAccountSS userSS = userAccountService.getUserAuthenticated();
 		if (userSS == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
@@ -76,7 +76,7 @@ public class EventService {
 	}
 
 	public void deleteEvent(Integer id) throws ObjectNotFoundException{
-		UserAccountSS userSS = UserAccountService.getUserAuthenticated();
+		UserAccountSS userSS = userAccountService.getUserAuthenticated();
 		if (userSS == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
@@ -86,7 +86,7 @@ public class EventService {
 		}
 
 		UserAccount userAccount = userAccountService.findByEmail(userSS.getEmail());
-		if (userAccount.getEvents().contains(event) || userSS.hasRole(Profile.ADMIN)){
+		if (userAccount.getEvents().contains(event.get()) || userSS.hasRole(Profile.ADMIN)){
 			eventRepository.delete(event.get());
 		} else {
 			throw new AuthorizationException("Acesso negado");
@@ -99,7 +99,7 @@ public class EventService {
 	}
 
 	public Page<Event> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		UserAccountSS user = UserAccountService.getUserAuthenticated();
+		UserAccountSS user = userAccountService.getUserAuthenticated();
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
