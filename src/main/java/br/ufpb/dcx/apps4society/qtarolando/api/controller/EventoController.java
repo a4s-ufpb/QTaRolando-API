@@ -28,6 +28,11 @@ public class EventoController {
 		return service.getEventById(id);
 	}
 
+	@GetMapping("/category/{categoryId}")
+	public List<Event> getEventsByCategoryId(@PathVariable("categoryId") Integer categoryId) {
+		return service.getEventsByCategoryId(categoryId);
+	}
+
 	@PostMapping
 	@PreAuthorize("hasAnyRole('MANAGER')")
 	public void createEvent(@RequestBody Event event) {

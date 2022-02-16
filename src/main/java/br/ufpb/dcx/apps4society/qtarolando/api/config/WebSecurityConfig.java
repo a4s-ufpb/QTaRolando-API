@@ -42,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/api/events",
             "/api/events/{id}",
+            "/api/events/category/{categoryId}",
     };
 
     @Override

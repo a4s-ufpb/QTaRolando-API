@@ -13,6 +13,7 @@ import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.EmptyListException;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,15 @@ public class EventService {
 		}
 
 		return event;
+	}
+
+	public List<Event> getEventsByCategoryId(Integer categoryId){
+		List<Event> events = eventRepository.findAllByCategoryId(categoryId);
+		if (events.isEmpty()){
+			throw new EmptyListException("Não foram encontrados eventos desta categoria");
+		}
+
+		return events;
 	}
 	
 	public void createEvent(Event event) {
@@ -105,6 +115,13 @@ public class EventService {
 		}
 		Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
 		UserAccount userAccount = userAccountService.find(user.getId());
-		return eventRepository.findByUserAccount(pageable, userAccount);
+
+		Page<Event> eventsPage = eventRepository.findByUserAccount(pageable, userAccount);
+
+		if (eventsPage.isEmpty()){
+			throw new EmptyListException("Não foram encontrados eventos do usuário: " + user.getUsername());
+		}
+
+		return eventsPage;
 	}
 }
