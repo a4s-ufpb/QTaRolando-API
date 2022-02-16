@@ -20,6 +20,7 @@ Endereço da aplicação: ```http://localhost:8080/```
 |   GET  |          /api/events         |
 |   GET  |          /api/events/page?page=&linesPerPage=&orderBy=&direction=  
 |   GET  |          /api/events/{id}   |
+|   GET  |          /api/events/category/{id}   |
 |  POST  |           /api/events           |
 |   PUT  |          /api/events/{id}          |
 | DELETE |              /api/events/{id}             |
