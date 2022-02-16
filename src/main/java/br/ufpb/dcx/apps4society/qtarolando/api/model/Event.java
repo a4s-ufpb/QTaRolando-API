@@ -12,6 +12,7 @@ public class Event {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String title;
+	private String subtitle;
 	private Integer categoryId;
 	@Column(length = 2000)
 	private String description;
@@ -21,15 +22,13 @@ public class Event {
 	private String location;
 	private String phone;
 	private String site;
-	private String punchLine1;
-	private String punchLine2;
 
 	public Event(){
 	}
 
-	public Event(Integer id, String title, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site, String punchLine1, String punchLine2) {
-		this.id = id;
+	public Event(String title,String subtitle, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site) {
 		this.title = title;
+		this.subtitle = subtitle;
 		this.categoryId = categoryId;
 		this.description = description;
 		this.initialDate = initialDate;
@@ -38,8 +37,6 @@ public class Event {
 		this.location = location;
 		this.phone = phone;
 		this.site = site;
-		this.punchLine1 = punchLine1;
-		this.punchLine2 = punchLine2;
 	}
 
 	public Integer getId() {
@@ -56,6 +53,14 @@ public class Event {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getSubtitle() {
+		return subtitle;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
 	}
 
 	public Integer getCategoryId() {
@@ -120,22 +125,6 @@ public class Event {
 
 	public void setSite(String site) {
 		this.site = site;
-	}
-
-	public String getPunchLine1() {
-		return punchLine1;
-	}
-
-	public void setPunchLine1(String punchLine1) {
-		this.punchLine1 = punchLine1;
-	}
-
-	public String getPunchLine2() {
-		return punchLine2;
-	}
-
-	public void setPunchLine2(String punchLine2) {
-		this.punchLine2 = punchLine2;
 	}
 
 	@Override

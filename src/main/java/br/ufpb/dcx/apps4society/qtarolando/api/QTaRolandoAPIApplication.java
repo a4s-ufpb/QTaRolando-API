@@ -50,8 +50,8 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
-			Event event1 = new Event(null, "Novo evento", 1, "um novo evento", LocalDateTime.parse("2021-12-03T06:00:00"), LocalDateTime.parse("2021-12-02T23:59:00"), "", "", "", "", "", "");
-			Event event2 = new Event(null, "Novo evento", 5, "um novo evento", LocalDateTime.parse("2021-12-09T15:00:00"), LocalDateTime.parse("2021-12-10T23:59:00"), "", "", "", "", "", "");
+			Event event1 = new Event("Novo evento","Novo evento criado", 1, "um novo evento", LocalDateTime.parse("2021-12-03T06:00:00"), LocalDateTime.parse("2021-12-02T23:59:00"), "", "", "", "");
+			Event event2 = new Event("Novo evento","Novo evento criado", 5, "um novo evento", LocalDateTime.parse("2021-12-09T15:00:00"), LocalDateTime.parse("2021-12-10T23:59:00"), "", "", "", "");
 			eventRepository.save(event1);
 			eventRepository.save(event2);
 

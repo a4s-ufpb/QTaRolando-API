@@ -11,6 +11,9 @@ public class EventDTO implements Serializable {
     private String title;
 
     @NotEmpty(message="Preenchimento obrigatório")
+    private String subtitle;
+
+    @NotEmpty(message="Preenchimento obrigatório")
     private Integer categoryId;
 
     @NotEmpty(message="Preenchimento obrigatório")
@@ -33,14 +36,11 @@ public class EventDTO implements Serializable {
 
     private String site;
 
-    private String punchLine1;
-
-    private String punchLine2;
-
     public EventDTO(){}
 
-    public EventDTO(String title, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site, String punchLine1, String punchLine2) {
+    public EventDTO(String title,String subtitle, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site, String punchLine1, String punchLine2) {
         this.title = title;
+        this.subtitle = subtitle;
         this.categoryId = categoryId;
         this.description = description;
         this.initialDate = initialDate;
@@ -49,8 +49,6 @@ public class EventDTO implements Serializable {
         this.location = location;
         this.phone = phone;
         this.site = site;
-        this.punchLine1 = punchLine1;
-        this.punchLine2 = punchLine2;
     }
 
     public String getTitle() {
@@ -59,6 +57,14 @@ public class EventDTO implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public Integer getCategoryId() {
@@ -123,21 +129,5 @@ public class EventDTO implements Serializable {
 
     public void setSite(String site) {
         this.site = site;
-    }
-
-    public String getPunchLine1() {
-        return punchLine1;
-    }
-
-    public void setPunchLine1(String punchLine1) {
-        this.punchLine1 = punchLine1;
-    }
-
-    public String getPunchLine2() {
-        return punchLine2;
-    }
-
-    public void setPunchLine2(String punchLine2) {
-        this.punchLine2 = punchLine2;
     }
 }

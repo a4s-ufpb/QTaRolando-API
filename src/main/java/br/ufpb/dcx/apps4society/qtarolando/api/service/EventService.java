@@ -2,18 +2,13 @@ package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
-import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.EmptyListException;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,21 +42,19 @@ public class EventService {
 	}
 
 	public List<Event> getEventsByCategoryId(Integer categoryId){
-		List<Event> events = eventRepository.findAllByCategoryId(categoryId);
-		if (events.isEmpty()){
-			throw new EmptyListException("Não foram encontrados eventos desta categoria");
-		}
 
-		return events;
+		return eventRepository.findAllByCategoryId(categoryId);
 	}
 	
-	public void createEvent(Event event) {
-		eventRepository.save(event);
+	public void createEvent(EventDTO eventDTO) {
+		Event newEvent = new Event();
+		BeanUtils.copyProperties(eventDTO, newEvent,"id");
+		eventRepository.save(newEvent);
 
 		UserAccountSS user = userAccountService.getUserAuthenticated();
 
 		UserAccount userAccount = userAccountService.find(user.getId());
-		userAccount.getEvents().add(event);
+		userAccount.getEvents().add(newEvent);
 		userAccountService.updateUserEvents(userAccount);
 	}
 	
@@ -104,10 +97,6 @@ public class EventService {
 
 	}
 
-	public Event fromDTO(Event objDto){
-		return new Event(objDto.getId(),objDto.getTitle(),objDto.getCategoryId(),objDto.getDescription(),objDto.getInitialDate(),objDto.getFinalDate(),objDto.getImagePath(),objDto.getLocation(), objDto.getPhone(),objDto.getSite(),objDto.getPunchLine1(),objDto.getPunchLine2());
-	}
-
 	public Page<Event> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		UserAccountSS user = userAccountService.getUserAuthenticated();
 		if (user == null) {
@@ -117,10 +106,6 @@ public class EventService {
 		UserAccount userAccount = userAccountService.find(user.getId());
 
 		Page<Event> eventsPage = eventRepository.findByUserAccount(pageable, userAccount);
-
-		if (eventsPage.isEmpty()){
-			throw new EmptyListException("Não foram encontrados eventos do usuário: " + user.getUsername());
-		}
 
 		return eventsPage;
 	}

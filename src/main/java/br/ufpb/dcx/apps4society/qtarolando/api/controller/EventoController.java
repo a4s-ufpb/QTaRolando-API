@@ -35,8 +35,8 @@ public class EventoController {
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('MANAGER')")
-	public void createEvent(@RequestBody Event event) {
-		service.createEvent(event);
+	public void createEvent(@RequestBody EventDTO eventDTO) {
+		service.createEvent(eventDTO);
 	}
 
 	@PutMapping("/{id}")
