@@ -64,7 +64,7 @@ public class UserAccountService {
     }
 
     public List<UserAccount> findAll() {
-        return (List<UserAccount>) repo.findAll();
+        return repo.findAll();
     }
 
     public UserAccount findByEmail(String email) {
@@ -74,6 +74,19 @@ public class UserAccountService {
         }
 
         UserAccount obj = repo.findByEmail(email);
+        if (obj == null) {
+            throw new ObjectNotFoundException("Usuário não encontrado!");
+        }
+        return obj;
+    }
+
+    public UserAccount findByUsername (String userName) {
+        UserAccountSS user = getUserAuthenticated();
+        if (user == null || !user.hasRole(Profile.ADMIN) && !userName.equals(user.getUsername())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        UserAccount obj = repo.findByUserName(userName);
         if (obj == null) {
             throw new ObjectNotFoundException("Usuário não encontrado!");
         }
@@ -90,10 +103,9 @@ public class UserAccountService {
     }
 
     public UserAccount fromDTO(UserAccountNewDTO objDto){
-        UserAccount userAccount = new UserAccount();
-        userAccount.setEmail(objDto.getEmail());
-        userAccount.setUserName(objDto.getUserName());
-        userAccount.setPassword(pe.encode(objDto.getPassword()));
+        objDto.setPassword(pe.encode(objDto.getPassword()));
+
+        UserAccount userAccount = new UserAccount(objDto);
         objDto.getProfiles().forEach(profile -> userAccount.addProfile(profile));
         return userAccount;
     }

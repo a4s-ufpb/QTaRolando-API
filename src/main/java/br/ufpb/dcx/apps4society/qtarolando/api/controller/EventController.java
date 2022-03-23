@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
-public class EventoController {
+public class EventController {
 
 	@Autowired
 	private EventService service;
@@ -31,6 +32,16 @@ public class EventoController {
 	@GetMapping("/category/{categoryId}")
 	public List<Event> getEventsByCategoryId(@PathVariable("categoryId") Integer categoryId) {
 		return service.getEventsByCategoryId(categoryId);
+	}
+
+	@GetMapping("/title")
+	public List<Event> getEventsByTitle(@RequestBody EventTitleDTO eventTitleDTO) {
+		return service.getEventsByTitle(eventTitleDTO);
+	}
+
+	@GetMapping("/eventModalityId/{eventModalityId}")
+	public List<Event> getEventsByModality(@PathVariable("eventModalityId") Integer eventModalityId) {
+		return service.getEventsByEventModalityId(eventModalityId);
 	}
 
 	@PostMapping

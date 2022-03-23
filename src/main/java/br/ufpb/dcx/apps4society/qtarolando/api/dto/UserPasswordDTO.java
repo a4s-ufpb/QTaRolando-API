@@ -8,7 +8,7 @@ public class UserPasswordDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotEmpty(message="Preenchimento obrigatório")
-    @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
+    @Size(min = 20, message = "Senha deve conter no minimo 20 caracteres")
     private String password;
 
     public UserPasswordDTO(){}

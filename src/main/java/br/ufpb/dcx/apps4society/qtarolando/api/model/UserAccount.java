@@ -1,9 +1,8 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -45,6 +44,12 @@ public class UserAccount {
         this.email = email;
         this.userName = userName;
         this.password = password;
+    }
+
+    public UserAccount(UserAccountNewDTO userAccountNewDTO){
+        this.email = userAccountNewDTO.getEmail();
+        this.userName = userAccountNewDTO.getUserName();
+        this.password = userAccountNewDTO.getPassword();
     }
 
     public Integer getId() {

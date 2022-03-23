@@ -43,6 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/events",
             "/api/events/{id}",
             "/api/events/category/{categoryId}",
+            "/api/events/title",
+            "/api/events/eventModalityId/{eventModalityId}"
     };
 
     @Override

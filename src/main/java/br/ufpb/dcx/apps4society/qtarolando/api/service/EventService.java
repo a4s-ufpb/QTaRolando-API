@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
@@ -28,9 +29,7 @@ public class EventService {
 	@Autowired
 	private UserAccountService userAccountService;
 	
-	public List<Event> getAllEvents(){
-		return eventRepository.findAll();
-	}
+	public List<Event> getAllEvents(){return eventRepository.findAll();}
 	
 	public Event getEventById(Integer id) throws ObjectNotFoundException{
 		Event event = eventRepository.findById(id).get();
@@ -41,14 +40,20 @@ public class EventService {
 		return event;
 	}
 
-	public List<Event> getEventsByCategoryId(Integer categoryId){
+	public List<Event> getEventsByTitle(EventTitleDTO eventTitleDTO) {
+		return eventRepository.findAllByTitle(eventTitleDTO.getTitle());
+	}
 
+	public List<Event> getEventsByCategoryId(Integer categoryId){
 		return eventRepository.findAllByCategoryId(categoryId);
 	}
-	
+
+	public List<Event> getEventsByEventModalityId(Integer eventModalityId) {
+		return eventRepository.findAllByEventModalityId(eventModalityId);
+	}
+
 	public void createEvent(EventDTO eventDTO) {
-		Event newEvent = new Event();
-		BeanUtils.copyProperties(eventDTO, newEvent,"id");
+		Event newEvent = new Event(eventDTO);
 		eventRepository.save(newEvent);
 
 		UserAccountSS user = userAccountService.getUserAuthenticated();

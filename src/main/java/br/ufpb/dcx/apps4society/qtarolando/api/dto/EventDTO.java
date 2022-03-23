@@ -1,5 +1,7 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.EventModality;
+
 import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
@@ -27,6 +29,9 @@ public class EventDTO implements Serializable {
     private LocalDateTime finalDate;
 
     @NotEmpty(message="Preenchimento obrigatório")
+    private Integer eventModalityId;
+
+    @NotEmpty(message="Preenchimento obrigatório")
     private String imagePath;
 
     @NotEmpty(message="Preenchimento obrigatório")
@@ -38,13 +43,16 @@ public class EventDTO implements Serializable {
 
     public EventDTO(){}
 
-    public EventDTO(String title,String subtitle, Integer categoryId, String description, LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, String location, String phone, String site, String punchLine1, String punchLine2) {
+    public EventDTO(String title,String subtitle, Integer categoryId, String description, LocalDateTime initialDate,
+                    LocalDateTime finalDate, Integer eventModalityId,String imagePath, String location, String phone,
+                    String site) {
         this.title = title;
         this.subtitle = subtitle;
         this.categoryId = categoryId;
         this.description = description;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
+        this.eventModalityId = EventModality.validate(eventModalityId);
         this.imagePath = imagePath;
         this.location = location;
         this.phone = phone;
@@ -105,6 +113,18 @@ public class EventDTO implements Serializable {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public Integer getEventModalityId() {
+        return eventModalityId;
+    }
+
+    public void setEventModalityId(Integer eventModalityId) {;
+        this.eventModalityId = EventModality.validate(eventModalityId);
+    }
+
+    public EventModality getEventModality(){
+        return EventModality.toEnum(eventModalityId);
     }
 
     public String getLocation() {

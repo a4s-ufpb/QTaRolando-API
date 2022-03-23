@@ -18,4 +18,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Intege
 
     @Transactional(readOnly=true)
     Page<UserAccount> findAll(Pageable pageable);
+
+    @Transactional(readOnly=true)
+    UserAccount findByUserName(String userName);
 }

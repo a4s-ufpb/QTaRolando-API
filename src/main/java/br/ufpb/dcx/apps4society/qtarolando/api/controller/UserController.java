@@ -51,14 +51,20 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserAccount> find(@PathVariable Integer id) {
+    public ResponseEntity<UserAccount> findById(@PathVariable Integer id) {
         UserAccount obj = service.find(id);
         return ResponseEntity.ok().body(obj);
     }
 
     @GetMapping(value = "/email")
-    public ResponseEntity<UserAccount> find(@RequestParam(value = "value") String email) {
+    public ResponseEntity<UserAccount> findByEmail(@RequestParam(value = "value") String email) {
         UserAccount obj = service.findByEmail(email);
+        return ResponseEntity.ok().body(obj);
+    }
+
+    @GetMapping(value = "/userName")
+    public ResponseEntity<UserAccount> findByUserName(@RequestParam(value = "value") String userName) {
+        UserAccount obj = service.findByUsername(userName);
         return ResponseEntity.ok().body(obj);
     }
 

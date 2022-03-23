@@ -1,6 +1,5 @@
 package br.ufpb.dcx.apps4society.qtarolando.api;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
@@ -15,10 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 @Controller
 @SpringBootApplication
@@ -50,10 +46,10 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
-			Event event1 = new Event("Novo evento","Novo evento criado", 1, "um novo evento", LocalDateTime.parse("2021-12-03T06:00:00"), LocalDateTime.parse("2021-12-02T23:59:00"), "", "", "", "");
-			Event event2 = new Event("Novo evento","Novo evento criado", 5, "um novo evento", LocalDateTime.parse("2021-12-09T15:00:00"), LocalDateTime.parse("2021-12-10T23:59:00"), "", "", "", "");
+		/*	Event event1 = new Event("Novo evento","Novo evento criado", 1, "um novo evento", LocalDateTime.parse("2021-12-03T06:00:00"), LocalDateTime.parse("2021-12-02T23:59:00"), "", Modality.IN_PERSON, "", "", "");
+			Event event2 = new Event("Novo evento","Novo evento criado", 5, "um novo evento", LocalDateTime.parse("2021-12-09T15:00:00"), LocalDateTime.parse("2021-12-10T23:59:00"), "", Modality.REMOTE,"", "", "");
 			eventRepository.save(event1);
-			eventRepository.save(event2);
+			eventRepository.save(event2);*/
 
 
 			UserAccount user1 = new UserAccount("admin@gmail.com", "admin", bCryptPasswordEncoder.encode("123"));
@@ -63,8 +59,8 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 			user2.addProfile(Profile.MANAGER);
 
 
-			user1.getEvents().add(event1);
-			user2.getEvents().add(event2);
+		/*	user1.getEvents().add(event1);
+			user2.getEvents().add(event2);*/
 
 			if (userAccountRepository.findByEmail(user1.getEmail()) == null) {
 				userAccountRepository.save(user1);

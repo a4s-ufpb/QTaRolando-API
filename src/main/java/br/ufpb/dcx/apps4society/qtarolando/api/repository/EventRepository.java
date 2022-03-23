@@ -18,5 +18,11 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "WHERE userAccount = :userAccount")
     Page<Event> findByUserAccount(Pageable pageable, @Param("userAccount") UserAccount userAccount);
 
+    List<Event> findAllByTitle(String Title);
+
     List<Event> findAllByCategoryId(Integer CategoryId);
+
+    @Query("SELECT event FROM Event event WHERE event.eventModalityId = :eventModalityId")
+    List<Event> findAllByEventModalityId(Integer eventModalityId);
+
 }
