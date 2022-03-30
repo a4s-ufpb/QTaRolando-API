@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.repository;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventLocationDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import org.springframework.data.domain.Page;
@@ -25,4 +26,6 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("SELECT event FROM Event event WHERE event.eventModalityId = :eventModalityId")
     List<Event> findAllByEventModalityId(Integer eventModalityId);
 
+    @Query("SELECT event FROM Event event WHERE event.location = :eventlocation")
+    List<Event> findAllByEventLocation(String eventlocation);
 }

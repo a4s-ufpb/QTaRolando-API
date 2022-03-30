@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventLocationDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
@@ -42,6 +43,11 @@ public class EventController {
 	@GetMapping("/eventModalityId/{eventModalityId}")
 	public List<Event> getEventsByModality(@PathVariable("eventModalityId") Integer eventModalityId) {
 		return service.getEventsByEventModalityId(eventModalityId);
+	}
+
+	@GetMapping("/location")
+	public List<Event> getEventsByLocation(@RequestBody EventLocationDTO eventlocationDTO) {
+		return service.getEventsByLocation(eventlocationDTO);
 	}
 
 	@PostMapping

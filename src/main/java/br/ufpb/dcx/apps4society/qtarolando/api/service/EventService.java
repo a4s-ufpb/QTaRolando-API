@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventLocationDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
@@ -52,8 +53,8 @@ public class EventService {
 		return eventRepository.findAllByEventModalityId(eventModalityId);
 	}
 	
-	public List<Event> getEventsByLocation(String eventLocation) {
-		return eventRepository.findAllByEventLocation(eventLocation);
+	public List<Event> getEventsByLocation(EventLocationDTO eventlocationDTO) {
+		return eventRepository.findAllByEventLocation(eventlocationDTO.getEventLocation());
 	}
 	
 	
