@@ -39,19 +39,24 @@ public class EventService {
 
 		return event;
 	}
-
+	
 	public List<Event> getEventsByTitle(EventTitleDTO eventTitleDTO) {
 		return eventRepository.findAllByTitle(eventTitleDTO.getTitle());
 	}
-
+	
 	public List<Event> getEventsByCategoryId(Integer categoryId){
 		return eventRepository.findAllByCategoryId(categoryId);
 	}
-
+	
 	public List<Event> getEventsByEventModalityId(Integer eventModalityId) {
 		return eventRepository.findAllByEventModalityId(eventModalityId);
 	}
-
+	
+	public List<Event> getEventsByLocation(String eventLocation) {
+		return eventRepository.findAllByEventLocation(eventLocation);
+	}
+	
+	
 	public void createEvent(EventDTO eventDTO) {
 		Event newEvent = new Event(eventDTO);
 		eventRepository.save(newEvent);
@@ -82,7 +87,7 @@ public class EventService {
 			throw new AuthorizationException("Acesso negado");
 		}
 	}
-
+/** */
 	public void deleteEvent(Integer id) throws ObjectNotFoundException{
 		UserAccountSS userSS = userAccountService.getUserAuthenticated();
 		if (userSS == null) {
