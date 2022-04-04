@@ -28,4 +28,6 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     @Query("SELECT event FROM Event event WHERE event.location = :eventlocation")
     List<Event> findAllByEventLocation(String eventlocation);
+
+    List<Event> findAllEventsByData(String eventData);
 }

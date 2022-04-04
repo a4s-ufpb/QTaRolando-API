@@ -3,6 +3,7 @@ package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventLocationDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDataDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,11 @@ public class EventController {
 	@GetMapping("/location")
 	public List<Event> getEventsByLocation(@RequestBody EventLocationDTO eventlocationDTO) {
 		return service.getEventsByLocation(eventlocationDTO);
+	}
+	
+	@GetMapping("/data")
+	public List<Event> getAllEventsByData(@RequestBody EventDataDTO eventDataDTO){
+		return service.getAllEventsByData(eventDataDTO);
 	}
 
 	@PostMapping
