@@ -1,11 +1,11 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.DateRangeDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDataDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventLocationDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
@@ -53,14 +53,11 @@ public class EventService {
 	public List<Event> getEventsByEventModalityId(Integer eventModalityId) {
 		return eventRepository.findAllByEventModalityId(eventModalityId);
 	}
-	
-	public List<Event> getEventsByLocation(EventLocationDTO eventlocationDTO) {
-		return eventRepository.findAllByEventLocation(eventlocationDTO.getEventLocation());
+
+	public List<Event> getEventsByDateRange(DateRangeDTO dateRangeDTO){
+		return eventRepository.findAllByDateRange(dateRangeDTO.getInitialDate(), dateRangeDTO.getFinalDate());
 	}
-	public List<Event> getAllEventsByData(EventDataDTO eventDataDTO){
-		return eventRepository.findAllEventsByData(eventDataDTO.getEventData());
-	}
-	
+
 	public void createEvent(EventDTO eventDTO) {
 		Event newEvent = new Event(eventDTO);
 		eventRepository.save(newEvent);
