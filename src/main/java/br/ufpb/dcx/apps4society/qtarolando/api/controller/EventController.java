@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -47,34 +46,34 @@ public class EventController {
 	}
 
 	@GetMapping("/byDateInterval")
-	public List<Event> getEventsByDateRange(@RequestBody DateRangeDTO dateRangeDTO){
+	public List<Event> getEventsByDateRange(@RequestBody DateRangeDTO dateRangeDTO) {
 		return service.getEventsByDateRange(dateRangeDTO);
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAnyRole('MANAGER')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 	public void createEvent(@RequestBody EventDTO eventDTO) {
 		service.createEvent(eventDTO);
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAnyRole('MANAGER')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 	public void updateEvent(@PathVariable("id") Integer id, @RequestBody EventDTO newEventDTO) {
 		service.updateEvent(id, newEventDTO);
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAnyRole('MANAGER')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 	public void deleteEvent(@PathVariable("id") Integer id) {
 		service.deleteEvent(id);
 	}
 
-	@GetMapping(value="/page")
+	@GetMapping(value = "/page")
 	public ResponseEntity<Page<Event>> findPage(
-			@RequestParam(value="page", defaultValue="0") Integer page,
-			@RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage,
-			@RequestParam(value="orderBy", defaultValue="categoryId") String orderBy,
-			@RequestParam(value="direction", defaultValue="ASC") String direction) {
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
+			@RequestParam(value = "orderBy", defaultValue = "categoryId") String orderBy,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
 		Page<Event> list = service.findPage(page, linesPerPage, orderBy, direction);
 		return ResponseEntity.ok().body(list);
 	}

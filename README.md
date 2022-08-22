@@ -33,8 +33,7 @@ Endereço da aplicação: ```http://localhost:8080/```
 |  GET  |          /api/users/email?value=         |
 |  GET  |          /api/users         |
 |  GET  |          /api/users/page?page=&linesPerPage=&orderBy=&direction=         |
-|  POST  |           /login          |
-|  POST  |           /api/users/refresh_token         |
+|  POST  |           /api/users/token         |
 |  POST  |           /api/users         |
 |  PUT  |          /api/users/{id}          |
 | PATCH  |          /api/users/password         |
@@ -44,6 +43,4 @@ Endereço da aplicação: ```http://localhost:8080/```
 - Java 8 
 - Apache Maven 3.6.3
 - Spring Boot 4
-- PostgreSQL 12.3
-
-
+- H2 Database ```localhost:8080/h2-console/```

@@ -1,42 +1,40 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
-
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAccountDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotEmpty(message="Preenchimento obrigatório")
-    @Email(message="Email inválido")
+    @NotEmpty(message = "Preenchimento obrigatório")
+    @Email(message = "Email inválido")
     private String email;
 
-    @NotEmpty(message="Preenchimento obrigatório")
+    @NotEmpty(message = "Preenchimento obrigatório")
     @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
-    private String userName;
+    private String username;
 
-    private Set<Integer> profiles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
-    public UserAccountDTO(){}
+    public UserAccountDTO() {
+    }
 
     public UserAccountDTO(String email, String userName, String password) {
         this.email = email;
-        this.userName = userName;
+        this.username = userName;
     }
 
     public UserAccountDTO(UserAccount obj) {
         this.email = obj.getEmail();
-        this.userName = obj.getUserName();
-        this.profiles = obj.getProfiles().stream().map(profile -> profile.getCod()).collect(Collectors.toSet());
+        this.username = obj.getUsername();
+        this.roles = obj.getRoles();
     }
 
     public String getEmail() {
@@ -47,19 +45,19 @@ public class UserAccountDTO implements Serializable {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public Set<Profile> getProfiles() {
-        return profiles.stream().map(x -> Profile.toEnum(x)).collect(Collectors.toSet());
+    public List<Role> getProfiles() {
+        return this.roles;
     }
 
-    public void setProfiles(Set<Integer> profiles) {
-        this.profiles = profiles;
+    public void setProfiles(List<Role> roles) {
+        this.roles = roles;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 }

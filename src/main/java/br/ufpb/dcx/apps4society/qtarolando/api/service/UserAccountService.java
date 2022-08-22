@@ -4,14 +4,13 @@ import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
-import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.DataIntegrityException;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserAccountService {
@@ -32,9 +32,9 @@ public class UserAccountService {
     @Autowired
     private UserAccountRepository repo;
 
-    public UserAccount find(Integer id) {
-        UserAccountSS user = getUserAuthenticated();
-        if (user==null || !user.hasRole(Profile.ADMIN) && !id.equals(user.getId())) {
+    public UserAccount find(UUID id) {
+        UserPrincipal user = getUserAuthenticated();
+        if (user == null || !user.hasRole(Roles.ADMIN) && !id.equals(user.getId())) {
             throw new AuthorizationException("Acesso negado");
         }
 
@@ -56,7 +56,7 @@ public class UserAccountService {
         return repo.save(newObj);
     }
 
-    public void delete(Integer id) {
+    public void delete(UUID id) {
         if (!repo.findById(id).get().getEvents().isEmpty()) {
             throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
         }
@@ -68,8 +68,8 @@ public class UserAccountService {
     }
 
     public UserAccount findByEmail(String email) {
-        UserAccountSS user = getUserAuthenticated();
-        if (user == null || !user.hasRole(Profile.ADMIN) && !email.equals(user.getEmail())) {
+        UserPrincipal user = getUserAuthenticated();
+        if (user == null || !user.hasRole(Roles.ADMIN) && !email.equals(user.getEmail())) {
             throw new AuthorizationException("Acesso negado");
         }
 
@@ -80,13 +80,13 @@ public class UserAccountService {
         return obj;
     }
 
-    public UserAccount findByUsername (String userName) {
-        UserAccountSS user = getUserAuthenticated();
-        if (user == null || !user.hasRole(Profile.ADMIN) && !userName.equals(user.getUsername())) {
+    public UserAccount findByUsername(String userName) {
+        UserPrincipal user = getUserAuthenticated();
+        if (user == null || !user.hasRole(Roles.ADMIN) && !userName.equals(user.getUsername())) {
             throw new AuthorizationException("Acesso negado");
         }
 
-        UserAccount obj = repo.findByUserName(userName);
+        UserAccount obj = repo.findByUsername(userName);
         if (obj == null) {
             throw new ObjectNotFoundException("Usuário não encontrado!");
         }
@@ -98,25 +98,25 @@ public class UserAccountService {
         return repo.findAll(pageable);
     }
 
-    public UserAccount fromDTO(UserAccountDTO objDto){
-        return new UserAccount(objDto.getEmail(),objDto.getUserName(),null);
+    public UserAccount fromDTO(UserAccountDTO objDto) {
+        return new UserAccount(objDto.getEmail(), objDto.getUsername(), null);
     }
 
-    public UserAccount fromDTO(UserAccountNewDTO objDto){
+    public UserAccount fromDTO(UserAccountNewDTO objDto) {
         objDto.setPassword(pe.encode(objDto.getPassword()));
 
         UserAccount userAccount = new UserAccount(objDto);
-        objDto.getProfiles().forEach(profile -> userAccount.addProfile(profile));
+        objDto.getRoles().forEach(profile -> userAccount.addRole(profile));
         return userAccount;
     }
 
     private void updateData(UserAccount newObj, UserAccount obj) {
-        newObj.setUserName(obj.getUserName());
+        newObj.setUsername(obj.getUsername());
         newObj.setEmail(obj.getEmail());
     }
 
-    public UserAccount updatePassword(UserPasswordDTO userPasswordDTO){
-        UserAccountSS userAuthenticated = getUserAuthenticated();
+    public UserAccount updatePassword(UserPasswordDTO userPasswordDTO) {
+        UserPrincipal userAuthenticated = getUserAuthenticated();
         UserAccount userAccount = findByEmail(userAuthenticated.getEmail());
 
         userAccount.setPassword(pe.encode(userPasswordDTO.getPassword()));
@@ -124,17 +124,16 @@ public class UserAccountService {
         return repo.save(userAccount);
     }
 
-    public void updateUserEvents(UserAccount obj){
+    public void updateUserEvents(UserAccount obj) {
         UserAccount newObj = findByEmail(obj.getEmail());
         newObj.setEvents(obj.getEvents());
         repo.save(newObj);
     }
 
-    public static UserAccountSS getUserAuthenticated() {
+    public static UserPrincipal getUserAuthenticated() {
         try {
-            return (UserAccountSS) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        }
-        catch (Exception e) {
+            return (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
             return null;
         }
     }

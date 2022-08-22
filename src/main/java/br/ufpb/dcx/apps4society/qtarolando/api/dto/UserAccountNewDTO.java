@@ -1,37 +1,37 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAccountNewDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotEmpty(message="Preenchimento obrigatório")
-    @Email(message="Email inválido")
+    @NotEmpty(message = "Preenchimento obrigatório")
+    @Email(message = "Email inválido")
     private String email;
 
-    @NotEmpty(message="Preenchimento obrigatório")
+    @NotEmpty(message = "Preenchimento obrigatório")
     @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
-    private String userName;
+    private String username;
 
-    @NotEmpty(message="Preenchimento obrigatório")
+    @NotEmpty(message = "Preenchimento obrigatório")
     @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
     private String password;
 
-    private Set<Integer> profiles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
-    public UserAccountNewDTO(){}
+    public UserAccountNewDTO() {
+    }
 
-    public UserAccountNewDTO(String email, String userName, String password) {
+    public UserAccountNewDTO(String email, String username, String password) {
         this.email = email;
-        this.userName = userName;
+        this.username = username;
         this.password = password;
     }
 
@@ -43,12 +43,12 @@ public class UserAccountNewDTO implements Serializable {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public String getPassword() {
@@ -59,11 +59,11 @@ public class UserAccountNewDTO implements Serializable {
         this.password = password;
     }
 
-    public Set<Profile> getProfiles() {
-        return this.profiles.stream().map(profile -> Profile.toEnum(profile)).collect(Collectors.toSet());
+    public List<Role> getRoles() {
+        return this.roles;
     }
 
-    public void setProfiles(Set<Integer> profiles) {
-        this.profiles = profiles;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

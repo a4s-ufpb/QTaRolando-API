@@ -1,31 +1,51 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Profile;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "user_account")
+@Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "ID", updatable = false, nullable = false)
+    @ColumnDefault("random_uuid()")
+    @Type(type = "uuid-char")
+    @Getter
+    @Setter
+    private UUID id;
 
     @Email
     @Column(unique = true)
     private String email;
 
     @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
-    private String userName;
+    private String username;
 
-    @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
+    @Size(min = 8, message = "Senha deve conter no minimo 8 caracteres")
     @JsonIgnore
     private String password;
 
@@ -33,84 +53,38 @@ public class UserAccount {
     @JoinColumn(name = "user_account_id")
     private List<Event> events = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "PROFILES")
-    private Set<Integer> profiles = new HashSet<>();
-
-    public UserAccount(){
-    }
-
-    public UserAccount(String email, String userName, String password) {
-        this.email = email;
-        this.userName = userName;
-        this.password = password;
-    }
-
-    public UserAccount(UserAccountNewDTO userAccountNewDTO){
-        this.email = userAccountNewDTO.getEmail();
-        this.userName = userAccountNewDTO.getUserName();
-        this.password = userAccountNewDTO.getPassword();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String usuario) {
-        this.userName = usuario;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String senha) {
-        this.password = senha;
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
-
-    public Set<Profile> getProfiles() {
-        return profiles.stream().map(x -> Profile.toEnum(x)).collect(Collectors.toSet());
-    }
-
-    public void addProfile(Profile profile) {
-        profiles.add(profile.getCod());
-    }
-
+    @ManyToMany
+    private List<Role> roles;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserAccount)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof UserAccount))
+            return false;
         UserAccount that = (UserAccount) o;
         return id.equals(that.id);
+    }
+
+    public UserAccount(UserAccountNewDTO userAccountNewDTO) {
+        this.email = userAccountNewDTO.getEmail();
+        this.username = userAccountNewDTO.getUsername();
+        this.password = userAccountNewDTO.getPassword();
+    }
+
+    public UserAccount(String email, String username, String password) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
 }

@@ -1,11 +1,13 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.CreateUserRoleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.JWTUtil;
-import br.ufpb.dcx.apps4society.qtarolando.api.security.UserAccountSS;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.CreateRoleUserService;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,10 +31,13 @@ public class UserController {
     private UserAccountService service;
 
     @Autowired
+    CreateRoleUserService createRoleUserService;
+
+    @Autowired
     private JWTUtil jwtUtil;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserAccountDTO>> findAll() {
         List<UserAccount> list = service.findAll();
         List<UserAccountDTO> listDto = list.stream().map(obj -> new UserAccountDTO(obj)).collect(Collectors.toList());
@@ -39,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/page")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserAccountDTO>> findPage(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
@@ -51,8 +57,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserAccount> findById(@PathVariable Integer id) {
-        UserAccount obj = service.find(id);
+    public ResponseEntity<UserAccount> findById(@PathVariable String id) {
+        UserAccount obj = service.find(UUID.fromString(id));
         return ResponseEntity.ok().body(obj);
     }
 
@@ -68,8 +74,12 @@ public class UserController {
         return ResponseEntity.ok().body(obj);
     }
 
+    @PostMapping("/role")
+    public UserAccount role(@RequestBody CreateUserRoleDTO createUserRoleDTO) {
+        return createRoleUserService.execute(createUserRoleDTO);
+    }
+
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> insert(@Valid @RequestBody UserAccountNewDTO objDto) {
         UserAccount obj = service.fromDTO(objDto);
         obj = service.insert(obj);
@@ -79,10 +89,9 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Void> update(@Valid @RequestBody UserAccountDTO objDto, @PathVariable Integer id) {
+    public ResponseEntity<Void> update(@Valid @RequestBody UserAccountDTO objDto, @PathVariable String id) {
         UserAccount obj = service.fromDTO(objDto);
-        obj.setId(id);
+        obj.setId(UUID.fromString(id));
         obj = service.update(obj);
         return ResponseEntity.noContent().build();
     }
@@ -94,15 +103,16 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        service.delete(id);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(UUID.fromString(id));
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(value = "/refresh_token")
+    @PostMapping(value = "/token")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
-        UserAccountSS user = UserAccountService.getUserAuthenticated();
+        UserPrincipal user = UserAccountService.getUserAuthenticated();
         String token = jwtUtil.generateToken(user.getEmail());
         response.addHeader("Authorization", "Bearer " + token);
         return ResponseEntity.noContent().build();
