@@ -1,7 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -19,7 +18,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -42,7 +40,6 @@ public class UserAccount {
     @Column(unique = true)
     private String email;
 
-    @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
     private String username;
 
     @Size(min = 8, message = "Senha deve conter no minimo 8 caracteres")
@@ -53,8 +50,9 @@ public class UserAccount {
     @JoinColumn(name = "user_account_id")
     private List<Event> events = new ArrayList<>();
 
-    @ManyToMany
-    private List<Role> roles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

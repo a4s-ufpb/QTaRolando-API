@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.jwt.JWTUtils;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,9 +25,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authenticationManager;
 
-    private JWTUtil jwtUtil;
+    private JWTUtils jwtUtil;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtils jwtUtil) {
         setAuthenticationFailureHandler(new JWTAuthenticationFailureHandler());
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -56,7 +58,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Authentication auth) throws IOException, ServletException {
 
         String email = ((UserPrincipal) auth.getPrincipal()).getEmail();
-        String token = jwtUtil.generateToken(email);
+        String token = jwtUtil.generateTokenFromEmail(email);
         res.addHeader("Authorization", "Bearer " + token);
     }
 

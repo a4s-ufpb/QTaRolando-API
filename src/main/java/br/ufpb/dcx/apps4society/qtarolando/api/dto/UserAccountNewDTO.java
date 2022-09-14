@@ -1,30 +1,28 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserAccountNewDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotEmpty(message = "Preenchimento obrigatório")
     @Email(message = "Email inválido")
+    @NotNull(message = "Preenchimento obrigatório")
     private String email;
 
-    @NotEmpty(message = "Preenchimento obrigatório")
-    @Size(min = 3, max = 20, message = "Usuário deve conter entre 3 a 20 caracteres")
+    @NotNull(message = "Preenchimento obrigatório")
     private String username;
 
-    @NotEmpty(message = "Preenchimento obrigatório")
-    @Size(min = 5, message = "Senha deve conter no minimo 20 caracteres")
+    @NotNull
+    @Size(min = 8, message = "Usuário deve conter no mínimo 8 caracteres")
     private String password;
 
-    private List<Role> roles = new ArrayList<>();
+    private Set<String> roles;
 
     public UserAccountNewDTO() {
     }
@@ -59,11 +57,11 @@ public class UserAccountNewDTO implements Serializable {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<String> getRoles() {
         return this.roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
 }

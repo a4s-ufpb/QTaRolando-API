@@ -1,15 +1,11 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
-import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
-import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.DataIntegrityException;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,17 +16,29 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
+import br.ufpb.dcx.apps4society.qtarolando.api.repository.RoleRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.DataIntegrityException;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 
 @Service
 public class UserAccountService {
     @Autowired
-    private BCryptPasswordEncoder pe;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserAccountRepository repo;
+    private UserAccountRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public UserAccount find(UUID id) {
         UserPrincipal user = getUserAuthenticated();
@@ -38,33 +46,37 @@ public class UserAccountService {
             throw new AuthorizationException("Acesso negado");
         }
 
-        Optional<UserAccount> obj = repo.findById(id);
+        Optional<UserAccount> obj = userRepository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(
                 "Objeto não encontrado! Id: " + id + ", Tipo: " + UserAccount.class.getName()));
     }
 
     @Transactional
-    public UserAccount insert(UserAccount obj) {
+    public UserAccount insert(UserAccountNewDTO objDto) {
+        if (userRepository.findByEmail(objDto.getEmail()) != null) {
+            throw new DataIntegrityException("Email já registrado");
+        }
+        UserAccount obj = fromDTO(objDto);
         obj.setId(null);
-        obj = repo.save(obj);
+        obj = userRepository.save(obj);
         return obj;
     }
 
     public UserAccount update(UserAccount obj) {
         UserAccount newObj = find(obj.getId());
         updateData(newObj, obj);
-        return repo.save(newObj);
+        return userRepository.save(newObj);
     }
 
     public void delete(UUID id) {
-        if (!repo.findById(id).get().getEvents().isEmpty()) {
+        if (!userRepository.findById(id).get().getEvents().isEmpty()) {
             throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
         }
-        repo.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     public List<UserAccount> findAll() {
-        return repo.findAll();
+        return userRepository.findAll();
     }
 
     public UserAccount findByEmail(String email) {
@@ -73,7 +85,7 @@ public class UserAccountService {
             throw new AuthorizationException("Acesso negado");
         }
 
-        UserAccount obj = repo.findByEmail(email);
+        UserAccount obj = userRepository.findByEmail(email);
         if (obj == null) {
             throw new ObjectNotFoundException("Usuário não encontrado!");
         }
@@ -86,7 +98,7 @@ public class UserAccountService {
             throw new AuthorizationException("Acesso negado");
         }
 
-        UserAccount obj = repo.findByUsername(userName);
+        UserAccount obj = userRepository.findByUsername(userName);
         if (obj == null) {
             throw new ObjectNotFoundException("Usuário não encontrado!");
         }
@@ -95,7 +107,7 @@ public class UserAccountService {
 
     public Page<UserAccount> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
-        return repo.findAll(pageable);
+        return userRepository.findAll(pageable);
     }
 
     public UserAccount fromDTO(UserAccountDTO objDto) {
@@ -103,10 +115,34 @@ public class UserAccountService {
     }
 
     public UserAccount fromDTO(UserAccountNewDTO objDto) {
-        objDto.setPassword(pe.encode(objDto.getPassword()));
+        objDto.setPassword(passwordEncoder.encode(objDto.getPassword()));
 
         UserAccount userAccount = new UserAccount(objDto);
-        objDto.getRoles().forEach(profile -> userAccount.addRole(profile));
+        Set<String> strRoles = objDto.getRoles();
+        Set<Role> roles = new HashSet<>();
+
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(Roles.USER.getDescription())
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "ADMIN":
+                        Role adminRole = roleRepository.findByName(Roles.ADMIN.getDescription())
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+
+                        break;
+                    default:
+                        Role userRole = roleRepository.findByName(Roles.USER.getDescription())
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(userRole);
+                }
+            });
+        }
+
+        userAccount.setRoles(roles);
         return userAccount;
     }
 
@@ -119,15 +155,15 @@ public class UserAccountService {
         UserPrincipal userAuthenticated = getUserAuthenticated();
         UserAccount userAccount = findByEmail(userAuthenticated.getEmail());
 
-        userAccount.setPassword(pe.encode(userPasswordDTO.getPassword()));
+        userAccount.setPassword(passwordEncoder.encode(userPasswordDTO.getPassword()));
 
-        return repo.save(userAccount);
+        return userRepository.save(userAccount);
     }
 
     public void updateUserEvents(UserAccount obj) {
         UserAccount newObj = findByEmail(obj.getEmail());
         newObj.setEvents(obj.getEvents());
-        repo.save(newObj);
+        userRepository.save(newObj);
     }
 
     public static UserPrincipal getUserAuthenticated() {

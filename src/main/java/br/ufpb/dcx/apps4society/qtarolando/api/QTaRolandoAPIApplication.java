@@ -1,10 +1,10 @@
 package br.ufpb.dcx.apps4society.qtarolando.api;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.RoleRepository;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -37,16 +37,16 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
-			Role role_admin = new Role(UUID.randomUUID(), "ADMIN");
-			Role role_user = new Role(UUID.randomUUID(), "USER");
+		Role role_admin = new Role(Roles.ADMIN.getCod(), Roles.ADMIN.getDescription());
+		Role role_user = new Role(Roles.USER.getCod(), Roles.USER.getDescription());
 
-			if (roleRepository.findByName(role_admin.getName()) == null) {
-				roleRepository.save(role_admin);
-			}
-			if (roleRepository.findByName(role_user.getName()) == null) {
-				roleRepository.save(role_user);
-			}
+		if (!roleRepository.findByName(role_admin.getName()).isPresent()) {
+			roleRepository.save(role_admin);
 		}
+		if (!roleRepository.findByName(role_user.getName()).isPresent()) {
+			roleRepository.save(role_user);
+		}
+		// if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
+		// }
 	}
 }

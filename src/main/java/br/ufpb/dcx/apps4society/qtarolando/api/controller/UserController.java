@@ -1,28 +1,35 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.CreateUserRoleDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
-import br.ufpb.dcx.apps4society.qtarolando.api.security.JWTUtil;
-import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.CreateRoleUserService;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.CreateUserRoleDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.CreateRoleUserService;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "api/users")
 public class UserController {
@@ -32,9 +39,6 @@ public class UserController {
 
     @Autowired
     CreateRoleUserService createRoleUserService;
-
-    @Autowired
-    private JWTUtil jwtUtil;
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -79,15 +83,6 @@ public class UserController {
         return createRoleUserService.execute(createUserRoleDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> insert(@Valid @RequestBody UserAccountNewDTO objDto) {
-        UserAccount obj = service.fromDTO(objDto);
-        obj = service.insert(obj);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(obj.getId()).toUri();
-        return ResponseEntity.created(uri).build();
-    }
-
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> update(@Valid @RequestBody UserAccountDTO objDto, @PathVariable String id) {
         UserAccount obj = service.fromDTO(objDto);
@@ -106,15 +101,6 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(UUID.fromString(id));
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping(value = "/token")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
-    public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
-        UserPrincipal user = UserAccountService.getUserAuthenticated();
-        String token = jwtUtil.generateToken(user.getEmail());
-        response.addHeader("Authorization", "Bearer " + token);
         return ResponseEntity.noContent().build();
     }
 }

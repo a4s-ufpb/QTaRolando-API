@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 public class CreateUserRoleDTO {
 
-  private UUID idUser;
+  private UUID userId;
 
-  private List<UUID> idsRoles;
+  private List<Integer> idsRoles;
 
 }
