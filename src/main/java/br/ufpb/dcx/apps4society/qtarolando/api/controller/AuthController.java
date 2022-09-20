@@ -1,6 +1,5 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,16 +10,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserInfoResponse;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
 import br.ufpb.dcx.apps4society.qtarolando.api.security.jwt.JWTUtils;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
@@ -40,8 +41,13 @@ public class AuthController {
   private JWTUtils jwtUtils;
 
   @PostMapping(value = "/login")
-  public ResponseEntity<UserInfoResponse> login() {
-    UserPrincipal user = UserAccountService.getUserAuthenticated();
+  public ResponseEntity<UserInfoResponse> login(@Valid @RequestBody CredentialsDTO credentials) {
+    Authentication authentication = authenticationManager
+        .authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
     ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(user);
 
@@ -58,10 +64,9 @@ public class AuthController {
 
   @PostMapping(value = "/signup")
   public ResponseEntity<Void> signUp(@Valid @RequestBody UserAccountNewDTO objDto) {
-    UserAccount obj = service.insert(objDto);
-    URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-        .path("/{id}").buildAndExpand(obj.getId()).toUri();
-    return ResponseEntity.created(uri).build();
+    System.out.println(objDto.getPassword());
+    service.insert(objDto);
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping("/signout")

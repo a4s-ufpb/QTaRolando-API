@@ -74,6 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.headers().frameOptions().disable();
         }
         http.cors().and().csrf().disable()
+                .formLogin().disable().httpBasic().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers(PUBLIC_MATCHERS).permitAll()
