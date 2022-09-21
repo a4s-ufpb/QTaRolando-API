@@ -46,6 +46,21 @@ public class Event {
 		this.site = site;
 	}
 
+	//construtor temporario
+	public Event(String title, String subtitle, Integer categoryId, String description,
+				 String imagePath, Integer eventModalityId,
+				 String location, String phone, String site) {
+		this.title = title;
+		this.subtitle = subtitle;
+		this.categoryId = categoryId;
+		this.description = description;
+		this.imagePath = imagePath;
+		this.eventModalityId = eventModalityId;
+		this.location = location;
+		this.phone = phone;
+		this.site = site;
+	}
+
 	public Event(EventDTO eventDTO){
 		this.title = eventDTO.getTitle();
 		this.subtitle = eventDTO.getSubtitle();
