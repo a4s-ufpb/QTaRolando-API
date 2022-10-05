@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class EventDTO implements Serializable {
+public class EventDTO{
 
     @NotEmpty(message="Preenchimento obrigatório")
     private String title;
@@ -54,6 +54,21 @@ public class EventDTO implements Serializable {
         this.finalDate = finalDate;
         this.eventModalityId = EventModality.validate(eventModalityId);
         this.imagePath = imagePath;
+        this.location = location;
+        this.phone = phone;
+        this.site = site;
+    }
+
+    //construtor temporario
+    public EventDTO(String title, String subtitle, Integer categoryId, String description,
+                 String imagePath, Integer eventModalityId,
+                 String location, String phone, String site) {
+        this.title = title;
+        this.subtitle = subtitle;
+        this.categoryId = categoryId;
+        this.description = description;
+        this.imagePath = imagePath;
+        this.eventModalityId = eventModalityId;
         this.location = location;
         this.phone = phone;
         this.site = site;

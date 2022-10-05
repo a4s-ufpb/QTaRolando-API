@@ -2,6 +2,9 @@ package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.EventModality;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +19,7 @@ public class Event {
 	private Integer id;
 	private String title;
 	private String subtitle;
+//	@Column(name = "c")
 	private Integer categoryId;
 	@Column(length = 2000)
 	private String description;
@@ -27,8 +31,6 @@ public class Event {
 	private String phone;
 	private String site;
 
-	public Event(){
-	}
 
 	public Event(String title, String subtitle, Integer categoryId, String description,
 				 LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, Integer eventModalityId,
@@ -46,21 +48,6 @@ public class Event {
 		this.site = site;
 	}
 
-	//construtor temporario
-	public Event(String title, String subtitle, Integer categoryId, String description,
-				 String imagePath, Integer eventModalityId,
-				 String location, String phone, String site) {
-		this.title = title;
-		this.subtitle = subtitle;
-		this.categoryId = categoryId;
-		this.description = description;
-		this.imagePath = imagePath;
-		this.eventModalityId = eventModalityId;
-		this.location = location;
-		this.phone = phone;
-		this.site = site;
-	}
-
 	public Event(EventDTO eventDTO){
 		this.title = eventDTO.getTitle();
 		this.subtitle = eventDTO.getSubtitle();
@@ -71,6 +58,10 @@ public class Event {
 		this.imagePath = eventDTO.getImagePath();
 		this.eventModalityId = eventDTO.getEventModalityId();
 		this.location = eventDTO.getLocation();
+	}
+
+	public Event() {
+
 	}
 
 	public Integer getId() {

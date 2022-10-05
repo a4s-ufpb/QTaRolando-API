@@ -2,70 +2,85 @@ package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class EventControllerIT {
+
+//    private  String url = "http://localhost:/api/events";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Autowired
     private EventRepository eventRepository;
-
+    
     @Test
     public void shouldFindAllEvents() {
 
-        ResponseEntity<Event[]> response = testRestTemplate.exchange(
-                "/api/events", HttpMethod.GET, null,
-                Event[].class);
+        Event savedEvent = eventRepository.save(EventCreator.createEventToBeSaved());
+        Event savedEvent2 = eventRepository.save(EventCreator.createEventToBeSaved());
 
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertEquals(2, eventRepository.findAll().size());
+        List<Event> response = testRestTemplate.exchange("/api/events", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(2);
+
+        Assertions.assertThat(response.get(0).getTitle())
+                .isNotNull()
+                .isEqualTo(savedEvent.getTitle());
+
+        Assertions.assertThat(response.get(0).getId())
+                .isNotNull()
+                .isNotEqualTo(savedEvent2.getId());
+
+        eventRepository.deleteAll();
     }
 
     @Test
     public void shouldFindEventsByTitle() {
         //TODO
 
-//        List<Event> events = eventRepository.findAllByTitle("Praia");
+//        List<Event> response = testRestTemplate.exchange(
+//                "/api/events/title?title=Praia", HttpMethod.GET, null,
+//                new ParameterizedTypeReference<List<Event>>() {
+//                }).getBody();
 //
-//        ResponseEntity<Event[]> response = testRestTemplate.exchange(
-//                "/api/events/title?param=Praia", HttpMethod.GET, null,
-//                Event[].class);
-//
-//        assertEquals(HttpStatus.OK,response.getStatusCode());
+//        Assertions.assertThat(response)
+//                .isNotNull()
+//                .isEmpty();
 
     }
 
     @Test
-    public void shouldFindEventsById() {
+    public void shouldFindEventById() {
+        Event savedEvent = eventRepository.save(EventCreator.createEventToBeSaved());
+        int expectedId = savedEvent.getId();
 
-        Optional<Event> event = eventRepository.findById(2);
+        Event response = testRestTemplate.getForObject("/api/events/{id}", Event.class, expectedId);
 
-        if (event.isPresent()) {
-            Integer eventId = event.get().getId();
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getId())
+                .isNotNull()
+                .isEqualTo(expectedId);
 
-            ResponseEntity<Event> response = testRestTemplate.exchange(
-                    "/api/events/" + eventId, HttpMethod.GET, null,
-                    Event.class);
-
-            assertEquals(response.getStatusCode(), HttpStatus.OK);
-            assertEquals("Praça", event.get().getTitle());
-        }
-
+        eventRepository.delete(savedEvent);
     }
 
     @Test
@@ -76,16 +91,19 @@ class EventControllerIT {
 
     @Test
     public void shouldFindEventsByPeriodo() {
-        //TODO
 
-//        List<Event> events = eventRepository.findAllByDateRange(LocalDateTime.now(), LocalDateTime.now());
+//        Event savedEvent = eventRepository.save(EventCreator.createEventToBeSaved());
 //
+//        String expectedInitialDate = "2022-09-20T19:00:00";
 //
-//        ResponseEntity<Event[]> response = testRestTemplate.exchange(
-//                "/api/events/byDateInterval" + , HttpMethod.GET, null,
-//                Event[].class);
+//        String url = String.format("/api/events/byDateInterval?initialdate=%s", expectedInitialDate);
 //
-//        assertEquals(response.getStatusCode(), HttpStatus.OK);
+//        List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+//                new ParameterizedTypeReference<List<Event>>() {
+//                }).getBody();
+//
+//        Assertions.assertThat(response.get(0).getInitialDate())
+//                .isEqualTo(expectedInitialDate);
 
     }
 

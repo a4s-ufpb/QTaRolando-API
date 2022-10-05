@@ -3,9 +3,6 @@ package br.ufpb.dcx.apps4society.qtarolando.api;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.RoleRepository;
-
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -48,5 +45,6 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 		}
 		// if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
 		// }
+
 	}
 }
