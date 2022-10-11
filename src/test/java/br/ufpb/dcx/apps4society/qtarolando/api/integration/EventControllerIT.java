@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -54,17 +55,37 @@ class EventControllerIT {
     }
 
     @Test
-    public void shouldFindEventsByTitle() {
-        //TODO
+    @DisplayName("findByTitle returns an empty list a of event when event is not found")
+    public void FindByTitle_ShouldReturnEmptyListOfEvent() {
 
-//        List<Event> response = testRestTemplate.exchange(
-//                "/api/events/title?title=Praia", HttpMethod.GET, null,
-//                new ParameterizedTypeReference<List<Event>>() {
-//                }).getBody();
-//
-//        Assertions.assertThat(response)
-//                .isNotNull()
-//                .isEmpty();
+        List<Event> response = testRestTemplate.exchange(
+                "/api/events/title?title=Praia", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .isEmpty();
+
+    }
+
+    @Test
+    @DisplayName("findByTitle returns a list a of event when successful")
+    public void FindByTitle_ShouldReturnListOfEvent() {
+
+        Event savedEvent = eventRepository.save(EventCreator.createEventToBeSaved());
+
+        List<Event> response = testRestTemplate.exchange(
+                "/api/events/title?title=Praia", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .isNotEmpty()
+                        .hasSize(1);
+
+        eventRepository.deleteAll();
 
     }
 
