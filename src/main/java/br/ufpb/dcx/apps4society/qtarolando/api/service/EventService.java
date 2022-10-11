@@ -44,8 +44,8 @@ public class EventService {
 		return event;
 	}
 
-	public List<Event> getEventsByTitle(EventTitleDTO eventTitleDTO) {
-		return eventRepository.findAllByTitle(eventTitleDTO.getTitle());
+	public List<Event> getEventsByTitle(String title) {
+		return eventRepository.findAllByTitle(title);
 	}
 
 	public List<Event> getEventsByCategoryId(Integer categoryId) {

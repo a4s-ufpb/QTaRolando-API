@@ -37,8 +37,8 @@ public class EventController {
 	}
 
 	@GetMapping("/title")
-	public List<Event> getEventsByTitle(@RequestBody EventTitleDTO eventTitleDTO) {
-		return service.getEventsByTitle(eventTitleDTO);
+	public List<Event> getEventsByTitle(@RequestParam String title) {
+		return service.getEventsByTitle(title);
 	}
 
 	@GetMapping("/eventModalityId/{eventModalityId}")
