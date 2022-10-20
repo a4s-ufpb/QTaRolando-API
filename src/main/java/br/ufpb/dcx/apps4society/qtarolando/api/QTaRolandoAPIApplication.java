@@ -46,5 +46,6 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 		// if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
 		// }
 
+
 	}
 }

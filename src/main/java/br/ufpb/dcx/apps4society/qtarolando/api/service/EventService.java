@@ -56,8 +56,8 @@ public class EventService {
 		return eventRepository.findAllByEventModalityId(eventModalityId);
 	}
 
-	public List<Event> getEventsByDateRange(DateRangeDTO dateRangeDTO) {
-		return eventRepository.findAllByDateRange(dateRangeDTO.getInitialDate(), dateRangeDTO.getFinalDate());
+	public List<Event> getEventsByDateRange(LocalDateTime initialDate, LocalDateTime finalDate) {
+		return eventRepository.findAllByDateRange(initialDate, finalDate);
 	}
 
 	public void createEvent(EventDTO eventDTO) {

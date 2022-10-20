@@ -59,21 +59,6 @@ public class EventDTO{
         this.site = site;
     }
 
-    //construtor temporario
-    public EventDTO(String title, String subtitle, Integer categoryId, String description,
-                 String imagePath, Integer eventModalityId,
-                 String location, String phone, String site) {
-        this.title = title;
-        this.subtitle = subtitle;
-        this.categoryId = categoryId;
-        this.description = description;
-        this.imagePath = imagePath;
-        this.eventModalityId = eventModalityId;
-        this.location = location;
-        this.phone = phone;
-        this.site = site;
-    }
-
     public String getTitle() {
         return title;
     }

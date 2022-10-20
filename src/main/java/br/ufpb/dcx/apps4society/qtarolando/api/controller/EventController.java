@@ -1,8 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.DateRangeDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -47,8 +46,9 @@ public class EventController {
 	}
 
 	@GetMapping("/byDateInterval")
-	public List<Event> getEventsByDateRange(@RequestBody DateRangeDTO dateRangeDTO) {
-		return service.getEventsByDateRange(dateRangeDTO);
+	public List<Event> getEventsByDateRange(@RequestParam LocalDateTime initialDate,
+											@RequestParam LocalDateTime finalDate) {
+		return service.getEventsByDateRange(initialDate, finalDate);
 	}
 
 	@PostMapping
