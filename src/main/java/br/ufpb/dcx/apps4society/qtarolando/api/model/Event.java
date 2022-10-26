@@ -2,9 +2,9 @@ package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.EventModality;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -17,7 +17,6 @@ public class Event {
 	private Integer id;
 	private String title;
 	private String subtitle;
-//	@Column(name = "c")
 	private Integer categoryId;
 	@Column(length = 2000)
 	private String description;

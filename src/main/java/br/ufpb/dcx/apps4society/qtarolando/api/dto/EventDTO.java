@@ -43,7 +43,7 @@ public class EventDTO{
 
     public EventDTO(){}
 
-    public EventDTO(String title,String subtitle, Integer categoryId, String description, LocalDateTime initialDate,
+    public EventDTO(String title, String subtitle, Integer categoryId, String description, LocalDateTime initialDate,
                     LocalDateTime finalDate, Integer eventModalityId,String imagePath, String location, String phone,
                     String site) {
         this.title = title;
@@ -57,6 +57,23 @@ public class EventDTO{
         this.location = location;
         this.phone = phone;
         this.site = site;
+    }
+
+    public  EventDTO(Integer categoryId, String description, Integer eventModalityId, LocalDateTime finalDate,
+                     String imagePath, LocalDateTime initialDate, String location, String phone, String site,
+                     String subtitle, String title){
+
+        this.categoryId = categoryId;
+        this.description = description;
+        this.eventModalityId = EventModality.validate(eventModalityId);
+        this.finalDate = finalDate;
+        this.imagePath = imagePath;
+        this.initialDate = initialDate;
+        this.location = location;
+        this.phone = phone;
+        this.site = site;
+        this.subtitle = subtitle;
+        this.title = title;
     }
 
     public String getTitle() {

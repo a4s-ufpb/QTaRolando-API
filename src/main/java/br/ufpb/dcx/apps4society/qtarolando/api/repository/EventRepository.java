@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.repository;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "WHERE userAccount = :userAccount")
     Page<Event> findByUserAccount(Pageable pageable, @Param("userAccount") UserAccount userAccount);
 
-    List<Event> findAllByTitle(String Title);
+    @Query("SELECT e FROM Event e where e.title like %:title% ")
+    List<Event> findAllByTitle(@Param("title") String title);
 
-    List<Event> findAllByCategoryId(Integer CategoryId);
+    List<Event> findAllByCategoryId(Integer categoryId);
 
     @Query("SELECT event FROM Event event WHERE event.eventModalityId = :eventModalityId")
     List<Event> findAllByEventModalityId(Integer eventModalityId);
