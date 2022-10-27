@@ -1,10 +1,9 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.DateRangeDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +36,8 @@ public class EventController {
 	}
 
 	@GetMapping("/title")
-	public List<Event> getEventsByTitle(@RequestBody EventTitleDTO eventTitleDTO) {
-		return service.getEventsByTitle(eventTitleDTO);
+	public List<Event> getEventsByTitle(@RequestParam String title) {
+		return service.getEventsByTitle(title);
 	}
 
 	@GetMapping("/eventModalityId/{eventModalityId}")
@@ -47,12 +46,13 @@ public class EventController {
 	}
 
 	@GetMapping("/byDateInterval")
-	public List<Event> getEventsByDateRange(@RequestBody DateRangeDTO dateRangeDTO) {
-		return service.getEventsByDateRange(dateRangeDTO);
+	public List<Event> getEventsByDateRange(@RequestParam("initialDate") String initialDate,
+											@RequestParam("finalDate")   String finalDate) {
+
+		return service.getEventsByDateRange(initialDate, finalDate);
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 	public void createEvent(@RequestBody EventDTO eventDTO) {
 		service.createEvent(eventDTO);
 	}

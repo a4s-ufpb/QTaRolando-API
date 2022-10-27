@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.EventModality;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,8 +28,6 @@ public class Event {
 	private String phone;
 	private String site;
 
-	public Event(){
-	}
 
 	public Event(String title, String subtitle, Integer categoryId, String description,
 				 LocalDateTime initialDate, LocalDateTime finalDate, String imagePath, Integer eventModalityId,
@@ -56,6 +55,10 @@ public class Event {
 		this.imagePath = eventDTO.getImagePath();
 		this.eventModalityId = eventDTO.getEventModalityId();
 		this.location = eventDTO.getLocation();
+	}
+
+	public Event() {
+
 	}
 
 	public Integer getId() {

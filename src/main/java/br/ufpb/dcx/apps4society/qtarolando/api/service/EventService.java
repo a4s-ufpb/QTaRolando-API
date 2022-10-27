@@ -44,8 +44,8 @@ public class EventService {
 		return event;
 	}
 
-	public List<Event> getEventsByTitle(EventTitleDTO eventTitleDTO) {
-		return eventRepository.findAllByTitle(eventTitleDTO.getTitle());
+	public List<Event> getEventsByTitle(String title) {
+		return eventRepository.findAllByTitle(title);
 	}
 
 	public List<Event> getEventsByCategoryId(Integer categoryId) {
@@ -56,8 +56,11 @@ public class EventService {
 		return eventRepository.findAllByEventModalityId(eventModalityId);
 	}
 
-	public List<Event> getEventsByDateRange(DateRangeDTO dateRangeDTO) {
-		return eventRepository.findAllByDateRange(dateRangeDTO.getInitialDate(), dateRangeDTO.getFinalDate());
+	public List<Event> getEventsByDateRange(String initialDate, String finalDate) {
+		LocalDateTime initialD = LocalDateTime.parse(initialDate);
+		LocalDateTime finalD = LocalDateTime.parse(finalDate);
+
+		return eventRepository.findAllByDateRange(initialD, finalD);
 	}
 
 	public void createEvent(EventDTO eventDTO) {
