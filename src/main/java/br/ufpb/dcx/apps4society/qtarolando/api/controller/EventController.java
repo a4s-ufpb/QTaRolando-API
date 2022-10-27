@@ -1,18 +1,15 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.DateRangeDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -49,25 +46,11 @@ public class EventController {
 	}
 
 	@GetMapping("/byDateInterval")
-	public List<Event> getEventsByDateRange(
-			@RequestBody DateRangeDTO dateRangeDTO) {
-		return service.getEventsByDateRange(dateRangeDTO);
+	public List<Event> getEventsByDateRange(@RequestParam("initialDate") String initialDate,
+											@RequestParam("finalDate")   String finalDate) {
+
+		return service.getEventsByDateRange(initialDate, finalDate);
 	}
-
-//	Tentei mudar o getEventsByDateRange para @RequestParam
-
-//	@GetMapping("/byDateInterval")
-//	public List<Event> getEventsByDateRange(@RequestParam("initialDate")
-//												String initialDate,
-//											@RequestParam("finalDate")
-//												String finalDate) {
-//
-//		LocalDateTime initialDateConverted = LocalDateTime.parse(initialDate);
-//
-//		LocalDateTime finalDateConverted = LocalDateTime.parse(finalDate);
-//
-//		return service.getEventsByDateRange(initialDateConverted, finalDateConverted);
-//	}
 
 	@PostMapping
 	public void createEvent(@RequestBody EventDTO eventDTO) {

@@ -1,9 +1,9 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.DateRangeDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
+import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class EventControllerIT {
 
@@ -109,12 +106,11 @@ class EventControllerIT {
     public void getEventsByTitleContaining_ShouldReturnListOfEvent() {
         Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
         Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
-        Event savedEvent3 = eventRepository.save(EventCreator.customizedEventTitle("Passeio"));
 
         String letters = "Pra";
 
         List<Event> response = testRestTemplate.exchange(
-                "/api/events/title?title="+ letters, HttpMethod.GET, null,
+                "/api/events/title?title=" + letters, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Event>>() {
                 }).getBody();
 
@@ -135,6 +131,38 @@ class EventControllerIT {
 
         eventRepository.deleteAll();
 
+    }
+
+    @Test
+    public void shouldFindEventsByCategory() {
+        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
+        Event savedEven2 = eventRepository.save(EventCreator.defaultEvent());
+
+        int expectedCategory = savedEvent.getCategoryId();
+        String url = "/api/events/category/" + expectedCategory;
+
+        List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(2);
+
+        Assertions.assertThat(response.get(0).getCategoryId())
+                .isNotNull()
+                .isEqualTo(expectedCategory);
+
+        Assertions.assertThat(response.get(0).getTitle())
+                .isNotNull()
+                .isEqualTo(savedEvent.getTitle());
+
+        Assertions.assertThat(response.get(1).getCategoryId())
+                .isNotNull()
+                .isNotEqualTo(savedEven2);
+
+        eventRepository.deleteAll();
     }
 
     @Test
@@ -221,61 +249,95 @@ class EventControllerIT {
 
     }
 
-    //JSON parse error: Cannot deserialize instance
-    //Esse erro esta acontecendo nesse test
-//    @Test
-//    public void shouldFindEventsByPeriodo() {
-//        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-//
-//        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
-//
-//        Event savedEvent3 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Passeio Turisco", "2022-08-20T09:00:00", "2022-08-21T19:00:00"));
-//
-//        DateRangeDTO dateRangeDTO = new DateRangeDTO(LocalDateTime.parse(
-//                "2022-09-20T19:00:00"), LocalDateTime.parse("2022-12-20T19:00:00"));
-//
-//        String url = "/api/events/byDateInterval?initialDate=" + dateRangeDTO.getInitialDate()
-//                + "&finalDate=" + dateRangeDTO.getFinalDate();
-//
-//        List<Event> response = testRestTemplate.exchange(
-//                "/api/events/byDateInterval?initialDate=2022-09-20T19:00:00&finalDate=2022-10-27T16:00:00",
-//                HttpMethod.GET, null, new ParameterizedTypeReference<List<Event>>() {
-//                }).getBody();
-//
-//        Assertions.assertThat(response)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(2);
-//
-//        Assertions.assertThat(response.get(0).getTitle())
-//                .isNotNull()
-//                .isNotEmpty()
-//                .isEqualTo("Praia");
-//
-//        Assertions.assertThat(response.get(0).getInitialDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getInitialDate());
-//
-//        Assertions.assertThat(response.get(0).getFinalDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getFinalDate());
-//
-//        Assertions.assertThat(response.get(0).getTitle())
-//                .isNotNull()
-//                .isNotEmpty()
-//                .isEqualTo("Circo");
-//
-//        Assertions.assertThat(response.get(1).getInitialDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getInitialDate());
-//
-//        Assertions.assertThat(response.get(1).getFinalDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getFinalDate());
-//
-//        eventRepository.deleteAll();
-//    }
+    @Test
+    public void shouldFindEventsByPeriodo() {
+
+        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
+
+        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+                "Passeio Turisco", "2022-08-20T09:00:00", "2022-08-21T19:00:00"));
+
+        String initialDateExpected = "2022-08-20T09:00:00";
+        String finalDateExpected = "2022-12-20T19:00:00";
+        String url = "/api/events/byDateInterval?initialDate=" + initialDateExpected
+                + "&finalDate=" + finalDateExpected;
+
+        List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(2);
+
+        Assertions.assertThat(response.get(0).getTitle())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo("Circo");
+
+        Assertions.assertThat(response.get(0).getInitialDate())
+                .isNotNull()
+                .isEqualTo(savedEvent.getInitialDate());
+
+        Assertions.assertThat(response.get(0).getFinalDate())
+                .isNotNull()
+                .isEqualTo(savedEvent.getFinalDate());
+
+        Assertions.assertThat(response.get(1).getTitle())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo("Passeio Turisco");
+
+        Assertions.assertThat(response.get(1).getInitialDate())
+                .isNotNull()
+                .isEqualTo(savedEvent2.getInitialDate());
+
+        Assertions.assertThat(response.get(1).getFinalDate())
+                .isNotNull()
+                .isEqualTo(savedEvent2.getFinalDate());
+
+        eventRepository.deleteAll();
+    }
+
+    @Test
+    public void shouldFindOnlyOneEventByPeriodo() {
+
+        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
+
+        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+                "Passeio Turisco", "2022-08-20T09:00:00", "2022-08-21T19:00:00"));
+
+        String initialDateExpected = "2022-08-20T09:00:00";
+        String finalDateExpected = "2022-08-21T19:00:00";
+        String url = "/api/events/byDateInterval?initialDate=" + initialDateExpected
+                + "&finalDate=" + finalDateExpected;
+
+        List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        Assertions.assertThat(response.get(0).getTitle())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo("Passeio Turisco");
+
+        Assertions.assertThat(response.get(0).getInitialDate())
+                .isNotNull()
+                .isEqualTo(savedEvent2.getInitialDate());
+
+        Assertions.assertThat(response.get(0).getFinalDate())
+                .isNotNull()
+                .isEqualTo(savedEvent2.getFinalDate());
+
+        eventRepository.deleteAll();
+    }
 
 }
