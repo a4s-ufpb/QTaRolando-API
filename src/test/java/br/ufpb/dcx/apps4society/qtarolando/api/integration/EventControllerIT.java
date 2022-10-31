@@ -3,7 +3,6 @@ package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
-import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -102,7 +101,7 @@ class EventControllerIT {
     }
 
     @Test
-    @DisplayName("getEventsByTitleContaining returns a list a of event with the letters specified when successful")
+    @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successful")
     public void getEventsByTitleContaining_ShouldReturnListOfEvent() {
         Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
         Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"));

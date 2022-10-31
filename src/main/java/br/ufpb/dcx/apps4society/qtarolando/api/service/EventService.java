@@ -31,6 +31,10 @@ public class EventService {
 	@Autowired
 	private UserAccountService userAccountService;
 
+	public Page<Event> listAll(Pageable pageable) {
+		return eventRepository.findAll(pageable);
+	}
+
 	public List<Event> getAllEvents() {
 		return eventRepository.findAll();
 	}
