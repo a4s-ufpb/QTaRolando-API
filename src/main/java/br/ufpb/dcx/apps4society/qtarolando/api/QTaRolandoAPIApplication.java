@@ -1,7 +1,9 @@
 package br.ufpb.dcx.apps4society.qtarolando.api;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
+import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +13,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.time.LocalDateTime;
 
 @Controller
 @SpringBootApplication

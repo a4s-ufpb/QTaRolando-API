@@ -3,7 +3,7 @@ package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
-import lombok.RequiredArgsConstructor;
+import br.ufpb.dcx.apps4society.qtarolando.api.wrapper.PageableResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
@@ -102,7 +103,7 @@ class EventControllerIT {
     }
 
     @Test
-    @DisplayName("getEventsByTitleContaining returns a list a of event with the letters specified when successful")
+    @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successful")
     public void getEventsByTitleContaining_ShouldReturnListOfEvent() {
         Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
         Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
@@ -232,21 +233,42 @@ class EventControllerIT {
         eventRepository.delete(savedEvent);
     }
 
+    @DisplayName("shouldFindEventsPaginados return the elements in the first page")
     @Test
     public void shouldFindEventsPaginados() {
-//        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-//
-//        ResponseEntity<Page<Event>> eventPage = testRestTemplate.exchange("/api/events/page", HttpMethod.GET, null,
-//                new ParameterizedTypeReference<ResponseEntity<Page<Event>>>() {
-//                }).getBody();
 
+        List<Event> events = new ArrayList<>();
+        int quantiEvent = 11;
+        int pageLength = 5;
+        int expectedTotalPages = 3;
+        String url = "/api/events/page?size=" + pageLength;
 
-//        Assertions.assertThat(eventPage).isNotNull();
-//        Assertions.assertThat(eventPage.toList())
-//                .isNotEmpty()
-//                .hasSize(1);
-//        Assertions.assertThat(eventPage.toList().get(0).getTitle()).isEqualTo(savedEvent.getTitle());
+        for (int i = 0; i < quantiEvent; i++) {
+            events.add(EventCreator.defaultEvent());
+        }
+        eventRepository.saveAll(events);
 
+        PageableResponse<Event> eventPage = testRestTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<PageableResponse<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(eventPage).isNotNull();
+
+        //verify if length of eventPage is equal to ONE page
+        Assertions.assertThat(eventPage.getNumberOfElements())
+                .isEqualTo(pageLength);
+
+        Assertions.assertThat(eventPage.toList().get(0).getTitle())
+                .isEqualTo(events.get(0).getTitle());
+
+        Assertions.assertThat(eventPage.toList().get(0).getId())
+                .isNotEqualTo(events.get(1).getId());
+
+        Assertions.assertThat(eventPage.getTotalPages())
+                .isNotNull()
+                .isEqualTo(expectedTotalPages);
+
+        eventRepository.deleteAll();
     }
 
     @Test
