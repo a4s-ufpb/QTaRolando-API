@@ -31,7 +31,7 @@ public class EventService {
 	@Autowired
 	private UserAccountService userAccountService;
 
-	public Page<Event> listAll(Pageable pageable) {
+	public Page<Event> listAllUsingPage(Pageable pageable) {
 		return eventRepository.findAll(pageable);
 	}
 
@@ -118,16 +118,4 @@ public class EventService {
 
 	}
 
-	public Page<Event> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		UserPrincipal user = userAccountService.getUserAuthenticated();
-		if (user == null) {
-			throw new AuthorizationException("Acesso negado");
-		}
-		Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
-		UserAccount userAccount = userAccountService.find(user.getId());
-
-		Page<Event> eventsPage = eventRepository.findByUserAccount(pageable, userAccount);
-
-		return eventsPage;
-	}
 }

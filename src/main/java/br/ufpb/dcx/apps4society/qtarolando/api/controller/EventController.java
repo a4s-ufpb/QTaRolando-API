@@ -22,7 +22,7 @@ public class EventController {
 
 	@GetMapping("/page")
 	public ResponseEntity<Page<Event>> list(Pageable pageable){
-		return ResponseEntity.ok(eventService.listAll(pageable));
+		return ResponseEntity.ok(eventService.listAllUsingPage(pageable));
 	}
 
 	@GetMapping
@@ -74,13 +74,5 @@ public class EventController {
 		eventService.deleteEvent(id);
 	}
 
-//	@GetMapping(value = "/page")
-//	public ResponseEntity<Page<Event>> findPage(
-//			@RequestParam(value = "page", defaultValue = "0") Integer page,
-//			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
-//			@RequestParam(value = "orderBy", defaultValue = "categoryId") String orderBy,
-//			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
-//		Page<Event> list = eventService.findPage(page, linesPerPage, orderBy, direction);
-//		return ResponseEntity.ok().body(list);
-//	}
+
 }

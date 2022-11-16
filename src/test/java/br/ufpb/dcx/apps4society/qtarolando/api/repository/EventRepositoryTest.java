@@ -3,8 +3,10 @@ package br.ufpb.dcx.apps4society.qtarolando.api.repository;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
 import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +28,36 @@ public class EventRepositoryTest {
         assertNotEquals("", savedEvent.getTitle());
         assertEquals(savedEvent.getTitle(), event.getTitle());
         assertEquals(savedEvent.getId(), event.getId());
+    }
+
+    @Test
+    void save_ThrowsDataIntegrityViolationException_whenDescriptionIsBigThan2000(){
+        StringBuilder description = new StringBuilder();
+        int descriptionLenght = 2001;
+        for(int i = 0; i < descriptionLenght; i++){
+            description.append("a");
+        }
+
+        Event event = EventCreator.customizedEvent("Praia", "subtitle",1, description.toString(),
+                "2022-09-20T19:00:00", "2022-09-27T16:00:00", "imagePath", 1, "location",
+				"phone", "site");
+
+        Assertions.assertThatThrownBy(() -> this.eventRepository.save(event))
+                .isInstanceOf(DataIntegrityViolationException.class);
+
+    }
+
+    @Test
+    void save_updatesEvent(){
+        Event event = EventCreator.customizedEventTitle("Praça");
+        Event savedEvent = eventRepository.save(event);
+
+        savedEvent.setTitle("Passeio");
+        Event updatedEvent = eventRepository.save(savedEvent);
+
+        assertNotNull(savedEvent);
+        assertEquals(updatedEvent.getId(), event.getId());
+        assertEquals(updatedEvent.getTitle(), savedEvent.getTitle());
     }
 
     @Test
