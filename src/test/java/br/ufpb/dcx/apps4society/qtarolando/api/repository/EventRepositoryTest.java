@@ -2,9 +2,12 @@ package br.ufpb.dcx.apps4society.qtarolando.api.repository;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
-import org.junit.jupiter.api.Test;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -13,15 +16,36 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+@DataJpaTest()
 public class EventRepositoryTest {
 
     @Autowired
     private EventRepository eventRepository;
 
+    @BeforeEach
+    void setUp(){
+        eventRepository.deleteAll();
+    }
+
     @Test
     void save_persistEvent(){
-        Event event = EventCreator.defaultEvent();
+
+        LocalDateTime initialDate = LocalDateTime.parse("2022-09-20T19:00:00");
+        LocalDateTime finalDate = LocalDateTime.parse("2022-09-27T16:00:00");
+
+        Event event = new Event();
+        event.setTitle("Praia");
+        event.setSubtitle("subtitle");
+        event.setCategoryId(1);
+        event.setDescription("description");
+        event.setInitialDate(initialDate);
+        event.setFinalDate(finalDate);
+        event.setImagePath("imagePath");
+        event.setLocation("location");
+        event.setPhone("phone");
+        event.setSite("site");
+
+
         Event savedEvent = eventRepository.save(event);
 
         assertNotNull(savedEvent);

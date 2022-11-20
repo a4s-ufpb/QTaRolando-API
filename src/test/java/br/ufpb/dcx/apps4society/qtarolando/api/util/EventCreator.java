@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.util;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,12 @@ public class EventCreator {
     private static final String phone = "phone";
     private static final String site = "site";
 
+
+    public static EventDTO defaultEventDTO(){
+        return new EventDTO(title, subtitle, categoryId, description,
+                initialDate, finalDate, imagePath, eventModality, location,
+                phone, site);
+    }
 
     public static Event defaultEvent() {
         return new Event(title, subtitle, categoryId, description,

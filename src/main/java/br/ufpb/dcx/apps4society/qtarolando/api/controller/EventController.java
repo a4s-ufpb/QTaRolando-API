@@ -21,7 +21,7 @@ public class EventController {
 	private EventService eventService;
 
 	@GetMapping("/page")
-	public ResponseEntity<Page<Event>> list(Pageable pageable){
+	public ResponseEntity<Page<Event>> listAll(Pageable pageable){
 		return ResponseEntity.ok(eventService.listAllUsingPage(pageable));
 	}
 
