@@ -196,7 +196,8 @@ public class EventControllerTest {
     void createEvent_doesNotThrowAnyException(){
         EventDTO eventDTO = EventCreator.defaultEventDTO();
 
-        Assertions.assertThatCode(() -> eventController.createEvent(eventDTO)).doesNotThrowAnyException();
+        Assertions.assertThatCode(() -> eventController.createEvent(eventDTO))
+                .doesNotThrowAnyException();
 
     }
 
@@ -205,7 +206,8 @@ public class EventControllerTest {
         EventDTO eventDTO = EventCreator.defaultEventDTO();
         int idToBeReplaced = 1;
 
-        Assertions.assertThatCode(() -> eventController.updateEvent(idToBeReplaced, eventDTO)).doesNotThrowAnyException();
+        Assertions.assertThatCode(() -> eventController.updateEvent(idToBeReplaced, eventDTO))
+                .doesNotThrowAnyException();
 
     }
 
@@ -213,7 +215,8 @@ public class EventControllerTest {
     void deleteEvent_doesNotThrowAnyException(){
         int idToBedeleted = 1;
 
-        Assertions.assertThatCode(() -> eventController.deleteEvent(idToBedeleted)).doesNotThrowAnyException();
+        Assertions.assertThatCode(() -> eventController.deleteEvent(idToBedeleted))
+                .doesNotThrowAnyException();
 
     }
 }

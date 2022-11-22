@@ -201,8 +201,11 @@ public class EventServiceTest {
     }
 
     @Test
-    void getEventsByEventModalityId_ReturnsListOfEvents(){
-        int expectedModalityId = EventCreator.defaultEvent().getEventModalityId();
+    void getEventsByEventModalityId_ReturnsListOfEventsWith_IN_PERSON_Modality(){
+        Event eventWithInPersonModality = EventCreator.defaultEvent();
+        int expectedModalityId = 1;
+        eventWithInPersonModality.setModalityId(expectedModalityId);
+
 
         List<Event> events = eventService.getEventsByEventModalityId(expectedModalityId);
 
@@ -212,6 +215,33 @@ public class EventServiceTest {
 
         Assertions.assertThat(events.get(0).getEventModalityId())
                 .isEqualTo(expectedModalityId);
+
+        Assertions.assertThat(events.get(0).getModality())
+                .isEqualTo(eventWithInPersonModality.getModality());
+    }
+
+    @Test
+    void getEventsByEventModalityId_ReturnsListOfEventsWith_REMOTE_Modality(){
+        List<Event> eventsWithRemoteModality = new ArrayList<>();
+        eventsWithRemoteModality.add(EventCreator.defaultEvent());
+        int expectedModalityId = 2;
+
+        eventsWithRemoteModality.get(0).setModalityId(expectedModalityId);
+
+        BDDMockito.when(eventRepositoryMock.findAllByEventModalityId(ArgumentMatchers.anyInt()))
+                .thenReturn(eventsWithRemoteModality);
+
+        List<Event> events = eventService.getEventsByEventModalityId(expectedModalityId);
+
+        Assertions.assertThat(events)
+                .isNotEmpty()
+                .hasSize(1);
+
+        Assertions.assertThat(events.get(0).getEventModalityId())
+                .isEqualTo(expectedModalityId);
+
+        Assertions.assertThat(events.get(0).getModality())
+                .isEqualTo(eventsWithRemoteModality.get(0).getModality());
     }
 
     @Test
