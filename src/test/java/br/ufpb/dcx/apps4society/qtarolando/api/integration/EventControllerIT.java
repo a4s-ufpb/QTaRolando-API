@@ -5,6 +5,7 @@ import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
 import br.ufpb.dcx.apps4society.qtarolando.api.wrapper.PageableResponse;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.http.HttpMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@AutoConfigureTestDatabase
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class EventControllerIT {
 
@@ -31,8 +32,13 @@ class EventControllerIT {
 //    @LocalServerPort
 //    private int localServerPort;
 
+    @BeforeEach
+    void setUp(){
+        eventRepository.deleteAll();
+    }
+
     @Test
-    public void shouldFindAllEvents() {
+    void shouldFindAllEvents() {
         Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
 
         Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle(
@@ -63,7 +69,7 @@ class EventControllerIT {
 
     @Test
     @DisplayName("getEventsByTitle returns an empty list of event when event is not found")
-    public void getEventsByTitle_ShouldReturnEmptyListOfEvent() {
+    void getEventsByTitle_ShouldReturnEmptyListOfEvent() {
         List<Event> response = testRestTemplate.exchange(
                 "/api/events/title?title=Praia", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Event>>() {
@@ -77,7 +83,7 @@ class EventControllerIT {
 
     @Test
     @DisplayName("getEventsByTitle returns a list a of event when successful")
-    public void getEventsByTitle_ShouldReturnListOfEvent() {
+    void getEventsByTitle_ShouldReturnListOfEvent() {
         Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
         Event savedEvent2 = eventRepository.save(EventCreator.defaultEvent());
 
@@ -98,13 +104,12 @@ class EventControllerIT {
                 .isNotEmpty()
                 .isEqualTo(savedEvent2.getTitle());
 
-        eventRepository.deleteAll();
 
     }
 
     @Test
     @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successful")
-    public void getEventsByTitleContaining_ShouldReturnListOfEvent() {
+    void getEventsByTitleContaining_ShouldReturnListOfEvent() {
         Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
         Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
 
@@ -130,12 +135,11 @@ class EventControllerIT {
                 .isNotEmpty()
                 .isEqualTo(savedEvent2.getTitle());
 
-        eventRepository.deleteAll();
 
     }
 
     @Test
-    public void shouldFindEventsByCategory() {
+    void shouldFindEventsByCategory() {
         Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
         Event savedEven2 = eventRepository.save(EventCreator.defaultEvent());
 
@@ -163,13 +167,12 @@ class EventControllerIT {
                 .isNotNull()
                 .isNotEqualTo(savedEven2);
 
-        eventRepository.deleteAll();
     }
 
     @Test
-    public void shouldFindEventById() {
+    void shouldFindEventById() {
         Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-        Integer expectedId = savedEvent.getId();
+        int expectedId = savedEvent.getId();
 
         Event response = testRestTemplate.getForObject("/api/events/{id}", Event.class, expectedId);
 
@@ -230,12 +233,11 @@ class EventControllerIT {
                 .isNotEmpty()
                 .isEqualTo(savedEvent.getSite());
 
-        eventRepository.delete(savedEvent);
     }
 
     @DisplayName("shouldFindEventsPaginados return the elements in the first page")
     @Test
-    public void shouldFindEventsPaginados() {
+    void shouldFindEventsPaginados() {
 
         List<Event> events = new ArrayList<>();
         int quantiEvent = 11;
@@ -267,12 +269,10 @@ class EventControllerIT {
         Assertions.assertThat(eventPage.getTotalPages())
                 .isNotNull()
                 .isEqualTo(expectedTotalPages);
-
-        eventRepository.deleteAll();
     }
 
     @Test
-    public void shouldFindEventsByPeriodo() {
+    void shouldFindEventsByPeriodo() {
 
         Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
                 "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
@@ -320,11 +320,10 @@ class EventControllerIT {
                 .isNotNull()
                 .isEqualTo(savedEvent2.getFinalDate());
 
-        eventRepository.deleteAll();
     }
 
     @Test
-    public void shouldFindOnlyOneEventByPeriodo() {
+    void shouldFindOnlyOneEventByPeriodo() {
 
         Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
                 "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
@@ -359,7 +358,6 @@ class EventControllerIT {
                 .isNotNull()
                 .isEqualTo(savedEvent2.getFinalDate());
 
-        eventRepository.deleteAll();
     }
 
 }
