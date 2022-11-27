@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.DateRangeDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
@@ -20,10 +19,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventCustomRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 
 @Service
 public class EventService {
+
+	@Autowired
+	private EventCustomRepository eventCustomRepository;
 
 	@Autowired
 	private EventRepository eventRepository;
@@ -49,15 +54,26 @@ public class EventService {
 	}
 
 	public List<Event> getEventsByTitle(String title) {
-		return eventRepository.findAllByTitle(title);
+		return eventRepository.findAllByTitle(title); 
 	}
 
 	public List<Event> getEventsByCategoryId(Integer categoryId) {
 		return eventRepository.findAllByCategoryId(categoryId);
 	}
 
-	public List<Event> getEventsByEventModalityId(Integer eventModalityId) {
-		return eventRepository.findAllByEventModalityId(eventModalityId);
+	@Transactional
+	public Page<Event> getEventsByFilter(String title, Long categoryId, String modality,String dateType, String initialDate,
+			String finalDate, Integer page, Integer pageSize) {
+		Pageable pageable = PageRequest.of(page, pageSize);
+		return eventCustomRepository.find(title, categoryId, modality, dateType, initialDate, finalDate, pageable);
+	}
+
+	public List<Event> getEventsByTitle(EventTitleDTO eventTitleDTO) {
+		return eventRepository.findAllByTitle(eventTitleDTO.getTitle());
+	}
+
+	public List<Event> getEventsByEventModality(String modality) {
+		return eventRepository.findAllByModality(modality);
 	}
 
 	public List<Event> getEventsByDateRange(String initialDate, String finalDate) {
@@ -67,19 +83,21 @@ public class EventService {
 		return eventRepository.findAllByDateRange(initialD, finalD);
 	}
 
+	@Transactional
 	public void createEvent(EventDTO eventDTO) {
 		Event newEvent = new Event(eventDTO);
 		eventRepository.save(newEvent);
 
-		UserPrincipal user = userAccountService.getUserAuthenticated();
+		UserPrincipal user = UserAccountService.getUserAuthenticated();
 
 		UserAccount userAccount = userAccountService.find(user.getId());
 		userAccount.getEvents().add(newEvent);
 		userAccountService.updateUserEvents(userAccount);
 	}
 
+	@Transactional
 	public void updateEvent(Integer id, EventDTO newEventDTO) throws ObjectNotFoundException {
-		UserPrincipal userSS = userAccountService.getUserAuthenticated();
+		UserPrincipal userSS = UserAccountService.getUserAuthenticated();
 		if (userSS == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
@@ -98,9 +116,9 @@ public class EventService {
 		}
 	}
 
-	/** */
+	@Transactional
 	public void deleteEvent(Integer id) throws ObjectNotFoundException {
-		UserPrincipal userSS = userAccountService.getUserAuthenticated();
+		UserPrincipal userSS = UserAccountService.getUserAuthenticated();
 		if (userSS == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
@@ -119,7 +137,7 @@ public class EventService {
 	}
 
 	public Page<Event> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		UserPrincipal user = userAccountService.getUserAuthenticated();
+		UserPrincipal user = UserAccountService.getUserAuthenticated();
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
