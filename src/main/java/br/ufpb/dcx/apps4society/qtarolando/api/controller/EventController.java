@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = "*")
 public class EventController {
 
 	@Autowired
 	private EventService eventService;
 
 	@GetMapping("/page")
-	public ResponseEntity<Page<Event>> list(Pageable pageable){
+	public ResponseEntity<Page<Event>> list(Pageable pageable) {
 		return ResponseEntity.ok(eventService.listAll(pageable));
 	}
 
@@ -39,7 +39,7 @@ public class EventController {
 	public List<Event> getEventsByCategoryId(@PathVariable("categoryId") Integer categoryId) {
 		return eventService.getEventsByCategoryId(categoryId);
 	}
-	
+
 	@GetMapping("/filter")
 	public Page<Event> getEventsByFilter(
 			@RequestParam(value = "title", required = false) String title,
@@ -50,7 +50,8 @@ public class EventController {
 			@RequestParam(value = "finalDate", required = false) String finalDate,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize) {
-		return eventService.getEventsByFilter(title, categoryId, modality, dateType, initialDate, finalDate, page, pageSize);
+		return eventService.getEventsByFilter(title, categoryId, modality, dateType, initialDate, finalDate, page,
+				pageSize);
 	}
 
 	@GetMapping("/title")
@@ -65,7 +66,7 @@ public class EventController {
 
 	@GetMapping("/byDateInterval")
 	public List<Event> getEventsByDateRange(@RequestParam("initialDate") String initialDate,
-											@RequestParam("finalDate")   String finalDate) {
+			@RequestParam("finalDate") String finalDate) {
 
 		return eventService.getEventsByDateRange(initialDate, finalDate);
 	}
@@ -87,13 +88,4 @@ public class EventController {
 		eventService.deleteEvent(id);
 	}
 
-//	@GetMapping(value = "/page")
-//	public ResponseEntity<Page<Event>> findPage(
-//			@RequestParam(value = "page", defaultValue = "0") Integer page,
-//			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
-//			@RequestParam(value = "orderBy", defaultValue = "categoryId") String orderBy,
-//			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
-//		Page<Event> list = eventService.findPage(page, linesPerPage, orderBy, direction);
-//		return ResponseEntity.ok().body(list);
-//	}
 }
