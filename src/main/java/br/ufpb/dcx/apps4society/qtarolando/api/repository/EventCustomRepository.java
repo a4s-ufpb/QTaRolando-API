@@ -95,7 +95,7 @@ public class EventCustomRepository {
     }
 
     if (modality != null && modality != "") {
-      typedQuery.setParameter("modality", modality);
+      typedQuery.setParameter("modality", modality.toUpperCase());
     }
 
     if (dateType != null) {
