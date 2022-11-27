@@ -1,365 +1,365 @@
-package br.ufpb.dcx.apps4society.qtarolando.api.integration;
-
-import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
-import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
-import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
-import br.ufpb.dcx.apps4society.qtarolando.api.wrapper.PageableResponse;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class EventControllerIT {
-
-    @Autowired
-    private TestRestTemplate testRestTemplate;
-
-    @Autowired
-    private EventRepository eventRepository;
-
-//    Caso queria saber em qual porta o teste está rodando
-//    @LocalServerPort
-//    private int localServerPort;
-
-    @Test
-    public void shouldFindAllEvents() {
-        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-
-        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle(
-                "Praça"));
-
-        List<Event> response = testRestTemplate.exchange("/api/events", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
-
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(2);
-
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isEqualTo(savedEvent.getTitle());
-
-        Assertions.assertThat(response.get(0).getId())
-                .isNotNull()
-                .isNotEqualTo(savedEvent2.getId());
-
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isNotEqualTo(savedEvent2.getTitle());
-
-    }
-
-    @Test
-    @DisplayName("getEventsByTitle returns an empty list of event when event is not found")
-    public void getEventsByTitle_ShouldReturnEmptyListOfEvent() {
-        List<Event> response = testRestTemplate.exchange(
-                "/api/events/title?title=Praia", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
-
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isEmpty();
-
-    }
-
-    @Test
-    @DisplayName("getEventsByTitle returns a list a of event when successful")
-    public void getEventsByTitle_ShouldReturnListOfEvent() {
-        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-        Event savedEvent2 = eventRepository.save(EventCreator.defaultEvent());
-
-        String title = savedEvent2.getTitle();
-
-        List<Event> response = testRestTemplate.exchange(
-                "/api/events/title?title=" + title, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
-
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(2);
-
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent2.getTitle());
-
-        eventRepository.deleteAll();
+// package br.ufpb.dcx.apps4society.qtarolando.api.integration;
+
+// import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
+// import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
+// import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
+// import br.ufpb.dcx.apps4society.qtarolando.api.wrapper.PageableResponse;
+// import org.assertj.core.api.Assertions;
+// import org.junit.jupiter.api.DisplayName;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.boot.test.web.client.TestRestTemplate;
+// import org.springframework.core.ParameterizedTypeReference;
+// import org.springframework.http.HttpMethod;
+
+// import java.util.ArrayList;
+// import java.util.List;
+
+// @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+// class EventControllerI
+
+           @Autowi
+           private TestRestTemplate testRestTempla
+
+           @Autowi
+           private EventRepository eventReposito
+
+        //    Caso queria saber em qual porta o teste está roda
+        //    @LocalServerP
+        //    private int localServerPo
+
+           @T
+           public void shouldFindAllEvents(
+                   Event savedEvent = eventRepository.save(EventCreator.defaultEvent(
+
+                   Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTit
+                                   "Praça"
+
+                   List<Event> response = testRestTemplate.exchange("/api/events", HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<List<Event>>(
+                                   }).getBody
+
+                   Assertions.assertThat(respon
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .hasSize(
+
+                   Assertions.assertThat(response.get(0).getTitle
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getTitle(
+
+                   Assertions.assertThat(response.get(0).getId
+                                   .isNotNul
+                                   .isNotEqualTo(savedEvent2.getId(
+
+                   Assertions.assertThat(response.get(0).getTitle
+                                   .isNotNul
+                                   .isNotEqualTo(savedEvent2.getTitle(
+
+         
+
+           @T
+           @DisplayName("getEventsByTitle returns an empty list of event when event is not foun
+           public void getEventsByTitle_ShouldReturnEmptyListOfEvent(
+                   List<Event> response = testRestTemplate.exchan
+                                   "/api/events/title?title=Praia", HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<List<Event>>(
+                                   }).getBody
+
+                   Assertions.assertThat(respon
+                                   .isNotNul
+                                   .isEmpty
+
+         
+
+           @T
+           @DisplayName("getEventsByTitle returns a list a of event when successfu
+           public void getEventsByTitle_ShouldReturnListOfEvent(
+                   Event savedEvent = eventRepository.save(EventCreator.defaultEvent(
+                   Event savedEvent2 = eventRepository.save(EventCreator.defaultEvent(
+
+                   String title = savedEvent2.getTitle
+
+                   List<Event> response = testRestTemplate.exchan
+                                   "/api/events/title?title=" + title, HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<List<Event>>(
+                                   }).getBody
+
+                   Assertions.assertThat(respon
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .hasSize(
+
+                   Assertions.assertThat(response.get(0).getTitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent2.getTitle(
+
+                   eventRepository.deleteAll
 
-    }
+         
 
-    @Test
-    @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successful")
-    public void getEventsByTitleContaining_ShouldReturnListOfEvent() {
-        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
-        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
+           @T
+           @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successfu
+           public void getEventsByTitleContaining_ShouldReturnListOfEvent(
+                   Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"
+                   Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"
 
-        String letters = "Pra";
+                   String letters = "Pr
 
-        List<Event> response = testRestTemplate.exchange(
-                "/api/events/title?title=" + letters, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
+                   List<Event> response = testRestTemplate.exchan
+                                   "/api/events/title?title=" + letters, HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<List<Event>>(
+                                   }).getBody
 
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(2);
-
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getTitle());
-
-        Assertions.assertThat(response.get(1).getTitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent2.getTitle());
-
-        eventRepository.deleteAll();
-
-    }
+                   Assertions.assertThat(respon
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .hasSize(
+
+                   Assertions.assertThat(response.get(0).getTitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getTitle(
+
+                   Assertions.assertThat(response.get(1).getTitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent2.getTitle(
+
+                   eventRepository.deleteAll
+
+         
 
-    @Test
-    public void shouldFindEventsByCategory() {
-        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-        Event savedEven2 = eventRepository.save(EventCreator.defaultEvent());
+           @T
+           public void shouldFindEventsByCategory(
+                   Event savedEvent = eventRepository.save(EventCreator.defaultEvent(
+                   Event savedEven2 = eventRepository.save(EventCreator.defaultEvent(
 
-        int expectedCategory = savedEvent.getCategoryId();
-        String url = "/api/events/category/" + expectedCategory;
-
-        List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
-
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(2);
-
-        Assertions.assertThat(response.get(0).getCategoryId())
-                .isNotNull()
-                .isEqualTo(expectedCategory);
+                   int expectedCategory = savedEvent.getCategoryId
+                   String url = "/api/events/category/" + expectedCatego
+
+                   List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<List<Event>>(
+                                   }).getBody
+
+                   Assertions.assertThat(respon
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .hasSize(
+
+                   Assertions.assertThat(response.get(0).getCategoryId
+                                   .isNotNul
+                                   .isEqualTo(expectedCategor
 
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isEqualTo(savedEvent.getTitle());
+                   Assertions.assertThat(response.get(0).getTitle
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getTitle(
 
-        Assertions.assertThat(response.get(1).getCategoryId())
-                .isNotNull()
-                .isNotEqualTo(savedEven2);
+                   Assertions.assertThat(response.get(1).getCategoryId
+                                   .isNotNul
+                                   .isNotEqualTo(savedEven
 
-        eventRepository.deleteAll();
-    }
+                   eventRepository.deleteAll
+         
 
-    @Test
-    public void shouldFindEventById() {
-        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-        Integer expectedId = savedEvent.getId();
+           @T
+           public void shouldFindEventById(
+                   Event savedEvent = eventRepository.save(EventCreator.defaultEvent(
+                   Integer expectedId = savedEvent.getId
 
-        Event response = testRestTemplate.getForObject("/api/events/{id}", Event.class, expectedId);
+                   Event response = testRestTemplate.getForObject("/api/events/{id}", Event.class, expectedI
 
-        Assertions.assertThat(response).isNotNull();
+                   Assertions.assertThat(response).isNotNull
 
-        Assertions.assertThat(response.getId())
-                .isNotNull()
-                .isEqualTo(savedEvent.getId());
+                   Assertions.assertThat(response.getId
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getId(
 
-        Assertions.assertThat(response.getTitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getTitle());
+                   Assertions.assertThat(response.getTitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getTitle(
 
-        Assertions.assertThat(response.getSubtitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getSubtitle());
+                   Assertions.assertThat(response.getSubtitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getSubtitle(
 
-        Assertions.assertThat(response.getCategoryId())
-                .isNotNull()
-                .isEqualTo(savedEvent.getCategoryId());
+                   Assertions.assertThat(response.getCategoryId
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getCategoryId(
 
-        Assertions.assertThat(response.getDescription())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getDescription());
+                   Assertions.assertThat(response.getDescription
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getDescription(
 
-        Assertions.assertThat(response.getInitialDate())
-                .isNotNull()
-                .isEqualTo(savedEvent.getInitialDate());
+                   Assertions.assertThat(response.getInitialDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getInitialDate(
 
-        Assertions.assertThat(response.getFinalDate())
-                .isNotNull()
-                .isEqualTo(savedEvent.getFinalDate());
+                   Assertions.assertThat(response.getFinalDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getFinalDate(
 
-        Assertions.assertThat(response.getImagePath())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getImagePath());
+                   Assertions.assertThat(response.getImagePath
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getImagePath(
 
-        Assertions.assertThat(response.getEventModalityId())
-                .isNotNull()
-                .isEqualTo(savedEvent.getEventModalityId());
+                   Assertions.assertThat(response.getEventModalityId
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getEventModalityId(
 
-        Assertions.assertThat(response.getLocation())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getLocation());
-
-        Assertions.assertThat(response.getPhone())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getPhone());
+                   Assertions.assertThat(response.getLocation
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getLocation(
+
+                   Assertions.assertThat(response.getPhone
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getPhone(
 
-        Assertions.assertThat(response.getSite())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo(savedEvent.getSite());
+                   Assertions.assertThat(response.getSite
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo(savedEvent.getSite(
 
-        eventRepository.delete(savedEvent);
-    }
+                   eventRepository.delete(savedEven
+         
 
-    @DisplayName("shouldFindEventsPaginados return the elements in the first page")
-    @Test
-    public void shouldFindEventsPaginados() {
+           @DisplayName("shouldFindEventsPaginados return the elements in the first pag
+           @T
+           public void shouldFindEventsPaginados(
 
-        List<Event> events = new ArrayList<>();
-        int quantiEvent = 11;
-        int pageLength = 5;
-        int expectedTotalPages = 3;
-        String url = "/api/events/page?size=" + pageLength;
+                   List<Event> events = new ArrayList<>
+                   int quantiEvent = 
+                   int pageLength =
+                   int expectedTotalPages =
+                   String url = "/api/events/page?size=" + pageLeng
 
-        for (int i = 0; i < quantiEvent; i++) {
-            events.add(EventCreator.defaultEvent());
-        }
-        eventRepository.saveAll(events);
+                   for (int i = 0; i < quantiEvent; i++
+                           events.add(EventCreator.defaultEvent(
+                 
+                   eventRepository.saveAll(event
 
-        PageableResponse<Event> eventPage = testRestTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<PageableResponse<Event>>() {
-                }).getBody();
+                   PageableResponse<Event> eventPage = testRestTemplate.exchange(url, HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<PageableResponse<Event>>(
+                                   }).getBody
 
-        Assertions.assertThat(eventPage).isNotNull();
+                   Assertions.assertThat(eventPage).isNotNull
 
-        //verify if length of eventPage is equal to ONE page
-        Assertions.assertThat(eventPage.getNumberOfElements())
-                .isEqualTo(pageLength);
+                    //verify if length of eventPage is equal to ONE p
+                   Assertions.assertThat(eventPage.getNumberOfElements
+                                   .isEqualTo(pageLengt
 
-        Assertions.assertThat(eventPage.toList().get(0).getTitle())
-                .isEqualTo(events.get(0).getTitle());
+                   Assertions.assertThat(eventPage.toList().get(0).getTitle
+                                   .isEqualTo(events.get(0).getTitle(
 
-        Assertions.assertThat(eventPage.toList().get(0).getId())
-                .isNotEqualTo(events.get(1).getId());
+                   Assertions.assertThat(eventPage.toList().get(0).getId
+                                   .isNotEqualTo(events.get(1).getId(
 
-        Assertions.assertThat(eventPage.getTotalPages())
-                .isNotNull()
-                .isEqualTo(expectedTotalPages);
+                   Assertions.assertThat(eventPage.getTotalPages
+                                   .isNotNul
+                                   .isEqualTo(expectedTotalPage
 
-        eventRepository.deleteAll();
-    }
+                   eventRepository.deleteAll
+         
 
-    @Test
-    public void shouldFindEventsByPeriodo() {
+           @T
+           public void shouldFindEventsByPeriodo(
 
-        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
+                   Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDa
+                                   "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"
 
-        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-                "Passeio Turisco", "2022-08-20T09:00:00", "2022-08-21T19:00:00"));
+                   Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDa
+                                   "Passeio Turisco", "2022-08-20T09:00:00", "2022-08-21T19:00:00"
 
-        String initialDateExpected = "2022-08-20T09:00:00";
-        String finalDateExpected = "2022-12-20T19:00:00";
-        String url = "/api/events/byDateInterval?initialDate=" + initialDateExpected
-                + "&finalDate=" + finalDateExpected;
+                   String initialDateExpected = "2022-08-20T09:00:0
+                   String finalDateExpected = "2022-12-20T19:00:0
+                   String url = "/api/events/byDateInterval?initialDate=" + initialDateExpec
+                                   + "&finalDate=" + finalDateExpect
 
-        List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
+                   List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<List<Event>>(
+                                   }).getBody
 
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(2);
+                   Assertions.assertThat(respon
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .hasSize(
 
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo("Circo");
+                   Assertions.assertThat(response.get(0).getTitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo("Circo
 
-        Assertions.assertThat(response.get(0).getInitialDate())
-                .isNotNull()
-                .isEqualTo(savedEvent.getInitialDate());
+                   Assertions.assertThat(response.get(0).getInitialDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getInitialDate(
 
-        Assertions.assertThat(response.get(0).getFinalDate())
-                .isNotNull()
-                .isEqualTo(savedEvent.getFinalDate());
+                   Assertions.assertThat(response.get(0).getFinalDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent.getFinalDate(
 
-        Assertions.assertThat(response.get(1).getTitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo("Passeio Turisco");
+                   Assertions.assertThat(response.get(1).getTitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo("Passeio Turisco
 
-        Assertions.assertThat(response.get(1).getInitialDate())
-                .isNotNull()
-                .isEqualTo(savedEvent2.getInitialDate());
+                   Assertions.assertThat(response.get(1).getInitialDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent2.getInitialDate(
 
-        Assertions.assertThat(response.get(1).getFinalDate())
-                .isNotNull()
-                .isEqualTo(savedEvent2.getFinalDate());
+                   Assertions.assertThat(response.get(1).getFinalDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent2.getFinalDate(
 
-        eventRepository.deleteAll();
-    }
+                   eventRepository.deleteAll
+         
 
-    @Test
-    public void shouldFindOnlyOneEventByPeriodo() {
+           @T
+           public void shouldFindOnlyOneEventByPeriodo(
 
-        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
+                   Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDa
+                                   "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"
 
-        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-                "Passeio Turisco", "2022-08-20T09:00:00", "2022-08-21T19:00:00"));
+                   Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDa
+                                   "Passeio Turisco", "2022-08-20T09:00:00", "2022-08-21T19:00:00"
 
-        String initialDateExpected = "2022-08-20T09:00:00";
-        String finalDateExpected = "2022-08-21T19:00:00";
-        String url = "/api/events/byDateInterval?initialDate=" + initialDateExpected
-                + "&finalDate=" + finalDateExpected;
+                   String initialDateExpected = "2022-08-20T09:00:0
+                   String finalDateExpected = "2022-08-21T19:00:0
+                   String url = "/api/events/byDateInterval?initialDate=" + initialDateExpec
+                                   + "&finalDate=" + finalDateExpect
 
-        List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
+                   List<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, nu
+                                   new ParameterizedTypeReference<List<Event>>(
+                                   }).getBody
 
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
+                   Assertions.assertThat(respon
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .hasSize(
 
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo("Passeio Turisco");
+                   Assertions.assertThat(response.get(0).getTitle
+                                   .isNotNul
+                                   .isNotEmpt
+                                   .isEqualTo("Passeio Turisco
 
-        Assertions.assertThat(response.get(0).getInitialDate())
-                .isNotNull()
-                .isEqualTo(savedEvent2.getInitialDate());
+                   Assertions.assertThat(response.get(0).getInitialDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent2.getInitialDate(
 
-        Assertions.assertThat(response.get(0).getFinalDate())
-                .isNotNull()
-                .isEqualTo(savedEvent2.getFinalDate());
+                   Assertions.assertThat(response.get(0).getFinalDate
+                                   .isNotNul
+                                   .isEqualTo(savedEvent2.getFinalDate(
 
-        eventRepository.deleteAll();
-    }
+                   eventRepository.deleteAll
+           }
 
-}
+// }
