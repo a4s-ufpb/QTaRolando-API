@@ -1,7 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
