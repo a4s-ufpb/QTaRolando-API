@@ -2,8 +2,8 @@ package br.ufpb.dcx.apps4society.qtarolando.api.model.enums;
 
 public enum EventModality {
 
-    IN_PERSON(1, "IN_PERSON"),
-    REMOTE(2, "REMOTE");
+    PRESENCIAL(1, "PRESENCIAL"),
+    ONLINE(2, "ONLINE");
 
     private int cod;
     private String description;
@@ -17,33 +17,33 @@ public enum EventModality {
         return cod;
     }
 
-    public String getDescription () {
+    public String getDescription() {
         return description;
     }
 
-    public static EventModality toEnum(Integer cod) {
+    public static EventModality toEnum(String description) {
 
-        if (cod == null) {
+        if (description == null) {
             return null;
         }
 
         for (EventModality eventModality : EventModality.values()) {
-            if (cod.equals(eventModality.getCod())) {
+            if (description.equals(eventModality.getDescription())) {
                 return eventModality;
             }
         }
 
-        throw new IllegalArgumentException("Id inválido: " + cod);
+        throw new IllegalArgumentException("Enum inválido: " + description);
     }
 
-    public static Integer validate(Integer cod){
+    public static String validate(String description) {
         for (EventModality eventModality : EventModality.values()) {
-            if (cod.equals(eventModality.getCod())) {
-                return cod;
+            if (description.equals(eventModality.getDescription())) {
+                return description;
             }
         }
 
-        throw new IllegalArgumentException("Id inválido: " + cod);
+        throw new IllegalArgumentException("Enum inválido: " + description);
     }
 
 }
