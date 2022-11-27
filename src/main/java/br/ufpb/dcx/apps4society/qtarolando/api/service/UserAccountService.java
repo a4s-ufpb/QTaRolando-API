@@ -62,6 +62,7 @@ public class UserAccountService {
         return obj;
     }
 
+    @Transactional
     public UserAccount update(UserAccount obj) {
         UserAccount newObj = find(obj.getId());
         updateData(newObj, obj);
