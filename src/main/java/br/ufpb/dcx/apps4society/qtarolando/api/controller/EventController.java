@@ -72,6 +72,7 @@ public class EventController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 	public void createEvent(@RequestBody EventDTO eventDTO) {
 		eventService.createEvent(eventDTO);
 	}
