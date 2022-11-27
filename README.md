@@ -14,18 +14,33 @@ Após rodar o último comando, o spring iniciará vários processos, incluindo o
 Endereço da aplicação: ```http://localhost:8080/```
 
 ## Métodos de Requisição HTTP
+### Métodos para eventos:
+| Método |                Path                |
+|:------:|:----------------------------------:|
+|   GET  |          /api/events         |
+|   GET  |          /api/events/page?page=&linesPerPage=&orderBy=&direction=  
+|   GET  |          /api/events/{id}   |
+|   GET  |          /api/events/category/{id}   |
+|  POST  |           /api/events           |
+|   PUT  |          /api/events/{id}          |
+| DELETE |              /api/events/{id}             |
+
+### Métodos para usuários:
 
 | Método |                Path                |
 |:------:|:----------------------------------:|
-|   GET  |          /api/listar-todos         |
-|   GET  |          /api/evento/{id}          |
-|  POST  |           /api/cadastrar           |
-|   PUT  |          /api/evento/{id}          |
-| DELETE |              /api/{id}             |
-
+|  GET  |          /api/users/{id}         |
+|  GET  |          /api/users/email?value=         |
+|  GET  |          /api/users         |
+|  GET  |          /api/users/page?page=&linesPerPage=&orderBy=&direction=         |
+|  POST  |           /api/users/token         |
+|  POST  |           /api/users         |
+|  PUT  |          /api/users/{id}          |
+| PATCH  |          /api/users/password         |
+| DELETE |              /api/users/{id}             |
 ## Tecnologias Usadas
 
 - Java 8 
 - Apache Maven 3.6.3
 - Spring Boot 4
-- PostgreSQL 12.3
+- H2 Database ```localhost:8080/h2-console/```
