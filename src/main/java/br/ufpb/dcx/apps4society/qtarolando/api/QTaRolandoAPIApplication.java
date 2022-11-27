@@ -1,20 +1,20 @@
 package br.ufpb.dcx.apps4society.qtarolando.api;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Category;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Categories;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
-import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.repository.CategoryRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Controller
 @SpringBootApplication
@@ -27,7 +27,7 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 //	EventRepository eventRepository;
 
 	@Autowired
-	private Environment env;
+	CategoryRepository categoryRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(QTaRolandoAPIApplication.class, args);
@@ -50,27 +50,17 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 		if (!roleRepository.findByName(role_user.getName()).isPresent()) {
 			roleRepository.save(role_user);
 		}
-		// if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
-		// }
 
+		seedCategoryTable();
+	}
 
-//      cadastrando um evento para testes no Postman
+	private void seedCategoryTable() {
+		for (Categories category : Arrays.asList(Categories.values())) {
+			Category temp = new Category(category.getCod(), category.getName());
 
-//		LocalDateTime initialDate = LocalDateTime.parse("2022-09-20T19:00:00");
-//		LocalDateTime finalDate = LocalDateTime.parse("2022-09-27T16:00:00");
-//		LocalDateTime finalDate2 = LocalDateTime.parse("2022-10-27T16:00:00");
-//
-//		Event event = new Event("Praia", "subtitle",1, "description",
-//				initialDate, finalDate, "imagePath", 1, "location",
-//				"phone", "site");
-//
-//		Event event2 = new Event("Passeio turisco", "subtitle",1, "description",
-//				finalDate, finalDate2, "imagePath", 1, "location",
-//				"phone", "site");
-//
-//		eventRepository.save(event);
-//		eventRepository.save(event2);
-
-
+			if (!categoryRepository.findById(temp.getId()).isPresent()) {
+				categoryRepository.save(temp);
+			}
+		}
 	}
 }
