@@ -39,6 +39,19 @@ public class EventController {
 	public List<Event> getEventsByCategoryId(@PathVariable("categoryId") Integer categoryId) {
 		return eventService.getEventsByCategoryId(categoryId);
 	}
+	
+	@GetMapping("/filter")
+	public Page<Event> getEventsByFilter(
+			@RequestParam(value = "title", required = false) String title,
+			@RequestParam(value = "categoryId", required = false) Long categoryId,
+			@RequestParam(value = "modality", required = false) String modality,
+			@RequestParam(value = "dateType", required = false) String dateType,
+			@RequestParam(value = "initialDate", required = false) String initialDate,
+			@RequestParam(value = "finalDate", required = false) String finalDate,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize) {
+		return eventService.getEventsByFilter(title, categoryId, modality, dateType, initialDate, finalDate, page, pageSize);
+	}
 
 	@GetMapping("/title")
 	public List<Event> getEventsByTitle(@RequestParam String title) {
@@ -46,8 +59,8 @@ public class EventController {
 	}
 
 	@GetMapping("/eventModalityId/{eventModalityId}")
-	public List<Event> getEventsByModality(@PathVariable("eventModalityId") Integer eventModalityId) {
-		return eventService.getEventsByEventModalityId(eventModalityId);
+	public List<Event> getEventsByModality(@PathVariable("modality") String modality) {
+		return eventService.getEventsByEventModality(modality);
 	}
 
 	@GetMapping("/byDateInterval")
