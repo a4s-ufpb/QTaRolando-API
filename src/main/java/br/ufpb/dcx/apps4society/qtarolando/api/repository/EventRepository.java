@@ -1,6 +1,5 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.repository;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import org.springframework.data.domain.Page;
