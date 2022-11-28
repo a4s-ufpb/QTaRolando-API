@@ -54,7 +54,7 @@ public class EventService {
 	}
 
 	public List<Event> getEventsByTitle(String title) {
-		return eventRepository.findAllByTitle(title); 
+		return eventRepository.findAllByTitle(title);
 	}
 
 	public List<Event> getEventsByCategoryId(Integer categoryId) {
@@ -62,7 +62,8 @@ public class EventService {
 	}
 
 	@Transactional
-	public Page<Event> getEventsByFilter(String title, Long categoryId, String modality,String dateType, String initialDate,
+	public Page<Event> getEventsByFilter(String title, Long categoryId, String modality, String dateType,
+			String initialDate,
 			String finalDate, Integer page, Integer pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
 		return eventCustomRepository.find(title, categoryId, modality, dateType, initialDate, finalDate, pageable);
