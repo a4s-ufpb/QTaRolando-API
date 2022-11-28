@@ -64,7 +64,6 @@ public class AuthController {
 
   @PostMapping(value = "/signup")
   public ResponseEntity<Void> signUp(@Valid @RequestBody UserAccountNewDTO objDto) {
-    System.out.println(objDto.getPassword());
     service.insert(objDto);
     return ResponseEntity.ok().build();
   }
