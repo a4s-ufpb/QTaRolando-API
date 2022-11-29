@@ -53,13 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private static final String[] PUBLIC_MATCHERS_GET = {
-            "/api/events",
-            "/api/events/",
-            "/api/events/{id}",
-            "/api/events/category/{categoryId}",
-            "/api/events/title",
-            "/api/events/eventModalityId/{eventModalityId}",
-            "/data"
+            "/api/events/**",
     };
 
     private static final String[] PUBLIC_MATCHERS_POST = {
@@ -76,7 +70,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .formLogin().disable().httpBasic().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers(PUBLIC_MATCHERS).permitAll()
                 .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
                 .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
