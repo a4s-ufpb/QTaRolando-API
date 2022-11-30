@@ -58,8 +58,6 @@ public class UserAccountService {
         }
         UserAccount obj = fromDTO(objDto);
         obj.setId(null);
-        // TODO: Atualmente todos são ADMIN, futuramente deve ser ajustado
-        obj.addRole(new Role(Roles.ADMIN.getCod(), Roles.ADMIN.getDescription()));
         obj = userRepository.save(obj);
         return obj;
     }
