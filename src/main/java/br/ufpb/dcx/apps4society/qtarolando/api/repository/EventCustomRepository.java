@@ -22,14 +22,19 @@ public class EventCustomRepository {
   @Autowired
   private EntityManager em;
 
-  public Page<Event> find(String title, Long categoryId, String modality,String dateType, String initialDate,
+  public Page<Event> find(Boolean oldEvents, String title, Long categoryId, String modality, String dateType,
+      String initialDate,
       String finalDate, Pageable pageable) {
 
     String queryStr = "SELECT E FROM Event AS E JOIN Category C ON C MEMBER OF E.categories";
-    String condition = " WHERE ";
+    String condition = " AND ";
+
+    queryStr += condition + (oldEvents
+        ? "cast(E.finalDate as date) < CURRENT_DATE"
+        : "cast(E.finalDate as date) >= CURRENT_DATE");
 
     if (title != null && title != "") {
-      queryStr += condition + "E.title LIKE CONCAT('%',:title,'%')";
+      queryStr += condition + "LOWER(CONCAT(E.title, E.subtitle)) LIKE CONCAT('%',LOWER(:title),'%')";
       condition = " AND ";
     }
 
