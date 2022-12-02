@@ -1,11 +1,8 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventTitleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.Roles;
@@ -17,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,14 +32,6 @@ public class EventService {
 	@Autowired
 	private UserAccountService userAccountService;
 
-	public Page<Event> listAllUsingPage(Pageable pageable) {
-		return eventRepository.findAll(pageable);
-	}
-
-	public List<Event> getAllEvents() {
-		return eventRepository.findAll();
-	}
-
 	public Event getEventById(Integer id) throws ObjectNotFoundException {
 		Event event = eventRepository.findById(id).get();
 		if (event == null) {
@@ -54,11 +42,13 @@ public class EventService {
 	}
 
 	@Transactional
-	public Page<Event> getEventsByFilter(String title, Long categoryId, String modality, String dateType,
-			String initialDate,
-			String finalDate, Integer page, Integer pageSize) {
+	public Page<Event> getEventsByFilter(String title, Long categoryId, String modality,
+										 String dateType,
+										 String initialDate,
+										 String finalDate, Integer page, Integer pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
-		return eventCustomRepository.find(title, categoryId, modality, dateType, initialDate, finalDate, pageable);
+		return eventCustomRepository.find(title, categoryId, modality, dateType, initialDate, finalDate,
+				pageable);
 	}
 
 	@Transactional
@@ -113,17 +103,4 @@ public class EventService {
 		}
 
 	}
-
-//	public Page<Event> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-//		UserPrincipal user = UserAccountService.getUserAuthenticated();
-//		if (user == null) {
-//			throw new AuthorizationException("Acesso negado");
-//		}
-//		Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
-//		UserAccount userAccount = userAccountService.find(user.getId());
-//
-//		Page<Event> eventsPage = eventRepository.findByUserAccount(pageable, userAccount);
-//
-//		return eventsPage;
-//	}
 }

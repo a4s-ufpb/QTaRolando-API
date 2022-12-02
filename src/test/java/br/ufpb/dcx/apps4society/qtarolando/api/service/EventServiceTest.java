@@ -66,37 +66,7 @@ public class EventServiceTest {
 
     }
 
-    @Test
-    void listAllUsingPage_ReturnsListOfEventInsidePage(){
-        String expectedSubtitle = EventCreator.defaultEvent().getSubtitle();
 
-        Page<Event> eventPage = eventService.listAllUsingPage(PageRequest.of(1,1));
-
-        Assertions.assertThat(eventPage).isNotNull();
-
-        Assertions.assertThat(eventPage.toList())
-                .isNotEmpty()
-                .hasSize(1);
-
-        Assertions.assertThat(eventPage.toList().get(0).getSubtitle())
-                .isEqualTo(expectedSubtitle);
-
-    }
-
-    @Test
-    void getAllEvents_ReturnsListOfEvents(){
-        String expectedDescription = EventCreator.defaultEvent().getDescription();
-
-        List<Event> events = eventService.getAllEvents();
-
-        Assertions.assertThat(events)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
-
-        Assertions.assertThat(events.get(0).getDescription())
-                .isEqualTo(expectedDescription);
-    }
 
     @Test
     void getEventById_ReturnsEvent(){

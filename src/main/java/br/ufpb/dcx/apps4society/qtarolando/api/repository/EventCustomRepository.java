@@ -22,7 +22,8 @@ public class EventCustomRepository {
   @Autowired
   private EntityManager em;
 
-  public Page<Event> find(String title, Long categoryId, String modality, String dateType, String initialDate,
+  public Page<Event> find(String title, Long categoryId, String modality, String dateType,
+      String initialDate,
       String finalDate, Pageable pageable) {
 
     String queryStr = "SELECT E FROM Event AS E JOIN Category C ON C MEMBER OF E.categories";
@@ -79,6 +80,9 @@ public class EventCustomRepository {
                 " OR (cast(E.finalDate as date) BETWEEN cast(:initialDate as date) AND cast(:finalDate as date))" +
                 " OR (cast(E.initialDate as date) <= cast(:initialDate as date) AND cast(E.finalDate as date) >= cast(:finalDate as date))";
           }
+          break;
+        case "ANTIGOS":
+          queryStr += condition + "cast(E.finalDate as date) < CURRENT_DATE";
           break;
       }
     }

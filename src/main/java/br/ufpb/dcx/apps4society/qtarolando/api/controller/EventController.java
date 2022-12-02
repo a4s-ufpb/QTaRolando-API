@@ -5,12 +5,8 @@ import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -19,16 +15,6 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
-
-	@GetMapping("/page")
-	public ResponseEntity<Page<Event>> listAll(Pageable pageable) {
-		return ResponseEntity.ok(eventService.listAllUsingPage(pageable));
-	}
-
-	@GetMapping
-	public List<Event> getAllEvents() {
-		return eventService.getAllEvents();
-	}
 
 	@GetMapping("/{id}")
 	public Event getEventById(@PathVariable("id") Integer id) {
@@ -45,7 +31,8 @@ public class EventController {
 			@RequestParam(value = "finalDate", required = false) String finalDate,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize) {
-		return eventService.getEventsByFilter(title, categoryId, modality, dateType, initialDate, finalDate, page,
+		return eventService.getEventsByFilter(title, categoryId, modality, dateType, initialDate, finalDate,
+				page,
 				pageSize);
 	}
 
