@@ -21,8 +21,8 @@ public class EventController {
 	private EventService eventService;
 
 	@GetMapping("/page")
-	public ResponseEntity<Page<Event>> list(Pageable pageable) {
-		return ResponseEntity.ok(eventService.listAll(pageable));
+	public ResponseEntity<Page<Event>> listAll(Pageable pageable) {
+		return ResponseEntity.ok(eventService.listAllUsingPage(pageable));
 	}
 
 	@GetMapping
@@ -33,11 +33,6 @@ public class EventController {
 	@GetMapping("/{id}")
 	public Event getEventById(@PathVariable("id") Integer id) {
 		return eventService.getEventById(id);
-	}
-
-	@GetMapping("/category/{categoryId}")
-	public List<Event> getEventsByCategoryId(@PathVariable("categoryId") Integer categoryId) {
-		return eventService.getEventsByCategoryId(categoryId);
 	}
 
 	@GetMapping("/filter")
@@ -52,23 +47,6 @@ public class EventController {
 			@RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize) {
 		return eventService.getEventsByFilter(title, categoryId, modality, dateType, initialDate, finalDate, page,
 				pageSize);
-	}
-
-	@GetMapping("/title")
-	public List<Event> getEventsByTitle(@RequestParam String title) {
-		return eventService.getEventsByTitle(title);
-	}
-
-	@GetMapping("/eventModalityId/{eventModalityId}")
-	public List<Event> getEventsByModality(@PathVariable("modality") String modality) {
-		return eventService.getEventsByEventModality(modality);
-	}
-
-	@GetMapping("/byDateInterval")
-	public List<Event> getEventsByDateRange(@RequestParam("initialDate") String initialDate,
-			@RequestParam("finalDate") String finalDate) {
-
-		return eventService.getEventsByDateRange(initialDate, finalDate);
 	}
 
 	@PostMapping

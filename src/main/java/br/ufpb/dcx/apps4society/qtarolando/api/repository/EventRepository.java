@@ -15,19 +15,19 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Integer> {
 
-    @Query("SELECT event FROM Event event JOIN UserAccount userAccount ON event MEMBER OF userAccount.events " +
-            "WHERE userAccount = :userAccount")
-    Page<Event> findByUserAccount(Pageable pageable, @Param("userAccount") UserAccount userAccount);
-
-    @Query("SELECT e FROM Event e where e.title like %:title% ")
-    List<Event> findAllByTitle(@Param("title") String title);
-
-    @Query("SELECT E FROM Event AS E JOIN Category C ON C MEMBER OF E.categories WHERE C.id = :categoryId")
-    List<Event> findAllByCategoryId(Integer categoryId);
-
-    @Query("SELECT event FROM Event event WHERE event.modality = :modality")
-    List<Event> findAllByModality(String modality);
-
-    @Query("SELECT event FROM Event event WHERE event.initialDate >= :initialDate and event.finalDate <= :finalDate")
-    List<Event> findAllByDateRange(LocalDateTime initialDate, LocalDateTime finalDate);
+//    @Query("SELECT event FROM Event event JOIN UserAccount userAccount ON event MEMBER OF userAccount.events " +
+//            "WHERE userAccount = :userAccount")
+//    Page<Event> findByUserAccount(Pageable pageable, @Param("userAccount") UserAccount userAccount);
+//
+//    @Query("SELECT e FROM Event e where e.title like %:title% ")
+//    List<Event> findAllByTitle(@Param("title") String title);
+//
+//    @Query("SELECT E FROM Event AS E JOIN Category C ON C MEMBER OF E.categories WHERE C.id = :categoryId")
+//    List<Event> findAllByCategoryId(Integer categoryId);
+//
+//    @Query("SELECT event FROM Event event WHERE event.modality = :modality")
+//    List<Event> findAllByModality(String modality);
+//
+//    @Query("SELECT event FROM Event event WHERE event.initialDate >= :initialDate and event.finalDate <= :finalDate")
+//    List<Event> findAllByDateRange(LocalDateTime initialDate, LocalDateTime finalDate);
 }

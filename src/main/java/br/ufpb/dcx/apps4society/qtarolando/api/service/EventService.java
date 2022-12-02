@@ -36,7 +36,7 @@ public class EventService {
 	@Autowired
 	private UserAccountService userAccountService;
 
-	public Page<Event> listAll(Pageable pageable) {
+	public Page<Event> listAllUsingPage(Pageable pageable) {
 		return eventRepository.findAll(pageable);
 	}
 
@@ -53,35 +53,12 @@ public class EventService {
 		return event;
 	}
 
-	public List<Event> getEventsByTitle(String title) {
-		return eventRepository.findAllByTitle(title);
-	}
-
-	public List<Event> getEventsByCategoryId(Integer categoryId) {
-		return eventRepository.findAllByCategoryId(categoryId);
-	}
-
 	@Transactional
 	public Page<Event> getEventsByFilter(String title, Long categoryId, String modality, String dateType,
 			String initialDate,
 			String finalDate, Integer page, Integer pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
 		return eventCustomRepository.find(title, categoryId, modality, dateType, initialDate, finalDate, pageable);
-	}
-
-	public List<Event> getEventsByTitle(EventTitleDTO eventTitleDTO) {
-		return eventRepository.findAllByTitle(eventTitleDTO.getTitle());
-	}
-
-	public List<Event> getEventsByEventModality(String modality) {
-		return eventRepository.findAllByModality(modality);
-	}
-
-	public List<Event> getEventsByDateRange(String initialDate, String finalDate) {
-		LocalDateTime initialD = LocalDateTime.parse(initialDate);
-		LocalDateTime finalD = LocalDateTime.parse(finalDate);
-
-		return eventRepository.findAllByDateRange(initialD, finalD);
 	}
 
 	@Transactional
@@ -137,16 +114,16 @@ public class EventService {
 
 	}
 
-	public Page<Event> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		UserPrincipal user = UserAccountService.getUserAuthenticated();
-		if (user == null) {
-			throw new AuthorizationException("Acesso negado");
-		}
-		Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
-		UserAccount userAccount = userAccountService.find(user.getId());
-
-		Page<Event> eventsPage = eventRepository.findByUserAccount(pageable, userAccount);
-
-		return eventsPage;
-	}
+//	public Page<Event> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+//		UserPrincipal user = UserAccountService.getUserAuthenticated();
+//		if (user == null) {
+//			throw new AuthorizationException("Acesso negado");
+//		}
+//		Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+//		UserAccount userAccount = userAccountService.find(user.getId());
+//
+//		Page<Event> eventsPage = eventRepository.findByUserAccount(pageable, userAccount);
+//
+//		return eventsPage;
+//	}
 }
