@@ -44,11 +44,11 @@ public class EventServiceTest {
 
         PageImpl<Event> eventPage = new PageImpl<>(events);
 
-        BDDMockito.when(eventRepositoryMock.findAll(ArgumentMatchers.any(PageRequest.class)))
-                .thenReturn(eventPage);
-
-        BDDMockito.when(eventRepositoryMock.findAll())
-                .thenReturn(events);
+//        BDDMockito.when(eventRepositoryMock.findAll(ArgumentMatchers.any(PageRequest.class)))
+//                .thenReturn(eventPage);
+//
+//        BDDMockito.when(eventRepositoryMock.findAll())
+//                .thenReturn(events);
 
         BDDMockito.when(eventCustomRepository.find(ArgumentMatchers.anyString(), ArgumentMatchers.anyLong(),
                         ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(),

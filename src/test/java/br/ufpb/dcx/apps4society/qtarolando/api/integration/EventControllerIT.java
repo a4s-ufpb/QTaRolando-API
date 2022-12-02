@@ -38,71 +38,71 @@ class EventControllerIT {
         eventRepository.deleteAll();
     }
 
-    @DisplayName("shouldFindEventsPaginados return the elements in the first page")
-    @Test
-    void shouldFindEventsPaginados() {
+//    @DisplayName("shouldFindEventsPaginados return the elements in the first page")
+//    @Test
+//    void shouldFindEventsPaginados() {
+//
+//        List<Event> events = new ArrayList<>();
+//        int quantiEvent = 11;
+//        int pageLength = 5;
+//        int expectedTotalPages = 3;
+//        String url = "/api/events/page?size=" + pageLength;
+//
+//        for (int i = 0; i < quantiEvent; i++) {
+//            events.add(EventCreator.defaultEvent());
+//        }
+//        eventRepository.saveAll(events);
+//
+//        PageableResponse<Event> eventPage = testRestTemplate.exchange(url, HttpMethod.GET, null,
+//                new ParameterizedTypeReference<PageableResponse<Event>>() {
+//                }).getBody();
+//
+//        Assertions.assertThat(eventPage).isNotNull();
+//
+//        //verify if length of eventPage is equal to ONE page
+//        Assertions.assertThat(eventPage.getNumberOfElements())
+//                .isEqualTo(pageLength);
+//
+//        Assertions.assertThat(eventPage.toList().get(0).getTitle())
+//                .isEqualTo(events.get(0).getTitle());
+//
+//        Assertions.assertThat(eventPage.toList().get(0).getId())
+//                .isNotEqualTo(events.get(1).getId());
+//
+//        Assertions.assertThat(eventPage.getTotalPages())
+//                .isNotNull()
+//                .isEqualTo(expectedTotalPages);
+//    }
 
-        List<Event> events = new ArrayList<>();
-        int quantiEvent = 11;
-        int pageLength = 5;
-        int expectedTotalPages = 3;
-        String url = "/api/events/page?size=" + pageLength;
-
-        for (int i = 0; i < quantiEvent; i++) {
-            events.add(EventCreator.defaultEvent());
-        }
-        eventRepository.saveAll(events);
-
-        PageableResponse<Event> eventPage = testRestTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<PageableResponse<Event>>() {
-                }).getBody();
-
-        Assertions.assertThat(eventPage).isNotNull();
-
-        //verify if length of eventPage is equal to ONE page
-        Assertions.assertThat(eventPage.getNumberOfElements())
-                .isEqualTo(pageLength);
-
-        Assertions.assertThat(eventPage.toList().get(0).getTitle())
-                .isEqualTo(events.get(0).getTitle());
-
-        Assertions.assertThat(eventPage.toList().get(0).getId())
-                .isNotEqualTo(events.get(1).getId());
-
-        Assertions.assertThat(eventPage.getTotalPages())
-                .isNotNull()
-                .isEqualTo(expectedTotalPages);
-    }
-
-    @Test
-    void shouldFindAllEvents() {
-        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
-
-        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle(
-                "Praça"));
-
-        List<Event> response = testRestTemplate.exchange("/api/events", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Event>>() {
-                }).getBody();
-
-        Assertions.assertThat(response)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(2);
-
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isEqualTo(savedEvent.getTitle());
-
-        Assertions.assertThat(response.get(0).getId())
-                .isNotNull()
-                .isNotEqualTo(savedEvent2.getId());
-
-        Assertions.assertThat(response.get(0).getTitle())
-                .isNotNull()
-                .isNotEqualTo(savedEvent2.getTitle());
-
-    }
+//    @Test
+//    void shouldFindAllEvents() {
+//        Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
+//
+//        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle(
+//                "Praça"));
+//
+//        List<Event> response = testRestTemplate.exchange("/api/events", HttpMethod.GET, null,
+//                new ParameterizedTypeReference<List<Event>>() {
+//                }).getBody();
+//
+//        Assertions.assertThat(response)
+//                .isNotNull()
+//                .isNotEmpty()
+//                .hasSize(2);
+//
+//        Assertions.assertThat(response.get(0).getTitle())
+//                .isNotNull()
+//                .isEqualTo(savedEvent.getTitle());
+//
+//        Assertions.assertThat(response.get(0).getId())
+//                .isNotNull()
+//                .isNotEqualTo(savedEvent2.getId());
+//
+//        Assertions.assertThat(response.get(0).getTitle())
+//                .isNotNull()
+//                .isNotEqualTo(savedEvent2.getTitle());
+//
+//    }
 
     @Test
     void shouldFindEventById() {
