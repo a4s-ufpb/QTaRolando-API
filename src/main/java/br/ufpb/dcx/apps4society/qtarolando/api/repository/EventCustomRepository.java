@@ -88,6 +88,10 @@ public class EventCustomRepository {
       }
     }
 
+    if (dateType == null || dateType == "") {
+      queryStr += condition + "cast(E.finalDate as date) >= CURRENT_DATE";
+    }
+
     queryStr += " ORDER BY E.initialDate ASC";
     TypedQuery<Event> typedQuery = em.createQuery(queryStr, Event.class);
 
