@@ -117,9 +117,9 @@ GET /api/events/filter
 | `title` | `string` | Opcional | Título completo ou incompleto de um evento |
 | `categoryId` | `int` | Opcional | Id de uma categoria de eventos |
 | `modality` | `string` | Opcional | Modalidade do evento: **PRESENCIAL** ou **ONLINE** |
-| `dateType` | `string` | Opcional | Tipo da data para filtrar: **HOJE**, **AMANHA**, **ESTA_SEMANA**, **FIM_SEMANA**,<br> **PROX_SEMANA**, **ESTE_MES**, **ESCOLHER_INTERVALO** ou **ANTIGOS** |
-| `initialDate` | `string` | Opcional | Data para definir o intervalo inicial usado apenas caso `dateType` seja igual a **ESCOLHER_INTERVALO**<br>. Formato para data é **YYYY-MM-DD**|
-| `finalDate` | `string` | Opcional | Data para definir o intervalo final usado apenas caso `dateType` seja igual a **ESCOLHER_INTERVALO**<br>. Formato para data é **YYYY-MM-DD**|
+| `dateType` | `string` | Opcional | Tipo da data para filtrar: **HOJE**, **AMANHA**, **ESTA_SEMANA**, **FIM_SEMANA**,<br> **PROX_SEMANA**, **ESTE_MES**, ou **ESCOLHER_INTERVALO** |
+| `initialDate` | `string` | Opcional | Data para definir o intervalo inicial usado apenas caso `dateType` seja igual a **ESCOLHER_INTERVALO**. Formato para data é **YYYY-MM-DD**|
+| `finalDate` | `string` | Opcional | Data para definir o intervalo final usado apenas caso `dateType` seja igual a **ESCOLHER_INTERVALO**. Formato para data é **YYYY-MM-DD**|
 | `page` | `int` | Opcional | Número da página com eventos que será enviado. Por padrão envia sempre a primeira página = `0` |
 | `pageSize` | `int` | Opcional | Quantidade máxima de eventos por página. Por padrão são `24` eventos por página|
 
