@@ -81,9 +81,6 @@ public class EventCustomRepository {
                 " OR (cast(E.initialDate as date) <= cast(:initialDate as date) AND cast(E.finalDate as date) >= cast(:finalDate as date))";
           }
           break;
-        case "ANTIGOS":
-          queryStr += condition + "cast(E.finalDate as date) < CURRENT_DATE";
-          break;
       }
     }
 
