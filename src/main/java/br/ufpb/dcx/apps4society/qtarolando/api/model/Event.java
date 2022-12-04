@@ -23,17 +23,13 @@ public class Event {
 	private Integer id;
 	private String title;
 	private String subtitle;
-
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "event_categories", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<Category> categories = new ArrayList<>();
-
 	@Lob
 	private String description;
-
 	private LocalDateTime initialDate;
 	private LocalDateTime finalDate;
-
 	@Lob
 	private String imagePath;
 	private String modality;
@@ -53,7 +49,25 @@ public class Event {
 		this.location = eventDTO.getLocation();
 	}
 
-	public void setModalityId(String modality) {
+	public Event(String title, String subtitle, List<Category> categories, String description, LocalDateTime initialDateConverted,
+				 LocalDateTime finalDateConverted, String imagePath, String eventModality,
+				 String location, String phone, String site) {
+
+	this.title=title;
+	this.subtitle = subtitle;
+	this.categories = categories;
+	this.description = description;
+	this.initialDate = initialDateConverted;
+	this.finalDate = finalDateConverted;
+	this.imagePath = imagePath;
+	this.modality = eventModality;
+	this.location = location;
+	this.phone = phone;
+	this.site = site;
+
+	}
+
+	public void setModality(String modality) {
 		this.modality = EventModality.validate(modality);
 	}
 

@@ -42,12 +42,12 @@ public class EventService {
 	}
 
 	@Transactional
-	public Page<Event> getEventsByFilter(Boolean oldEvents, String title, Long categoryId, String modality,
-			String dateType,
-			String initialDate,
-			String finalDate, Integer page, Integer pageSize) {
+	public Page<Event> getEventsByFilter(String title, Long categoryId, String modality,
+										 String dateType,
+										 String initialDate,
+										 String finalDate, Integer page, Integer pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
-		return eventCustomRepository.find(oldEvents, title, categoryId, modality, dateType, initialDate, finalDate,
+		return eventCustomRepository.find(title, categoryId, modality, dateType, initialDate, finalDate,
 				pageable);
 	}
 

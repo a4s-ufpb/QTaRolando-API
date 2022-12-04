@@ -23,9 +23,6 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 	@Autowired
 	RoleRepository roleRepository;
 
-//	@Autowired                              // para cadastrar um evento
-//	EventRepository eventRepository;
-
 	@Autowired
 	CategoryRepository categoryRepository;
 

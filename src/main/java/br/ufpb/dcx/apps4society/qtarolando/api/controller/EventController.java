@@ -23,7 +23,6 @@ public class EventController {
 
 	@GetMapping("/filter")
 	public Page<Event> getEventsByFilter(
-			@RequestParam(value = "oldEvents", defaultValue = "false") Boolean oldEvents,
 			@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "categoryId", required = false) Long categoryId,
 			@RequestParam(value = "modality", required = false) String modality,
@@ -32,7 +31,7 @@ public class EventController {
 			@RequestParam(value = "finalDate", required = false) String finalDate,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize) {
-		return eventService.getEventsByFilter(oldEvents, title, categoryId, modality, dateType, initialDate, finalDate,
+		return eventService.getEventsByFilter(title, categoryId, modality, dateType, initialDate, finalDate,
 				page,
 				pageSize);
 	}
