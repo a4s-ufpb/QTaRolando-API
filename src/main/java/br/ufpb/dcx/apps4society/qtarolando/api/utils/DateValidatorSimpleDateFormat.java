@@ -11,16 +11,18 @@ public class DateValidatorSimpleDateFormat {
 
     boolean valid = false;
 
-    try {
-      // why 2008-02-2x, 20-11-02, 12012-04-05 are valid date?
-      sdf.parse(date);
-      // strict mode - check 30 or 31 days, leap year
-      sdf.setLenient(false);
-      valid = true;
+    if (date != null) {
+      try {
+        // why 2008-02-2x, 20-11-02, 12012-04-05 are valid date?
+        sdf.parse(date);
+        // strict mode - check 30 or 31 days, leap year
+        sdf.setLenient(false);
+        valid = true;
 
-    } catch (ParseException e) {
-      e.printStackTrace();
-      valid = false;
+      } catch (ParseException e) {
+        e.printStackTrace();
+        valid = false;
+      }
     }
 
     return valid;
