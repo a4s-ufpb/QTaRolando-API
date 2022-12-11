@@ -1,7 +1,10 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
 import br.ufpb.dcx.apps4society.qtarolando.api.wrapper.PageableResponse;
 import org.assertj.core.api.Assertions;
@@ -9,12 +12,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,10 +43,33 @@ class EventControllerIT {
     @Autowired
     private EventRepository eventRepository;
 
-//    Caso queria saber em qual porta o teste está rodando
-//    @LocalServerPort
+    @Autowired
+    @Qualifier(value = "testRestTemplateRoleAdmin")
+    private TestRestTemplate testRestTemplateRoleAdmin;
 
-//    private int localServerPort;
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+
+    private static final String URL_BASE = "/api/events/";
+
+    private static final UserAccount ADMIN = UserAccount.builder()
+            .username("ADMIN")
+            .password("(83) 97512-2554")
+            .email("admin@gmail.com")
+            .build();
+
+    @TestConfiguration
+    @Lazy
+    static class config{
+        @Bean(name = "testRestTemplateRoleAdmiin")
+        public TestRestTemplate testRestTemplateRoleAdminCreator(@Value("${local.server.port}") int port) {
+            RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
+                    .rootUri("http://localhost:" + port)
+                    .basicAuthentication("ADMIN", "(83) 97512-2554");
+            return new TestRestTemplate(restTemplateBuilder);
+        }
+    }
+
     @BeforeEach
     void setUp(){
         eventRepository.deleteAll();
@@ -111,7 +146,7 @@ class EventControllerIT {
         Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
         int expectedId = savedEvent.getId();
 
-        Event response = testRestTemplate.getForObject("/api/events/{id}", Event.class, expectedId);
+        Event response = testRestTemplate.getForObject(URL_BASE+ "{id}", Event.class, expectedId);
 
 
 
@@ -181,9 +216,8 @@ class EventControllerIT {
     @Test
     @DisplayName("getEventsByTitle returns an empty list of event when event is not found")
     void getEventsByTitle_ShouldReturnEmptyListOfEvent() {
-        String url = "/api/events/filter?title=Praia";
 
-        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+        PageableResponse<Event> response = testRestTemplate.exchange(URL_BASE + "filter?title=Praia", HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -201,10 +235,9 @@ class EventControllerIT {
         Event savedEvent2 = eventRepository.save(EventCreator.defaultEvent());
 
         String title = savedEvent2.getTitle();
-        String url = "/api/events/filter?title=" + title;
 
         PageableResponse<Event> response = testRestTemplate.exchange(
-                url, HttpMethod.GET, null,
+                URL_BASE + "filter?title=" + title, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -230,10 +263,9 @@ class EventControllerIT {
 
 
         String letters = "Pra";
-        String url = "/api/events/filter?title=" + letters;
 
         PageableResponse<Event> response = testRestTemplate.exchange(
-                url, HttpMethod.GET, null,
+                URL_BASE + "filter?title=" + letters, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -260,9 +292,8 @@ class EventControllerIT {
         Event savedEven2 = eventRepository.save(EventCreator.defaultEvent());
 
         Long expectedCategory = savedEvent.getCategories().get(0).getId();
-        String url = "/api/events/filter?categoryId=" + expectedCategory;
 
-        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+        PageableResponse<Event> response = testRestTemplate.exchange(URL_BASE + "filter?categoryId=" + expectedCategory, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -445,6 +476,20 @@ class EventControllerIT {
 //                .isNotNull()
 //                .isEqualTo(savedEvent.getFinalDate());
 //
+//    }
+
+//    @Test
+//    @DisplayName("save returns anime when successful")
+//    void save_ReturnsAnime_WhenSuccessful() {
+//        EventDTO e = EventCreator.defaultEventDTO();
+//        userAccountRepository.save(ADMIN);
+//
+//        ResponseEntity<Event> animeResponseEntity = testRestTemplateRoleAdmin.postForEntity("/api/events", e, Event.class);
+//
+//        Assertions.assertThat(animeResponseEntity).isNotNull();
+//        Assertions.assertThat(animeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+//        Assertions.assertThat(animeResponseEntity.getBody()).isNotNull();
+//        Assertions.assertThat(animeResponseEntity.getBody().getId()).isNotNull();
 //    }
 
 }
