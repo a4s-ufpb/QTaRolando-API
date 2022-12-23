@@ -43,32 +43,32 @@ class EventControllerIT {
     @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
-    @Qualifier(value = "testRestTemplateRoleAdmin")
-    private TestRestTemplate testRestTemplateRoleAdmin;
-
-    @Autowired
-    private UserAccountRepository userAccountRepository;
+//    @Autowired
+//    @Qualifier(value = "testRestTemplateRoleAdmin")
+//    private TestRestTemplate testRestTemplateRoleAdmin;
+//
+//    @Autowired
+//    private UserAccountRepository userAccountRepository;
 
     private static final String URL_BASE = "/api/events/";
 
-    private static final UserAccount ADMIN = UserAccount.builder()
-            .username("ADMIN")
-            .password("(83) 97512-2554")
-            .email("admin@gmail.com")
-            .build();
-
-    @TestConfiguration
-    @Lazy
-    static class config{
-        @Bean(name = "testRestTemplateRoleAdmiin")
-        public TestRestTemplate testRestTemplateRoleAdminCreator(@Value("${local.server.port}") int port) {
-            RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
-                    .rootUri("http://localhost:" + port)
-                    .basicAuthentication("ADMIN", "(83) 97512-2554");
-            return new TestRestTemplate(restTemplateBuilder);
-        }
-    }
+//    private static final UserAccount ADMIN = UserAccount.builder()
+//            .username("ADMIN")
+//            .password("(83) 97512-2554")
+//            .email("admin@gmail.com")
+//            .build();
+//
+//    @TestConfiguration
+//    @Lazy
+//    static class config{
+//        @Bean(name = "testRestTemplateRoleAdmiin")
+//        public TestRestTemplate testRestTemplateRoleAdminCreator(@Value("${local.server.port}") int port) {
+//            RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
+//                    .rootUri("http://localhost:" + port)
+//                    .basicAuthentication("ADMIN", "(83) 97512-2554");
+//            return new TestRestTemplate(restTemplateBuilder);
+//        }
+//    }
 
     @BeforeEach
     void setUp(){
