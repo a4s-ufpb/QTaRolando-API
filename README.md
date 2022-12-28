@@ -76,7 +76,7 @@ Deve ser passodo um body como mostrado no exemplo abaixo:
 POST /api/auth/login
 ```
 
-Deve ser passodo um body como mostrado no exemplo abaixo:
+Deve ser passado um body como mostrado no exemplo abaixo:
 
 ```json
 {
