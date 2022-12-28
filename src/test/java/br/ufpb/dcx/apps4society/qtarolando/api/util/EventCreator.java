@@ -37,8 +37,8 @@ public class EventCreator {
 
     public static Event defaultEvent() {
         List<Category> categories = new ArrayList<>();
-        Category e = new Category(5L, "Arte, Cinema e Lazer");
-        categories.add(e);
+        Category c = new Category(5L, "Arte, Cinema e Lazer");
+        categories.add(c);
 
         return new Event(title, subtitle, categories, description,
                 initialDate, finalDate, imagePath, modality, location,
