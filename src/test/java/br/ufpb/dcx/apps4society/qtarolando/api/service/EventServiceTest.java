@@ -1,7 +1,9 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventCustomRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
@@ -15,6 +17,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -36,19 +39,19 @@ public class EventServiceTest {
     @Mock
     private EventCustomRepository eventCustomRepository;
 
+//    @Mock
+//    private UserAccountService userAccountService;
+
     @BeforeEach
     void setUp(){
         List<Event> events = new ArrayList<>() ;
         events.add(EventCreator.defaultEvent());
         events.get(0).setId(1);
-
         PageImpl<Event> eventPage = new PageImpl<>(events);
 
-//        BDDMockito.when(eventRepositoryMock.findAll(ArgumentMatchers.any(PageRequest.class)))
-//                .thenReturn(eventPage);
-//
-//        BDDMockito.when(eventRepositoryMock.findAll())
-//                .thenReturn(events);
+//        UserAccountNewDTO user = new UserAccountNewDTO("w02@gmail.com", "wellington", "12345678");
+//        UserAccount userForTest = new UserAccount(user);
+
 
         BDDMockito.when(eventCustomRepository.find(ArgumentMatchers.anyString(), ArgumentMatchers.anyLong(),
                         ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(),
@@ -60,8 +63,11 @@ public class EventServiceTest {
 
         BDDMockito.doNothing().when(eventRepositoryMock).delete(ArgumentMatchers.any(Event.class));
 
-//        BDDMockito.when(eventRepositoryMock.save(ArgumentMatchers.any(Event.class)))
-//                .thenReturn(events.get(0));
+        BDDMockito.when(eventRepositoryMock.save(ArgumentMatchers.any(Event.class)))
+                .thenReturn(events.get(0));
+
+//        BDDMockito.when(userAccountService.insert(ArgumentMatchers.any(UserAccountNewDTO.class)))
+//                .thenReturn(userForTest);
 
 
     }
@@ -257,17 +263,23 @@ public class EventServiceTest {
 //    @Test
 //    void createEvent(){
 //        EventDTO eventDTO = EventCreator.defaultEventDTO();
+//        String expectedTitle = eventDTO.getTitle();
+//
+//        UserAccountNewDTO user = new UserAccountNewDTO("w02@gmail.com", "wellington", "12345678");
+//
+//        UserAccount expected = userAccountService.insert(user);
 //
 //        eventService.createEvent(eventDTO);
 //
-//        List<Event> eventsFound = eventService.getAllEvents();
+//        Page<Event> events = eventService.getEventsByFilter(expectedTitle, 1L, "PRESENCIAL",
+//                "dateType", "initialDate", "finalDate",1,1);
 //
-//        Assertions.assertThat(eventsFound)
+//        Assertions.assertThat(events)
 //                .isNotNull()
 //                .isNotEmpty()
 //                .hasSize(1);
 //
-//        Assertions.assertThat(eventsFound.get(0).getTitle())
+//        Assertions.assertThat(events.toList().get(0).getTitle())
 //                .isNotNull()
 //                .isEqualTo(eventDTO.getTitle());
 //    }
