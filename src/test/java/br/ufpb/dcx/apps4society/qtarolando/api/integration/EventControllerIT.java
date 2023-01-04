@@ -1,10 +1,14 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserInfoResponse;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.EventRepository;
 import br.ufpb.dcx.apps4society.qtarolando.api.repository.UserAccountRepository;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
 import br.ufpb.dcx.apps4society.qtarolando.api.wrapper.PageableResponse;
 import org.assertj.core.api.Assertions;
@@ -44,13 +48,16 @@ class EventControllerIT {
     private EventRepository eventRepository;
 
 //    @Autowired
+//    private UserAccountService userAccountService;
+
+//    @Autowired
 //    @Qualifier(value = "testRestTemplateRoleAdmin")
 //    private TestRestTemplate testRestTemplateRoleAdmin;
 //
 //    @Autowired
 //    private UserAccountRepository userAccountRepository;
 
-    private static final String URL_BASE = "/api/events/";
+    private static final String BASE_URL = "/api/events/";
 
 //    private static final UserAccount ADMIN = UserAccount.builder()
 //            .username("ADMIN")
@@ -146,7 +153,7 @@ class EventControllerIT {
         Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
         int expectedId = savedEvent.getId();
 
-        Event response = testRestTemplate.getForObject(URL_BASE+ "{id}", Event.class, expectedId);
+        Event response = testRestTemplate.getForObject(BASE_URL+ "{id}", Event.class, expectedId);
 
 
 
@@ -217,7 +224,7 @@ class EventControllerIT {
     @DisplayName("getEventsByTitle returns an empty list of event when event is not found")
     void getEventsByTitle_ShouldReturnEmptyListOfEvent() {
 
-        PageableResponse<Event> response = testRestTemplate.exchange(URL_BASE + "filter?title=Praia", HttpMethod.GET, null,
+        PageableResponse<Event> response = testRestTemplate.exchange(BASE_URL + "filter?title=Praia", HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -228,6 +235,30 @@ class EventControllerIT {
 
     }
 
+//    @Test
+//    void deleteTest(){
+//        Event e = eventRepository.save(EventCreator.defaultEvent());
+//        e.setId(1);
+//        int expected = e.getId();
+//
+//        UserAccountNewDTO user = new UserAccountNewDTO("w02@gmail.com", "wellington", "12345678");
+//        userAccountService.insert(user);
+//        CredentialsDTO credentialsDTO = new CredentialsDTO(user.getEmail(), user.getPassword());
+//
+//        ResponseEntity<UserInfoResponse> responseLogin = testRestTemplate.postForEntity("/api/auth/login", credentialsDTO, UserInfoResponse.class);
+//
+//        Assertions.assertThat(responseLogin).isNotNull();
+
+
+//        TestRestTemplate testRestTemplateUser = new TestRestTemplate("wellington", "12345678");
+//
+//        testRestTemplate.exchange("/api/events/{id}", HttpMethod.DELETE,
+//                null, Void.class, expected);
+//
+//        Assertions.assertThat(eventRepository.findById(1)).isNull();
+//    }
+
+
     @Test
     @DisplayName("getEventsByTitle returns a list a of event when successful")
     void getEventsByTitle_ShouldReturnListOfEvent() {
@@ -237,7 +268,7 @@ class EventControllerIT {
         String title = savedEvent2.getTitle();
 
         PageableResponse<Event> response = testRestTemplate.exchange(
-                URL_BASE + "filter?title=" + title, HttpMethod.GET, null,
+                BASE_URL + "filter?title=" + title, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -265,7 +296,7 @@ class EventControllerIT {
         String letters = "Pra";
 
         PageableResponse<Event> response = testRestTemplate.exchange(
-                URL_BASE + "filter?title=" + letters, HttpMethod.GET, null,
+                BASE_URL + "filter?title=" + letters, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -293,7 +324,7 @@ class EventControllerIT {
 
         Long expectedCategory = savedEvent.getCategories().get(0).getId();
 
-        PageableResponse<Event> response = testRestTemplate.exchange(URL_BASE + "filter?categoryId=" + expectedCategory, HttpMethod.GET, null,
+        PageableResponse<Event> response = testRestTemplate.exchange(BASE_URL + "filter?categoryId=" + expectedCategory, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -479,17 +510,17 @@ class EventControllerIT {
 //    }
 
 //    @Test
-//    @DisplayName("save returns anime when successful")
-//    void save_ReturnsAnime_WhenSuccessful() {
+//    @DisplayName("save returns event when successful")
+//    void save_ReturnsEvent_WhenSuccessful() {
 //        EventDTO e = EventCreator.defaultEventDTO();
 //        userAccountRepository.save(ADMIN);
 //
-//        ResponseEntity<Event> animeResponseEntity = testRestTemplateRoleAdmin.postForEntity("/api/events", e, Event.class);
+//        ResponseEntity<Event> eventResponseEntity = testRestTemplateRoleAdmin.postForEntity("/api/events", e, Event.class);
 //
-//        Assertions.assertThat(animeResponseEntity).isNotNull();
-//        Assertions.assertThat(animeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-//        Assertions.assertThat(animeResponseEntity.getBody()).isNotNull();
-//        Assertions.assertThat(animeResponseEntity.getBody().getId()).isNotNull();
+//        Assertions.assertThat(eventResponseEntity).isNotNull();
+//        Assertions.assertThat(eventResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+//        Assertions.assertThat(eventResponseEntity.getBody()).isNotNull();
+//        Assertions.assertThat(eventResponseEntity.getBody().getId()).isNotNull();
 //    }
 
 }
