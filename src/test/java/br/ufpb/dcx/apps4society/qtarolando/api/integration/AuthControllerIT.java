@@ -20,10 +20,10 @@ import java.util.List;
 
 @AutoConfigureTestDatabase
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AuthControllerIt {
+public class AuthControllerIT {
 
     @Autowired
-    private TestRestTemplate userTestRestTemplate;
+    private TestRestTemplate authTestRestTemplate;
 
     @Autowired
     private UserAccountService userAccountService;
@@ -40,13 +40,13 @@ public class AuthControllerIt {
 
     @Test
     void login_returnsStatusOk_whenSuccessful(){
-        String senhaSemCriptografia = "12345678";
-        UserAccountNewDTO user = new UserAccountNewDTO("wb@gmail.com", "wellington", senhaSemCriptografia);
+        String passwordWithoutCryptography = "12345678";
+        UserAccountNewDTO user = new UserAccountNewDTO("wb@gmail.com", "wellington", passwordWithoutCryptography);
         UserAccount savedUser = userAccountService.insert(user);
 
-        CredentialsDTO credentials = new CredentialsDTO(user.getEmail(), senhaSemCriptografia);
+        CredentialsDTO credentials = new CredentialsDTO(savedUser.getEmail(), passwordWithoutCryptography);
 
-        ResponseEntity<UserInfoResponse> response = userTestRestTemplate.postForEntity(
+        ResponseEntity<UserInfoResponse> response = authTestRestTemplate.postForEntity(
                 BASE_URL+"login", credentials, UserInfoResponse.class);
 
         Assertions.assertThat(response.getStatusCode())
@@ -62,11 +62,11 @@ public class AuthControllerIt {
 
     @Test
     void login_returnsStatusUNAUTHORIZED_whenUserIsntRegistered(){
-        String senhaSemCriptografia = "12345678";
+        String passwordWithoutCryptography = "12345678";
         String email = "wb@gmail.com";
-        CredentialsDTO credentials = new CredentialsDTO(email, senhaSemCriptografia);
+        CredentialsDTO credentials = new CredentialsDTO(email, passwordWithoutCryptography);
 
-        ResponseEntity<UserInfoResponse> response = userTestRestTemplate.postForEntity(
+        ResponseEntity<UserInfoResponse> response = authTestRestTemplate.postForEntity(
                 BASE_URL+"login", credentials, UserInfoResponse.class);
 
         Assertions.assertThat(response.getStatusCode())
@@ -84,7 +84,7 @@ public class AuthControllerIt {
     void signup_returnsStatusOk_whenSuccessful(){
         UserAccountNewDTO user = new UserAccountNewDTO("wb@gmail.com", "wellington", "12345678");
 
-        ResponseEntity<Void> response = userTestRestTemplate.postForEntity(BASE_URL+"signup", user, null);
+        ResponseEntity<Void> response = authTestRestTemplate.postForEntity(BASE_URL+"signup", user, null);
 
         List<UserAccount> users = userAccountService.findAll();
 
@@ -100,7 +100,7 @@ public class AuthControllerIt {
         UserAccountNewDTO user = new UserAccountNewDTO("wb@gmail.com", "wellington", "12345678");
         userAccountService.insert(user);
 
-        ResponseEntity<Void> response = userTestRestTemplate.postForEntity(BASE_URL+"signup", user, null);
+        ResponseEntity<Void> response = authTestRestTemplate.postForEntity(BASE_URL+"signup", user, null);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -109,9 +109,9 @@ public class AuthControllerIt {
     void logoutUser_returnsStatusOK_whenSuccesful(){
         UserAccountNewDTO user = new UserAccountNewDTO("wb@gmail.com", "wellington", "12345678");
 
-//        ResponseEntity<Void> responseSignup = userTestRestTemplate.postForEntity(BASE_URL+"signup", user, null);
+//        ResponseEntity<Void> responseSignup = authTestRestTemplate.postForEntity(BASE_URL+"signup", user, null);
 
-        ResponseEntity<?> responseLogout = userTestRestTemplate.postForEntity(BASE_URL+"signout", null, null);
+        ResponseEntity<?> responseLogout = authTestRestTemplate.postForEntity(BASE_URL+"signout", null, null);
 
 //        Assertions.assertThat(responseSignup.getStatusCode()).isEqualTo(HttpStatus.OK);
 
