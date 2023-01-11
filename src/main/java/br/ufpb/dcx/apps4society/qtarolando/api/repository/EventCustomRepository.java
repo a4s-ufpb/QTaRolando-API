@@ -78,7 +78,7 @@ public class EventCustomRepository {
             queryStr += condition
                 + "(cast(E.initialDate as date) BETWEEN cast(:initialDate as date) AND cast(:finalDate as date))" +
                 " OR (cast(E.finalDate as date) BETWEEN cast(:initialDate as date) AND cast(:finalDate as date))" +
-                " OR (cast(E.initialDate as date) <= cast(:initialDate as date) AND cast(E.finalDate as date) >= cast(:finalDate as date))";
+                " OR (cast(E.initialDate as date) <= cast(:initialDate as date) AND cast(E.finalDate as date) >= cast(:initialDate as date))";
           }
           break;
         case "ANTIGOS":
