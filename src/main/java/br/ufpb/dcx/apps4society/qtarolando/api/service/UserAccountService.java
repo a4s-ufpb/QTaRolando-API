@@ -40,6 +40,7 @@ public class UserAccountService {
     @Autowired
     private RoleRepository roleRepository;
 
+    //TODO:  consertar o erro "UUID string too large"
     public UserAccount find(UUID id) {
         UserPrincipal user = getUserAuthenticated();
         if (user == null || !user.hasRole(Roles.ADMIN) && !id.equals(user.getId())) {
@@ -62,6 +63,7 @@ public class UserAccountService {
         return obj;
     }
 
+    //TODO: resolver o erro UUID string too large
     @Transactional
     public UserAccount update(UserAccount obj) {
         UserAccount newObj = find(obj.getId());
@@ -69,6 +71,7 @@ public class UserAccountService {
         return userRepository.save(newObj);
     }
 
+    //TODO: resolver o erro UUID string too large
     public void delete(UUID id) {
         if (!userRepository.findById(id).get().getEvents().isEmpty()) {
             throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
@@ -80,6 +83,8 @@ public class UserAccountService {
         return userRepository.findAll();
     }
 
+    //TODO: melhoraar o tratamento da excecao
+    //Obs: esse metado só ta permitindo procurar pelo usuario logado qualquer um diferente dele da aceeso negado
     public UserAccount findByEmail(String email) {
         UserPrincipal user = getUserAuthenticated();
         if (user == null || !user.hasRole(Roles.ADMIN) && !email.equals(user.getEmail())) {
@@ -93,6 +98,8 @@ public class UserAccountService {
         return obj;
     }
 
+    //TODO: melhoraar o tratamento da excecao
+    //Obs: esse metado só ta permitindo procurar pelo usuario logado qualquer um diferente dele da aceeso negado
     public UserAccount findByUsername(String userName) {
         UserPrincipal user = getUserAuthenticated();
         if (user == null || !user.hasRole(Roles.ADMIN) && !userName.equals(user.getUsername())) {
@@ -106,6 +113,7 @@ public class UserAccountService {
         return obj;
     }
 
+    //TODO: melhorar a paginacao e fazer funcionar
     public Page<UserAccount> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         return userRepository.findAll(pageable);
