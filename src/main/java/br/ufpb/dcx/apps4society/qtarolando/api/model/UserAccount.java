@@ -67,6 +67,14 @@ public class UserAccount {
         this.password = userAccountNewDTO.getPassword();
     }
 
+    public UserAccount(String email, String username, String password, List<Event> events, Set<Role> roles) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.events = events;
+        this.roles = roles;
+    }
+
     public UserAccount(String email, String username, String password) {
         this.email = email;
         this.username = username;
