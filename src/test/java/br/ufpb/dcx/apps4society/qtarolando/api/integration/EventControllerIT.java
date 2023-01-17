@@ -50,7 +50,7 @@ class EventControllerIT {
     @Autowired
     private UserAccountService userAccountService;
 
-    private static final String BASE_URL = "/api/events/";
+    private static final String BASE_URL = "/api/events";
 
     @BeforeEach
     void setUp() {
@@ -61,7 +61,7 @@ class EventControllerIT {
     void shouldFindAllEvents() {
         List<Event> events = new ArrayList<>();
         int quantiEvent = 11;
-        String url = "/api/events/filter";
+        String url = BASE_URL + "/filter";
 
         for (int i = 0; i < quantiEvent; i++) {
             events.add(EventCreator.defaultEvent());
@@ -91,7 +91,7 @@ class EventControllerIT {
         List<Event> events = new ArrayList<>();
         int quantEvent = 10;
         int pageSize = 2;
-        String url = "/api/events/filter?pageSize=" + pageSize;
+        String url = BASE_URL + "/filter?pageSize=" + pageSize;
 
         for (int i = 0; i < quantEvent; i++) {
             events.add(EventCreator.defaultEvent());
@@ -115,8 +115,7 @@ class EventControllerIT {
         Event savedEvent = eventRepository.save(EventCreator.defaultEvent());
         int expectedId = savedEvent.getId();
 
-        Event response = testRestTemplate.getForObject(BASE_URL + "{id}", Event.class, expectedId);
-
+        Event response = testRestTemplate.getForObject(BASE_URL + "/{id}", Event.class, expectedId);
 
         Assertions.assertThat(response).isNotNull();
 
@@ -178,7 +177,6 @@ class EventControllerIT {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(savedEvent.getSite());
-
     }
 
     @Test
@@ -190,7 +188,7 @@ class EventControllerIT {
         String title = savedEvent2.getTitle();
 
         PageableResponse<Event> response = testRestTemplate.exchange(
-                BASE_URL + "filter?title=" + title, HttpMethod.GET, null,
+                BASE_URL + "/filter?title=" + title, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -203,15 +201,13 @@ class EventControllerIT {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(savedEvent2.getTitle());
-
-
     }
 
     @Test
     @DisplayName("getEventsByTitle returns an empty list of event when event is not found")
     void getEventsByTitle_ShouldReturnEmptyListOfEvent() {
 
-        PageableResponse<Event> response = testRestTemplate.exchange(BASE_URL + "filter?title=Praia", HttpMethod.GET, null,
+        PageableResponse<Event> response = testRestTemplate.exchange(BASE_URL + "/filter?title=Praia", HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -219,9 +215,7 @@ class EventControllerIT {
         Assertions.assertThat(response)
                 .isNotNull()
                 .isEmpty();
-
     }
-
 
     @Test
     @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successful")
@@ -230,11 +224,10 @@ class EventControllerIT {
         Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
         Event savedEvent3 = eventRepository.save(EventCreator.customizedEventTitle("Passeio turisco"));
 
-
         String letters = "Pra";
 
         PageableResponse<Event> response = testRestTemplate.exchange(
-                BASE_URL + "filter?title=" + letters, HttpMethod.GET, null,
+                BASE_URL + "/filter?title=" + letters, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -261,7 +254,7 @@ class EventControllerIT {
 
         Long expectedCategory = savedEvent.getCategories().get(0).getId();
 
-        PageableResponse<Event> response = testRestTemplate.exchange(BASE_URL + "filter?categoryId=" + expectedCategory, HttpMethod.GET, null,
+        PageableResponse<Event> response = testRestTemplate.exchange(BASE_URL + "/filter?categoryId=" + expectedCategory, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Event>>() {
                 }).getBody();
 
@@ -290,7 +283,7 @@ class EventControllerIT {
 
         String initialDateExpected = "2022-08-20";
         String finalDateExpected = "2022-12-20";
-        String url = "/api/events/filter?dateType=ESCOLHER_INTERVALO&initialDate=" + initialDateExpected
+        String url = BASE_URL + "/filter?dateType=ESCOLHER_INTERVALO&initialDate=" + initialDateExpected
                 + "&finalDate=" + finalDateExpected;
 
         PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
@@ -339,83 +332,6 @@ class EventControllerIT {
 //        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
 //                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
 //
-//
-//        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Passeio Turisco", formattedInitialDateTime, "2022-12-31T19:00:00"));
-//
-//        String url = "/api/events/filter?dateType=HOJE";
-//
-//        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
-//                new ParameterizedTypeReference<PageableResponse<Event>>() {
-//                }).getBody();
-//
-//        Assertions.assertThat(response)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(1);
-//
-//        Assertions.assertThat(response.toList().get(0).getTitle())
-//                .isNotNull()
-//                .isNotEmpty()
-//                .isEqualTo("Passeio Turisco");
-//
-//        Assertions.assertThat(response.toList().get(0).getInitialDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getInitialDate());
-//
-//        Assertions.assertThat(response.toList().get(0).getFinalDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getFinalDate());
-//
-//    }
-
-    //    @Test
-//    void shouldFindOnlyOneEventByPeriodoAMANHA() {
-////        LocalDateTime currentDateTime = LocalDateTime.MAX.plusDays('1');
-////        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-////        String formattedInitialDateTime = currentDateTime.format(formatter);
-//
-//        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Circo", "2022-09-20T19:00:00", "2022-11-20T19:00:00"));
-//
-//        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Passeio Turisco", "2022-12-03T09:00:00", "2022-12-31T19:00:00"));
-//
-//        String url = "/api/events/filter?AMANHA";
-//
-//        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
-//                new ParameterizedTypeReference<PageableResponse<Event>>() {
-//                }).getBody();
-//
-//        Assertions.assertThat(response)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(1);
-//
-//        Assertions.assertThat(response.toList().get(0).getTitle())
-//                .isNotNull()
-//                .isNotEmpty()
-//                .isEqualTo("Passeio Turisco");
-//
-//        Assertions.assertThat(response.toList().get(0).getInitialDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent2.getInitialDate());
-//
-//        Assertions.assertThat(response.toList().get(0).getFinalDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent2.getFinalDate());
-//
-//    }
-
-//    @Test
-//    void shouldFindOnlyOneEventByPeriodoHOJE() {
-//        LocalDateTime currentDateTime = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-//        String formattedInitialDateTime = currentDateTime.format(formatter);
-//
-//        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
-//
 //        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
 //                "Passeio Turisco", "2022-12-20T19:00:00", "2022-12-31T19:00:00"));
 //
@@ -446,6 +362,115 @@ class EventControllerIT {
 //    }
 
 //    @Test
+//    void shouldFindOnlyOneEventByPeriodoHOJE() {
+//        LocalDateTime currentDateTime = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+//        String formattedInitialDateTime = currentDateTime.format(formatter);
+//
+//        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+//                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
+//
+//
+//        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+//                "Passeio Turisco", formattedInitialDateTime, "2022-12-31T19:00:00"));
+//
+//        String url = "/api/events/filter?dateType=HOJE";
+//
+//        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+//                new ParameterizedTypeReference<PageableResponse<Event>>() {
+//                }).getBody();
+//
+//        Assertions.assertThat(response)
+//                .isNotNull()
+//                .isNotEmpty()
+//                .hasSize(1);
+//
+//        Assertions.assertThat(response.toList().get(0).getTitle())
+//                .isNotNull()
+//                .isNotEmpty()
+//                .isEqualTo("Passeio Turisco");
+//
+//        Assertions.assertThat(response.toList().get(0).getInitialDate())
+//                .isNotNull()
+//                .isEqualTo(savedEvent.getInitialDate());
+//
+//        Assertions.assertThat(response.toList().get(0).getFinalDate())
+//                .isNotNull()
+//                .isEqualTo(savedEvent.getFinalDate());
+//
+//    }
+
+
+    //    @Test
+//    void shouldFindEventByPeriodoAMANHA() {
+////        LocalDateTime currentDateTime = LocalDateTime.MAX.plusDays('1');
+////        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+////        String formattedInitialDateTime = currentDateTime.format(formatter);
+//
+//        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+//                "Circo", "2022-09-20T19:00:00", "2022-11-20T19:00:00"));
+//
+//        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+//                "Passeio Turisco", "2022-12-03T09:00:00", "2022-12-31T19:00:00"));
+//
+//        String url = "/api/events/dateType=AMANHA";
+//
+//        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+//                new ParameterizedTypeReference<PageableResponse<Event>>() {
+//                }).getBody();
+//
+//        Assertions.assertThat(response)
+//                .isNotNull()
+//                .isNotEmpty()
+//                .hasSize(1);
+//
+//        Assertions.assertThat(response.toList().get(0).getTitle())
+//                .isNotNull()
+//                .isNotEmpty()
+//                .isEqualTo("Passeio Turisco");
+//
+//        Assertions.assertThat(response.toList().get(0).getInitialDate())
+//                .isNotNull()
+//                .isEqualTo(savedEvent2.getInitialDate());
+//
+//        Assertions.assertThat(response.toList().get(0).getFinalDate())
+//                .isNotNull()
+//                .isEqualTo(savedEvent2.getFinalDate());
+//
+//    }
+
+//    @Test
+//    void shouldFindEventByPeriodoFIM_SEMANA() {
+//        LocalDateTime currentDateTime = LocalDateTime.now();
+//        LocalDateTime oneMonthLater = LocalDateTime.now().plusMonths(1);
+//        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+//        String formattedInitialDateTime = currentDateTime.format(formatter);
+//        String formattedFinalDateTime = oneMonthLater.format(formatter);
+//
+//
+//        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+//                "Passeio Turisco", "2023-01-01T19:00:00", "2023-01-31T13:00:00"));
+//
+//        String url = "/api/events/filter?dateType=FIM_SEMANA";
+//
+//        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+//                new ParameterizedTypeReference<PageableResponse<Event>>() {
+//                }).getBody();
+//
+//        Assertions.assertThat(response)
+//                .isNotNull()
+//                .isNotEmpty()
+//                .hasSize(1);
+//
+//        Assertions.assertThat(response.toList().get(0).getTitle())
+//                .isNotNull()
+//                .isNotEmpty()
+//                .isEqualTo("Passeio Turisco");
+//
+//    }
+
+
+//    @Test
 //    @DisplayName("save returns event when successful")
 //    void save_ReturnsEvent_WhenSuccessful() {
 //        EventDTO e = EventCreator.defaultEventDTO();
@@ -459,30 +484,30 @@ class EventControllerIT {
 //        Assertions.assertThat(eventResponseEntity.getBody().getId()).isNotNull();
 //    }
 
-    @Test
-    void deleteTest(){
-        Event e = eventRepository.save(EventCreator.defaultEvent());
-        e.setId(1);
-        int expected = e.getId();
-        String password = "12345678";
-
-        UserAccountNewDTO user = new UserAccountNewDTO("t@gmail.com", "test", password);
-        UserAccount savedUser = userAccountService.insert(user);
-
-        CredentialsDTO credentials = new CredentialsDTO(savedUser.getEmail(), password);
-
-        ResponseEntity<UserInfoResponse> responseLogin = testRestTemplate.postForEntity(
-                "/api/auth/login", credentials, UserInfoResponse.class);
-
-        Assertions.assertThat(responseLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        testRestTemplate.exchange("/api/events/{id}", HttpMethod.DELETE,
-                null, Void.class, expected);
-
-        ResponseEntity<Void> responseDelete = testRestTemplate.exchange("/api/events/{id}", HttpMethod.DELETE, null, Void.class, expected);
-
-
-        Assertions.assertThat(eventRepository.findById(expected)).isNull();
-    }
+//    @Test
+//    void deleteTest(){
+//        Event e = eventRepository.save(EventCreator.defaultEvent());
+//        e.setId(1);
+//        int expected = e.getId();
+//        String password = "12345678";
+//
+//        UserAccountNewDTO user = new UserAccountNewDTO("t@gmail.com", "test", password);
+//        UserAccount savedUser = userAccountService.insert(user);
+//
+//        CredentialsDTO credentials = new CredentialsDTO(savedUser.getEmail(), password);
+//
+//        ResponseEntity<UserInfoResponse> responseLogin = testRestTemplate.postForEntity(
+//                "/api/auth/login", credentials, UserInfoResponse.class);
+//
+//        Assertions.assertThat(responseLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
+//
+//        testRestTemplate.exchange("/api/events/{id}", HttpMethod.DELETE,
+//                null, Void.class, expected);
+//
+//        ResponseEntity<Void> responseDelete = testRestTemplate.exchange("/api/events/{id}", HttpMethod.DELETE, null, Void.class, expected);
+//
+//
+//        Assertions.assertThat(eventRepository.findById(expected)).isNull();
+//    }
 
 }

@@ -49,17 +49,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] PUBLIC_MATCHERS = {
-            "/",
-            "/h2-console/**",
-            "/swagger/**"
+            "/h2-console/**"
     };
 
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/api/events/**",
-            "/api/users/**"
     };
 
     private static final String[] PUBLIC_MATCHERS_POST = {
+            "/api/users",
             "/api/users/",
             "/api/auth/**",
     };

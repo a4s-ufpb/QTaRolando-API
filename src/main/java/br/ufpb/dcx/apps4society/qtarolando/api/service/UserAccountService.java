@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
@@ -52,7 +51,7 @@ public class UserAccountService {
                 "Objeto não encontrado! Id: " + id + ", Tipo: " + UserAccount.class.getName()));
     }
 
-    @Transactional(propagation= Propagation.REQUIRED, readOnly=true, noRollbackFor=Exception.class)
+    @Transactional
     public UserAccount insert(UserAccountNewDTO objDto) {
         if (userRepository.findByEmail(objDto.getEmail()) != null) {
             throw new DataIntegrityException("Email já registrado");
