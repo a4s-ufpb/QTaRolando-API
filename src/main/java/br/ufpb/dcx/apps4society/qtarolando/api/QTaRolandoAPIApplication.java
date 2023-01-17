@@ -60,4 +60,7 @@ public class QTaRolandoAPIApplication implements CommandLineRunner {
 			}
 		}
 	}
+
+
+
 }

@@ -1,11 +1,7 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,13 +20,14 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserAccount {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "ID", updatable = false, nullable = false)
-    @ColumnDefault("gen_random_uuid()")
+    @ColumnDefault("random_uuid()")
     @Type(type = "uuid-char")
     @Getter
     @Setter
@@ -68,6 +65,14 @@ public class UserAccount {
         this.email = userAccountNewDTO.getEmail();
         this.username = userAccountNewDTO.getUsername();
         this.password = userAccountNewDTO.getPassword();
+    }
+
+    public UserAccount(String email, String username, String password, List<Event> events, Set<Role> roles) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.events = events;
+        this.roles = roles;
     }
 
     public UserAccount(String email, String username, String password) {

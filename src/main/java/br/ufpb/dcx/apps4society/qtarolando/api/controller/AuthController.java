@@ -43,7 +43,7 @@ public class AuthController {
   @PostMapping(value = "/login")
   public ResponseEntity<UserInfoResponse> login(@Valid @RequestBody CredentialsDTO credentials) {
     Authentication authentication = authenticationManager
-        .authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
+            .authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -52,14 +52,14 @@ public class AuthController {
     ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(user);
 
     List<String> roles = user.getAuthorities().stream()
-        .map(item -> item.getAuthority())
-        .collect(Collectors.toList());
+            .map(item -> item.getAuthority())
+            .collect(Collectors.toList());
 
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-        .body(new UserInfoResponse(user.getId(),
-            user.getUsername(),
-            user.getEmail(),
-            roles));
+            .body(new UserInfoResponse(user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    roles));
   }
 
   @PostMapping(value = "/signup")

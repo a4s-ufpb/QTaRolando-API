@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "api/users")
+@Log4j2
 public class UserController {
 
     @Autowired
@@ -48,6 +50,7 @@ public class UserController {
         return ResponseEntity.ok().body(listDto);
     }
 
+    //TODO: melhorar a paginacao
     @GetMapping(value = "/page")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserAccountDTO>> findPage(
