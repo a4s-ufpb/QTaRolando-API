@@ -20,7 +20,6 @@ public class UserAccountDTO implements Serializable {
     private String email;
 
     @NotEmpty(message = "Preenchimento obrigatório")
-    @Size(min = 8, message = "Usuário deve conter no mínimo 8 caracteres")
     private String username;
 
     private Set<Role> roles = new HashSet<>();
