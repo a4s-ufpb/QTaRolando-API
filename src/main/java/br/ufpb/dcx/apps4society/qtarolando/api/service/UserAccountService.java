@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -106,9 +107,8 @@ public class UserAccountService {
         return obj;
     }
 
-    //TODO: melhorar a paginacao e fazer funcionar
-    public Page<UserAccount> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-        Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+    public Page<UserAccount> findPage(Integer page, Integer pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         return userRepository.findAll(pageable);
     }
 

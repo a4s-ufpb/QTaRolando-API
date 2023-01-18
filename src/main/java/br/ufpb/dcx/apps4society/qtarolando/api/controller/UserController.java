@@ -50,15 +50,13 @@ public class UserController {
         return ResponseEntity.ok().body(listDto);
     }
 
-    //TODO: melhorar a paginacao
     @GetMapping(value = "/page")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserAccountDTO>> findPage(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
-            @RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
-            @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
-        Page<UserAccount> list = service.findPage(page, linesPerPage, orderBy, direction);
+            @RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize){
+
+        Page<UserAccount> list = service.findPage(page, pageSize);
         Page<UserAccountDTO> listDto = list.map(obj -> new UserAccountDTO(obj));
         return ResponseEntity.ok().body(listDto);
     }
