@@ -52,31 +52,6 @@ public class UserAccountService {
                 "Objeto não encontrado! Id: " + id + ", Tipo: " + UserAccount.class.getName()));
     }
 
-    @Transactional
-    public UserAccount insert(UserAccountNewDTO objDto) {
-        if (userRepository.findByEmail(objDto.getEmail()) != null) {
-            throw new DataIntegrityException("Email já registrado");
-        }
-        UserAccount obj = fromDTO(objDto);
-        obj.setId(null);
-        obj = userRepository.save(obj);
-        return obj;
-    }
-
-    @Transactional
-    public UserAccount update(UserAccount obj) {
-        UserAccount newObj = find(obj.getId());
-        updateData(newObj, obj);
-        return userRepository.save(newObj);
-    }
-
-    public void delete(UUID id) {
-        if (!userRepository.findById(id).get().getEvents().isEmpty()) {
-            throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
-        }
-        userRepository.deleteById(id);
-    }
-
     public List<UserAccount> findAll() {
         return userRepository.findAll();
     }
@@ -110,6 +85,31 @@ public class UserAccountService {
     public Page<UserAccount> findPage(Integer page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         return userRepository.findAll(pageable);
+    }
+
+    @Transactional
+    public UserAccount insert(UserAccountNewDTO objDto) {
+        if (userRepository.findByEmail(objDto.getEmail()) != null) {
+            throw new DataIntegrityException("Email já registrado");
+        }
+        UserAccount obj = fromDTO(objDto);
+        obj.setId(null);
+        obj = userRepository.save(obj);
+        return obj;
+    }
+
+    @Transactional
+    public UserAccount update(UserAccount obj) {
+        UserAccount newObj = find(obj.getId());
+        updateData(newObj, obj);
+        return userRepository.save(newObj);
+    }
+
+    public void delete(UUID id) {
+        if (!userRepository.findById(id).get().getEvents().isEmpty()) {
+            throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
+        }
+        userRepository.deleteById(id);
     }
 
     public UserAccount fromDTO(UserAccountDTO objDto) {
