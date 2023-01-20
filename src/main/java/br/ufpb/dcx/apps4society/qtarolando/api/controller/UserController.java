@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,16 +45,23 @@ public class UserController {
     @Autowired
     CreateRoleUserService createRoleUserService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<UserAccountDTO>> findAll() {
-        List<UserAccount> list = service.findAll();
-        List<UserAccountDTO> listDto = list.stream().map(obj -> new UserAccountDTO(obj)).collect(Collectors.toList());
-        return ResponseEntity.ok().body(listDto);
-    }
+//    @GetMapping
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<List<UserAccountDTO>> findAll() {
+//        List<UserAccount> list = service.findAll();
+//        List<UserAccountDTO> listDto = list.stream().map(obj -> new UserAccountDTO(obj)).collect(Collectors.toList());
+//        return ResponseEntity.ok().body(listDto);
+//    }
 
     @GetMapping(value = "/page")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @Operation(summary = "Pesquisa todos os usuarios cadastrados",
+            description = "Retorna todos os usuários cadastrados no sistema",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse (responseCode = "200", description = "Operação feita com sucesso"),
+            @ApiResponse (responseCode = "403", description = "Quando o usuário não tem a role de ADMIN ou não está logado")
+    })
     public ResponseEntity<Page<UserAccountDTO>> findPage(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize){
@@ -61,30 +71,70 @@ public class UserController {
         return ResponseEntity.ok().body(listDto);
     }
 
+    //org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Unable to access lob stream
+    // problema no banco Postgres quando pesquisa um user que tem um event associado a ele que não acontece no H2
     @GetMapping(value = "/{id}")
+    @Operation(summary = "Pesquisa pelo id do usuário",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Caso não esteja logado"),
+            @ApiResponse(responseCode = "403", description = "Caso passe um id que não seja o seu"),
+            @ApiResponse(responseCode = "500", description = "Caso o UUID não seja valido"),
+                })
     public ResponseEntity<UserAccount> findById(@PathVariable String id) {
         UserAccount obj = service.find(UUID.fromString(id));
         return ResponseEntity.ok().body(obj);
     }
 
     @GetMapping(value = "/email")
+    @Operation(summary = "Pesquisa pelo email do usuário",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Caso não esteja logado ou passe um email diferente do seu")
+    })
     public ResponseEntity<UserAccount> findByEmail(@RequestParam(value = "value") String email) {
         UserAccount obj = service.findByEmail(email);
         return ResponseEntity.ok().body(obj);
     }
 
-    @GetMapping(value = "/userName")
+    //TODO: consertar erro
+    //NonUniqueResultException: query did not return a unique result: 2
+    @GetMapping(value = "/username")
+    @Operation(summary = "Pesquisa pelo nome do usuário",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Caso não esteja logado ou passe um username diferente do seu")
+    })
     public ResponseEntity<UserAccount> findByUserName(@RequestParam(value = "value") String userName) {
         UserAccount obj = service.findByUsername(userName);
         return ResponseEntity.ok().body(obj);
     }
 
+    //TODO:
+    //O user pode mudar as roles de outros users?
+    //Está mudando a role mesmo sem ter um user logado
     @PostMapping("/role")
+    @Operation(summary = "Muda o papel que o usuário tem",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Caso passe um id que a role não esteja cadastrada")
+    })
     public UserAccount role(@RequestBody CreateUserRoleDTO createUserRoleDTO) {
         return createRoleUserService.execute(createUserRoleDTO);
     }
 
     @PutMapping(value = "/{id}")
+    @Operation(summary = "Altera os dados de um usuário",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operação feita com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Caso não passe corretamente os dados"),
+            @ApiResponse(responseCode = "403", description = "Caso tente mudar os dados que não seja do usuário logado")
+    })
     public ResponseEntity<Void> update(@Valid @RequestBody UserAccountDTO objDto, @PathVariable String id) {
         UserAccount obj = service.fromDTO(objDto);
         obj.setId(UUID.fromString(id));
@@ -93,13 +143,29 @@ public class UserController {
     }
 
     @PatchMapping(value = "/password")
+    @Operation(summary = "Altera a senha do usuário",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operação feita com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Caso a senha tenha menos de 8 caracteres"),
+            @ApiResponse(responseCode = "404", description = "Caso o usuário não esteja logado")
+    })
     public ResponseEntity<Void> updatePassword(@Valid @RequestBody UserPasswordDTO userPasswordDTO) {
         service.updatePassword(userPasswordDTO);
         return ResponseEntity.noContent().build();
     }
 
+    //TODO:
+    //posso deletar qualquer user?
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @Operation(summary = "Deleta um usuário do sistema",
+            tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operação feita com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Caso não esteja logado ou não tenha a role de ADMIN"),
+            @ApiResponse(responseCode = "500", description = "Caso não encontre o id passado")
+    })
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(UUID.fromString(id));
         return ResponseEntity.noContent().build();

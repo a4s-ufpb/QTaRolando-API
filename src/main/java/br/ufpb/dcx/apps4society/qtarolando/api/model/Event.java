@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.EventModality;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,21 +21,43 @@ public class Event {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Schema(example = "1")
 	private Integer id;
+
+	@Schema(example = "Passeio turistico")
 	private String title;
+
+	@Schema(example = "Pontos turisticos de João Pessoa")
 	private String subtitle;
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "event_categories", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<Category> categories = new ArrayList<>();
+
 	@Lob
+	@Schema(example = "Passeio feito através dos pontos turisticos da capital da Paraíba")
 	private String description;
+
+	@Schema(example = "2023-01-01 08:00:00")
 	private LocalDateTime initialDate;
+
+	@Schema(example = "2023-01-01 19:00:00")
 	private LocalDateTime finalDate;
+
 	@Lob
+	@Schema(example = "caminho da imagem")
 	private String imagePath;
+
+	@Schema(example = "PRESENCIAL")
 	private String modality;
+
+	@Schema(example = "Lagoa no centro de João Pessoa")
 	private String location;
+
+	@Schema(example = "83000000000")
 	private String phone;
+
+	@Schema(example = "www.exemplo.com.br")
 	private String site;
 
 	public Event(EventDTO eventDTO) {

@@ -1,5 +1,7 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -12,15 +14,19 @@ public class UserAccountNewDTO implements Serializable {
 
     @Email(message = "Email inválido")
     @NotNull(message = "Preenchimento obrigatório")
+    @Schema(description = "Esse é o email do usuário", example = "teste@gmail.com")
     private String email;
 
     @NotNull(message = "Preenchimento obrigatório")
+    @Schema(description = "Esse é o nome do usuário", example = "teste")
     private String username;
 
     @NotNull
     @Size(min = 8, message = "Usuário deve conter no mínimo 8 caracteres")
+    @Schema(description = "Esse é a senha do usuário e deve conter no mínimo 8 caracteres", example = "12345678")
     private String password;
 
+    @Schema(hidden = true)
     private Set<String> roles;
 
     public UserAccountNewDTO() {
