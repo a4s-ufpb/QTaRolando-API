@@ -108,7 +108,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
             @ApiResponse(responseCode = "403", description = "Caso não esteja logado ou passe um username diferente do seu")
     })
-    public ResponseEntity<UserAccount> findByUserName(@RequestParam(value = "value") String userName) {
+    public ResponseEntity<UserAccount> findByUsername(@RequestParam(value = "value") String userName) {
         UserAccount obj = service.findByUsername(userName);
         return ResponseEntity.ok().body(obj);
     }
