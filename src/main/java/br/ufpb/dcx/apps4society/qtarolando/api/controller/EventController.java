@@ -25,7 +25,7 @@ public class EventController {
 			tags = {"event"})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-			@ApiResponse(responseCode = "500", description = "Quando o evento não é encontrado")
+			@ApiResponse(responseCode = "404", description = "Quando o evento não é encontrado")
 	})
 	public Event getEventById(@PathVariable("id") Integer id) {
 		return eventService.getEventById(id);

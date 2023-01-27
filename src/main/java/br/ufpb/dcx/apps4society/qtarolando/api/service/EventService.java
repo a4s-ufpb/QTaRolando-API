@@ -33,12 +33,9 @@ public class EventService {
 	private UserAccountService userAccountService;
 
 	public Event getEventById(Integer id) throws ObjectNotFoundException {
-		Event event = eventRepository.findById(id).get();
-		if (event == null) {
-			throw new ObjectNotFoundException("Evento não encontrado");
-		}
-
-		return event;
+		return eventRepository.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException(
+						"Evento não encontrado! Id: "+ id +", Tipo: "+ Event.class.getName()));
 	}
 
 	@Transactional
