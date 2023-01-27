@@ -61,7 +61,7 @@ public class AuthControllerIT {
     }
 
     @Test
-    void login_returnsStatusUNAUTHORIZED_whenUserIsntRegistered(){
+    void login_returnsStatusBADREQUEST_whenUserIsntRegistered(){
         String passwordWithoutCryptography = "12345678";
         String email = "wb@gmail.com";
         CredentialsDTO credentials = new CredentialsDTO(email, passwordWithoutCryptography);
@@ -70,7 +70,7 @@ public class AuthControllerIT {
                 BASE_URL+"login", credentials, UserInfoResponse.class);
 
         Assertions.assertThat(response.getStatusCode())
-                .isEqualTo(HttpStatus.UNAUTHORIZED);
+                .isEqualTo(HttpStatus.BAD_REQUEST);
 
         Assertions.assertThat(response.getBody().getEmail())
                 .isNull();
@@ -81,14 +81,14 @@ public class AuthControllerIT {
     }
 
     @Test
-    void signup_returnsStatusOk_whenSuccessful(){
+    void signup_returnsStatusCREATED_whenSuccessful(){
         UserAccountNewDTO user = new UserAccountNewDTO("wb@gmail.com", "wellington", "12345678");
 
         ResponseEntity<Void> response = authTestRestTemplate.postForEntity(BASE_URL+"signup", user, null);
 
         List<UserAccount> users = userAccountService.findAll();
 
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         Assertions.assertThat(users).hasSize(1);
 
