@@ -43,7 +43,9 @@ public class EventService {
 										 String dateType,
 										 String initialDate,
 										 String finalDate, Integer page, Integer pageSize) {
+
 		Pageable pageable = PageRequest.of(page, pageSize);
+
 		return eventCustomRepository.find(title, categoryId, modality, dateType, initialDate, finalDate,
 				pageable);
 	}
@@ -68,7 +70,7 @@ public class EventService {
 		}
 		Optional<Event> event = eventRepository.findById(id);
 		if (!event.isPresent()) {
-			throw new ObjectNotFoundException("Evento não encontrado");
+			throw new ObjectNotFoundException("Evento não encontrado! Id: "+ id +", Tipo: "+ Event.class.getName());
 		}
 
 		UserAccount userAccount = userAccountService.findByEmail(userSS.getEmail());
@@ -89,11 +91,11 @@ public class EventService {
 		}
 		Optional<Event> event = eventRepository.findById(id);
 		if (!event.isPresent()) {
-			throw new ObjectNotFoundException("Evento não encontrado");
+			throw new ObjectNotFoundException("Evento não encontrado! Id: "+ id +", Tipo: "+ Event.class.getName());
 		}
 
 		UserAccount userAccount = userAccountService.findByEmail(userSS.getEmail());
-		if (userAccount.getEvents().contains(event.get()) || userSS.hasRole(Roles.ADMIN)) {
+		if (userAccount.getEvents().contains(event.get())) {
 			eventRepository.delete(event.get());
 		} else {
 			throw new AuthorizationException("Acesso negado");

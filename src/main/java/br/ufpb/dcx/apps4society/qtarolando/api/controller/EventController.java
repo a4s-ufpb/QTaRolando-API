@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +59,8 @@ public class EventController {
 	@Operation(summary = "Cria um evento",
 			description = "Cria um evento e o associa ao usuário logado",
 			tags = {"event"})
-	@ApiResponse(responseCode = "200", description = "Operação feita com sucesso")
+	@ApiResponse(responseCode = "201", description = "Evento criado com sucesso")
+	@ResponseStatus(HttpStatus.CREATED)
 	//É possivel criar um mesmo evento multiplas vezes?
 	public void createEvent(@RequestBody EventDTO eventDTO) {
 		eventService.createEvent(eventDTO);
@@ -70,10 +72,12 @@ public class EventController {
 			description = "É preciso estar logado no sistema",
 			tags = {"event"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-			@ApiResponse(responseCode = "403", description = "Quando o usuário não está logado ou não é o criador do evento"),
+			@ApiResponse(responseCode = "204", description = "Operação feita com sucesso"),
+			@ApiResponse(responseCode = "401", description = "Quando o usuário não está logado"),
+			@ApiResponse(responseCode = "403", description = "Quando não é o criador do evento"),
 			@ApiResponse(responseCode = "404", description = "Quando o evento não é encontrado")
 	})
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateEvent(@PathVariable("id") Integer id, @RequestBody EventDTO newEventDTO) {
 		eventService.updateEvent(id, newEventDTO);
 	}
@@ -84,10 +88,12 @@ public class EventController {
 			description = "É preciso estar logado no sistema",
 			tags = {"event"})
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-			@ApiResponse(responseCode = "403", description = "Quando o usuário não está logado ou não é o criador do evento"),
+			@ApiResponse(responseCode = "204", description = "Operação feita com sucesso"),
+			@ApiResponse(responseCode = "401", description = "Quando o usuário não está logado"),
+			@ApiResponse(responseCode = "403", description = "Quando não é o criador do evento"),
 			@ApiResponse(responseCode = "404", description = "Quando o evento não é encontrado")
 	})
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteEvent(@PathVariable("id") Integer id) {
 		eventService.deleteEvent(id);
 	}
