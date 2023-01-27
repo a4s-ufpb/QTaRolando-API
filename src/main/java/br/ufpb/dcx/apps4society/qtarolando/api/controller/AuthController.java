@@ -12,17 +12,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
@@ -51,7 +48,7 @@ public class AuthController {
           tags = {"auth"})
   @ApiResponses(value = {
           @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-          @ApiResponse(responseCode = "401", description = "Quando o email ou a senha estão incorretos")
+          @ApiResponse(responseCode = "400", description = "Quando o email ou a senha estão incorretos")
   })
   public ResponseEntity<UserInfoResponse> login(@Valid @RequestBody CredentialsDTO credentials) {
     Authentication authentication = authenticationManager
@@ -79,12 +76,13 @@ public class AuthController {
           description = "O novo usuário não pode ter o mesmo email que um usuário já cadastrado",
           tags = {"auth"})
   @ApiResponses(value = {
-          @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
+          @ApiResponse(responseCode = "201", description = "Operação feita com sucesso"),
           @ApiResponse(responseCode = "400", description = "Quando um email já está cadastrado ou uma senha não contem 8 caracteres")
   })
+  @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Void> signUp(@Valid @RequestBody UserAccountNewDTO objDto) {
     service.insert(objDto);
-    return ResponseEntity.ok().build();
+    return  new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @PostMapping("/signout")
