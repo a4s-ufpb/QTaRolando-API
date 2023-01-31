@@ -60,7 +60,8 @@ public class UserController {
             tags = {"user"})
     @ApiResponses(value = {
             @ApiResponse (responseCode = "200", description = "Operação feita com sucesso"),
-            @ApiResponse (responseCode = "403", description = "Quando o usuário não tem a role de ADMIN ou não está logado")
+            @ApiResponse (responseCode = "401", description = "Quando o usuário não está logado"),
+            @ApiResponse (responseCode = "403", description = "Quando o usuário não tem a role de ADMIN")
     })
     public ResponseEntity<Page<UserAccountDTO>> findPage(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -79,9 +80,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
             @ApiResponse(responseCode = "401", description = "Caso não esteja logado"),
-            @ApiResponse(responseCode = "403", description = "Caso passe um id que não seja o seu"),
-            @ApiResponse(responseCode = "500", description = "Caso o UUID não seja valido"),
-                })
+            @ApiResponse(responseCode = "403", description = "Caso passe um id que não seja o seu")
+    })
     public ResponseEntity<UserAccount> findById(@PathVariable String id) {
         UserAccount obj = service.find(UUID.fromString(id));
         return ResponseEntity.ok().body(obj);
@@ -92,7 +92,8 @@ public class UserController {
             tags = {"user"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-            @ApiResponse(responseCode = "403", description = "Caso não esteja logado ou passe um email diferente do seu")
+            @ApiResponse(responseCode = "401", description = "Caso não esteja logado"),
+            @ApiResponse(responseCode = "403", description = "Caso passe um email diferente do seu")
     })
     public ResponseEntity<UserAccount> findByEmail(@RequestParam(value = "value") String email) {
         UserAccount obj = service.findByEmail(email);
@@ -106,7 +107,8 @@ public class UserController {
             tags = {"user"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-            @ApiResponse(responseCode = "403", description = "Caso não esteja logado ou passe um username diferente do seu")
+            @ApiResponse(responseCode = "401", description = "Caso não esteja logado"),
+            @ApiResponse(responseCode = "403", description = "Caso passe um username diferente do seu")
     })
     public ResponseEntity<UserAccount> findByUsername(@RequestParam(value = "value") String userName) {
         UserAccount obj = service.findByUsername(userName);
@@ -121,7 +123,8 @@ public class UserController {
             tags = {"user"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Caso passe um id que a role não esteja cadastrada")
+            @ApiResponse(responseCode = "400", description = "Caso a UUID seja invalida"),
+            @ApiResponse(responseCode = "404", description = "Caso nao encontre o UUID ou o id da role")
     })
     public UserAccount role(@RequestBody CreateUserRoleDTO createUserRoleDTO) {
         return createRoleUserService.execute(createUserRoleDTO);
@@ -155,15 +158,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    //TODO:
-    //posso deletar qualquer user?
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Operation(summary = "Deleta um usuário do sistema",
             tags = {"user"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Operação feita com sucesso"),
-            @ApiResponse(responseCode = "401", description = "Caso não esteja logado ou não tenha a role de ADMIN"),
+            @ApiResponse(responseCode = "403", description = "Caso não tenha a role de ADMIN"),
             @ApiResponse(responseCode = "500", description = "Caso não encontre o id passado")
     })
     public ResponseEntity<Void> delete(@PathVariable String id) {

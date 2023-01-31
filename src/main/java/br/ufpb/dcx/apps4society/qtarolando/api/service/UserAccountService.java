@@ -109,7 +109,8 @@ public class UserAccountService {
         if (!userRepository.findById(id).get().getEvents().isEmpty()) {
             throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
         }
-        userRepository.deleteById(id);
+        userRepository.delete(find(id));
+
     }
 
     public UserAccount fromDTO(UserAccountDTO objDto) {

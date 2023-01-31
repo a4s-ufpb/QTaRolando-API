@@ -5,12 +5,15 @@ import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.DataIntegrityE
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -63,6 +66,56 @@ public class ControllerExceptionHandler {
                         .status(HttpStatus.BAD_REQUEST.value())
                         .error(e.getMessage())
                         .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<StandardError> illegalArgumentException(IllegalArgumentException e){
+        return new ResponseEntity<>(
+                StandardError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .error(e.getMessage())
+                        .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<StandardError> httpMessageNotReadableException(HttpMessageNotReadableException e){
+        return new ResponseEntity<>(
+                StandardError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .error(e.getMessage())
+                        .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Error.class)
+    public ResponseEntity<StandardError> error(Error e){
+        return new ResponseEntity<>(
+                StandardError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.NOT_FOUND.value())
+                        .error(e.getMessage())
+                        .build(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<StandardError> entityNotFoundException(EntityNotFoundException e){
+        return new ResponseEntity<>(
+                StandardError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.NOT_FOUND.value())
+                        .error(e.getMessage())
+                        .build(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<StandardError> noSuchElementException(NoSuchElementException e){
+        return new ResponseEntity<>(
+                StandardError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.NOT_FOUND.value())
+                        .error(e.getMessage())
+                        .build(), HttpStatus.NOT_FOUND);
     }
 
 }
