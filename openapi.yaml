@@ -1,0 +1,797 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /api/users/{id}:
+    get:
+      tags:
+        - user
+      summary: Pesquisa pelo id do usuário
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '401':
+          description: Caso não esteja logado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '403':
+          description: Caso passe um id que não seja o seu
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+    put:
+      tags:
+        - user
+      summary: Altera os dados de um usuário
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountDTO'
+        required: true
+      responses:
+        '204':
+          description: Operação feita com sucesso
+        '400':
+          description: Caso não passe corretamente os dados
+        '403':
+          description: Caso tente mudar os dados que não seja do usuário logado
+    delete:
+      tags:
+        - user
+      summary: Deleta um usuário do sistema
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Operação feita com sucesso
+        '403':
+          description: Caso não tenha a role de ADMIN
+        '500':
+          description: Caso não encontre o id passado
+  /api/events/{id}:
+    get:
+      tags:
+        - event
+      summary: Pesquisa um evento pelo seu id
+      operationId: getEventById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Quando o evento não é encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Event'
+    put:
+      tags:
+        - event
+      summary: Atualiza os dados de um evento
+      description: É preciso estar logado no sistema
+      operationId: updateEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventDTO'
+        required: true
+      responses:
+        '204':
+          description: Operação feita com sucesso
+        '401':
+          description: Quando o usuário não está logado
+        '403':
+          description: Quando não é o criador do evento
+        '404':
+          description: Quando o evento não é encontrado
+    delete:
+      tags:
+        - event
+      summary: Deleta os dados de um evento
+      description: É preciso estar logado no sistema
+      operationId: deleteEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Operação feita com sucesso
+        '401':
+          description: Quando o usuário não está logado
+        '403':
+          description: Quando não é o criador do evento
+        '404':
+          description: Quando o evento não é encontrado
+  /api/users/role:
+    post:
+      tags:
+        - user
+      summary: Muda o papel que o usuário tem
+      operationId: role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRoleDTO'
+        required: true
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '400':
+          description: Caso a UUID seja invalida
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '404':
+          description: Caso nao encontre o UUID ou o id da role
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+  /api/events:
+    post:
+      tags:
+        - event
+      summary: Cria um evento
+      description: Cria um evento e o associa ao usuário logado
+      operationId: createEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventDTO'
+        required: true
+      responses:
+        '201':
+          description: Evento criado com sucesso
+  /api/auth/signup:
+    post:
+      tags:
+        - auth
+      summary: Sign Up é usado para o novo usuário se cadastrar
+      description: O novo usuário não pode ter o mesmo email que um usuário já cadastrado
+      operationId: signUp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountNewDTO'
+        required: true
+      responses:
+        '201':
+          description: Operação feita com sucesso
+        '400':
+          description: Quando um email já está cadastrado ou uma senha não contem 8 caracteres
+  /api/auth/signout:
+    post:
+      tags:
+        - auth
+      summary: Sign out é usado para o usuário se deslogar do sistema
+      operationId: logoutUser
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login é usado para o usuário entrar no sistema
+      description: Feito isso ele poderá realizar operações que precisam de alguma autenticação
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialsDTO'
+        required: true
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+        '400':
+          description: Quando o email ou a senha estão incorretos
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+  /api/users/password:
+    patch:
+      tags:
+        - user
+      summary: Altera a senha do usuário
+      operationId: updatePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordDTO'
+        required: true
+      responses:
+        '204':
+          description: Operação feita com sucesso
+        '400':
+          description: Caso a senha tenha menos de 8 caracteres
+        '404':
+          description: Caso o usuário não esteja logado
+  /:
+    get:
+      tags:
+        - q-ta-rolando-api-application
+      operationId: index
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/users/username:
+    get:
+      tags:
+        - user
+      summary: Pesquisa pelo nome do usuário
+      operationId: findByUsername
+      parameters:
+        - name: value
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '401':
+          description: Caso não esteja logado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '403':
+          description: Caso passe um username diferente do seu
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+  /api/users/page:
+    get:
+      tags:
+        - user
+      summary: Pesquisa todos os usuarios cadastrados
+      description: Retorna todos os usuários cadastrados no sistema
+      operationId: findPage
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 24
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageUserAccountDTO'
+        '401':
+          description: Quando o usuário não está logado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageUserAccountDTO'
+        '403':
+          description: Quando o usuário não tem a role de ADMIN
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageUserAccountDTO'
+  /api/users/email:
+    get:
+      tags:
+        - user
+      summary: Pesquisa pelo email do usuário
+      operationId: findByEmail
+      parameters:
+        - name: value
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '401':
+          description: Caso não esteja logado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        '403':
+          description: Caso passe um email diferente do seu
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+  /api/events/filter:
+    get:
+      tags:
+        - event
+      summary: Filtro usado para a pesquisa de evento
+      description: Caso não passe nenhum dos parametros a seguir ele irá retornar uma page com todos os eventos cadastrados. A pesquisa pode ser feita pelo titulo do evento, id da categoria ou modalidade. A pesquisa pela data de inicio e data final de um evento deve ser feita usando alguns dos dateType do sistema, também é possível especificar como deve ser o tamanho e a quantidade de paginas desejadas
+      operationId: getEventsByFilter
+      parameters:
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: modality
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: dateType
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: initialDate
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: finalDate
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 24
+      responses:
+        '200':
+          description: Operação feita com sucesso
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageEvent'
+components:
+  schemas:
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id da role
+          format: int32
+          example: 1
+        name:
+          type: string
+          description: nome da role
+          example: ADMIN
+    UserAccountDTO:
+      required:
+        - email
+        - username
+      type: object
+      properties:
+        email:
+          type: string
+          description: Esse é o email do usuário
+          example: teste@gmail.com
+        username:
+          type: string
+          description: Esse é o nome do usuário
+          example: teste
+        profiles:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: PRESENCIAL
+    EventDTO:
+      required:
+        - categories
+        - description
+        - finalDate
+        - imagePath
+        - initialDate
+        - location
+        - modality
+        - subtitle
+        - title
+      type: object
+      properties:
+        title:
+          type: string
+          description: Titulo para o evento
+          example: Passeio turistico
+        subtitle:
+          type: string
+          description: Subtitulo que o evento terá
+          example: Pontos turisticos de João Pessoa
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        description:
+          type: string
+          description: Descrição do evento
+          example: Passeio feito através dos pontos turisticos da capital da Paraíba
+        initialDate:
+          type: string
+          description: Data de início do evento
+          format: date-time
+        finalDate:
+          type: string
+          description: Data de encerramento do evento
+          format: date-time
+        imagePath:
+          type: string
+          description: Caminho da imagem que representará o evento
+          example: caminho da imagem
+        modality:
+          type: string
+          description: Modalidade que o evento terá, PRESENCIAL ou ONLINE
+          example: PRESENCIAL
+        location:
+          type: string
+          description: Local ao qual o evento ocorrerá
+          example: Lagoa no centro de João Pessoa
+        phone:
+          type: string
+          description: Número para contato
+          example: '83000000000'
+        site:
+          type: string
+          description: Url do site caso o evento tenha um
+          example: www.exemplo.com.br
+    CreateUserRoleDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: UUID do usuário
+          format: uuid
+          example: 93871b30-53aa-42fd-881e-5cd189787f29
+        idsRoles:
+          type: array
+          description: id das roles que o usuário terá
+          example:
+            - 1
+            - 2
+          items:
+            type: integer
+            description: id das roles que o usuário terá
+            format: int32
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        title:
+          type: string
+          example: Passeio turistico
+        subtitle:
+          type: string
+          example: Pontos turisticos de João Pessoa
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        description:
+          type: string
+          example: Passeio feito através dos pontos turisticos da capital da Paraíba
+        initialDate:
+          type: string
+          format: date-time
+        finalDate:
+          type: string
+          format: date-time
+        imagePath:
+          type: string
+          example: caminho da imagem
+        modality:
+          type: string
+          example: PRESENCIAL
+          enum:
+            - PRESENCIAL
+            - ONLINE
+        location:
+          type: string
+          example: Lagoa no centro de João Pessoa
+        phone:
+          type: string
+          example: '83000000000'
+        site:
+          type: string
+          example: www.exemplo.com.br
+    UserAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        username:
+          type: string
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        roles:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+    UserAccountNewDTO:
+      required:
+        - email
+        - password
+        - username
+      type: object
+      properties:
+        email:
+          type: string
+          description: Esse é o email do usuário
+          example: teste@gmail.com
+        username:
+          type: string
+          description: Esse é o nome do usuário
+          example: teste
+        password:
+          maxLength: 2147483647
+          minLength: 8
+          type: string
+          description: Esse é a senha do usuário e deve conter no mínimo 8 caracteres
+          example: '12345678'
+    CredentialsDTO:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+          description: O email do usuário
+          example: teste@gmail.com
+        password:
+          type: string
+          description: A senha do usuário
+          example: '12345678'
+    UserInfoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: O UUID é gerado automaticamente pelo sistema
+          format: uuid
+          example: 93871b30-53aa-42fd-881e-5cd189787f29
+        username:
+          type: string
+          description: O nome de usuário
+          example: teste
+        email:
+          type: string
+          description: O email do usuário
+          example: teste@gmail.com
+        roles:
+          type: array
+          description: Os papeis que o usuário pode ter no sistema
+          example: ADMIN,USER
+          items:
+            type: string
+            description: Os papeis que o usuário pode ter no sistema
+            example: ADMIN,USER
+    UserPasswordDTO:
+      required:
+        - password
+      type: object
+      properties:
+        password:
+          maxLength: 2147483647
+          minLength: 8
+          type: string
+          description: nova senha do usuário
+          example: '87654321'
+    PageUserAccountDTO:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAccountDTO'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageableObject:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        unpaged:
+          type: boolean
+        paged:
+          type: boolean
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+    SortObject:
+      type: object
+      properties:
+        unsorted:
+          type: boolean
+        sorted:
+          type: boolean
+        empty:
+          type: boolean
+    PageEvent:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        last:
+          type: boolean
+        empty:
+          type: boolean
