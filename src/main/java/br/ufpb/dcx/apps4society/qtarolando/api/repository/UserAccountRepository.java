@@ -14,8 +14,7 @@ import java.util.UUID;
 public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> {
 
     @Transactional(readOnly = true)
-//    @Query("SELECT u from UserAccount u JOIN FETCH u.events where u.email = :email ")
-    UserAccount findByEmail(String email);
+     UserAccount findByEmail(String email);
 
     @Transactional(readOnly = true)
 //    @Query("SELECT u from UserAccount u JOIN FETCH u.events where u.id = :id ")

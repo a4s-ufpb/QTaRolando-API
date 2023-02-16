@@ -50,7 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] PUBLIC_MATCHERS = {
             "/",
             "/h2-console/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/v3/api-docs"
     };
 
     private static final String[] PUBLIC_MATCHERS_GET = {
@@ -81,7 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**");
+        web.ignoring().antMatchers("/v3/api-docs","/swagger-ui/**", "/v3/api-docs/**");
          }
 
     @Override
