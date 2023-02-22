@@ -8,6 +8,8 @@ import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.CreateRoleUserService;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.qtarolando.api.util.EventCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +23,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
 @ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
 public class UserControllerTest {
 
     @InjectMocks
@@ -115,6 +119,25 @@ public class UserControllerTest {
     }
 
     @Test
+    void findById_ThrowsObjectNotFoundException(){
+        BDDMockito.when(userAccountServiceMock.find(ArgumentMatchers.any()))
+                .thenThrow(ObjectNotFoundException.class);
+
+        Assertions.assertThatThrownBy(() -> userController.findById(UUIDstring))
+                .isInstanceOf(ObjectNotFoundException.class);
+
+    }
+
+    @Test
+    void findById_ThrowsAuthorizationException(){
+        BDDMockito.when(userAccountServiceMock.find(ArgumentMatchers.any()))
+                .thenThrow(AuthorizationException.class);
+
+        Assertions.assertThatThrownBy(() -> userController.findById(UUIDstring))
+                .isInstanceOf(AuthorizationException.class);
+    }
+
+    @Test
     void findByEmail_returnsStatusOK_whenSuccessful(){
         String expectedEmail = "test@test.com";
 
@@ -130,6 +153,25 @@ public class UserControllerTest {
     }
 
     @Test
+    void findByEmail_ThrowsObjectNotFoundException(){
+        BDDMockito.when(userAccountServiceMock.findByEmail(ArgumentMatchers.any()))
+                .thenThrow(ObjectNotFoundException.class);
+
+        Assertions.assertThatThrownBy(() -> userController.findByEmail("test@test.com"))
+                .isInstanceOf(ObjectNotFoundException.class);
+
+    }
+
+    @Test
+    void findByEmail_ThrowsAuthorizationException(){
+        BDDMockito.when(userAccountServiceMock.findByEmail(ArgumentMatchers.any()))
+                .thenThrow(AuthorizationException.class);
+
+        Assertions.assertThatThrownBy(() -> userController.findByEmail("test@test.com"))
+                .isInstanceOf(AuthorizationException.class);
+    }
+
+    @Test
     void findByUsername_returnsStatusOK_whenSuccessful(){
         String expectedUsername = "test";
 
@@ -142,6 +184,25 @@ public class UserControllerTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(expectedUsername);
+    }
+
+    @Test
+    void findByUsername_ThrowsObjectNotFoundException(){
+        BDDMockito.when(userAccountServiceMock.findByUsername(ArgumentMatchers.any()))
+                .thenThrow(ObjectNotFoundException.class);
+
+        Assertions.assertThatThrownBy(() -> userController.findByUsername("test"))
+                .isInstanceOf(ObjectNotFoundException.class);
+
+    }
+
+    @Test
+    void findByUsername_ThrowsAuthorizationException(){
+        BDDMockito.when(userAccountServiceMock.findByUsername(ArgumentMatchers.any()))
+                .thenThrow(AuthorizationException.class);
+
+        Assertions.assertThatThrownBy(() -> userController.findByUsername("test"))
+                .isInstanceOf(AuthorizationException.class);
     }
 
     @Test
