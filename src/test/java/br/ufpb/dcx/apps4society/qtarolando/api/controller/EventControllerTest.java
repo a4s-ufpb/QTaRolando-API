@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.controller.event.EventController;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;

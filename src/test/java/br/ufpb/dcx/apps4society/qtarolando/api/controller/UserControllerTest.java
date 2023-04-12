@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.controller.user.UserController;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.CreateUserRoleDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;

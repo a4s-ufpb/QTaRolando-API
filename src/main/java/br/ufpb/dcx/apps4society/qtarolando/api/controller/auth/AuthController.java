@@ -1,15 +1,14 @@
-package br.ufpb.dcx.apps4society.qtarolando.api.controller;
+package br.ufpb.dcx.apps4society.qtarolando.api.controller.auth;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
-import io.swagger.v3.oas.annotations.Hidden;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserInfoResponse;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
+import br.ufpb.dcx.apps4society.qtarolando.api.security.jwt.JWTUtils;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,17 +20,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserInfoResponse;
-import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
-import br.ufpb.dcx.apps4society.qtarolando.api.security.jwt.JWTUtils;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/auth")
-public class AuthController {
+public class AuthController implements AuthInterface{
 
   @Autowired
   private UserAccountService service;
@@ -42,14 +38,8 @@ public class AuthController {
   @Autowired
   private JWTUtils jwtUtils;
 
+  @Override
   @PostMapping(value = "/login")
-  @Operation(summary = "Login é usado para o usuário entrar no sistema",
-          description = "Feito isso ele poderá realizar operações que precisam de alguma autenticação",
-          tags = {"auth"})
-  @ApiResponses(value = {
-          @ApiResponse(responseCode = "200", description = "Operação feita com sucesso"),
-          @ApiResponse(responseCode = "400", description = "Quando o email ou a senha estão incorretos")
-  })
   public ResponseEntity<UserInfoResponse> login(@Valid @RequestBody CredentialsDTO credentials) {
     Authentication authentication = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
@@ -71,24 +61,16 @@ public class AuthController {
                     roles));
   }
 
+  @Override
   @PostMapping(value = "/signup")
-  @Operation(summary = "Sign Up é usado para o novo usuário se cadastrar",
-          description = "O novo usuário não pode ter o mesmo email que um usuário já cadastrado",
-          tags = {"auth"})
-  @ApiResponses(value = {
-          @ApiResponse(responseCode = "201", description = "Operação feita com sucesso"),
-          @ApiResponse(responseCode = "400", description = "Quando um email já está cadastrado ou uma senha não contem 8 caracteres")
-  })
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Void> signUp(@Valid @RequestBody UserAccountNewDTO objDto) {
     service.insert(objDto);
     return  new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  @Override
   @PostMapping("/signout")
-  @Operation(summary = "Sign out é usado para o usuário se deslogar do sistema",
-          tags = {"auth"})
-  @ApiResponse(responseCode = "200", description = "Operação feita com sucesso")
   public ResponseEntity<?> logoutUser() {
     ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();

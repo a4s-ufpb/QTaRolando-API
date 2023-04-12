@@ -29,4 +29,6 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> 
 
     @Query("SELECT u from UserAccount u JOIN FETCH u.roles where u.email = :email ")
     UserAccount findByEmailFetchRoles(@Param("email") String email);
+
+    Optional<UserAccount> findByEmailAndPassword(String email, String password);
 }
