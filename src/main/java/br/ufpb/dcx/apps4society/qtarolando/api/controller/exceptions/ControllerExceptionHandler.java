@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(ObjectNotFoundException.class)
-    public ResponseEntity<StandardError> objectNotFoundException(ObjectNotFoundException e){
+    public ResponseEntity<StandardError> objectNotFoundException(ObjectNotFoundException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -29,7 +29,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<StandardError> authorizationException(AuthorizationException e){
+    public ResponseEntity<StandardError> authorizationException(AuthorizationException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -39,7 +39,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<StandardError> accessDeniedException(AccessDeniedException e){
+    public ResponseEntity<StandardError> accessDeniedException(AccessDeniedException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -49,7 +49,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<StandardError> authenticationException(AuthenticationException e){
+    public ResponseEntity<StandardError> authenticationException(AuthenticationException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -59,7 +59,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityException.class)
-    public ResponseEntity<StandardError> dataIntegrityException(DataIntegrityException e){
+    public ResponseEntity<StandardError> dataIntegrityException(DataIntegrityException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -69,7 +69,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<StandardError> illegalArgumentException(IllegalArgumentException e){
+    public ResponseEntity<StandardError> illegalArgumentException(IllegalArgumentException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -79,7 +79,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<StandardError> httpMessageNotReadableException(HttpMessageNotReadableException e){
+    public ResponseEntity<StandardError> httpMessageNotReadableException(HttpMessageNotReadableException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -89,7 +89,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(Error.class)
-    public ResponseEntity<StandardError> error(Error e){
+    public ResponseEntity<StandardError> error(Error e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -99,7 +99,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<StandardError> entityNotFoundException(EntityNotFoundException e){
+    public ResponseEntity<StandardError> entityNotFoundException(EntityNotFoundException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())
@@ -109,7 +109,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<StandardError> noSuchElementException(NoSuchElementException e){
+    public ResponseEntity<StandardError> noSuchElementException(NoSuchElementException e) {
         return new ResponseEntity<>(
                 StandardError.builder()
                         .timestamp(LocalDateTime.now())

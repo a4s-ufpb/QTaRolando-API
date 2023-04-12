@@ -36,5 +36,5 @@ public interface AuthInterface {
     @Operation(summary = "Sign out é usado para o usuário se deslogar do sistema",
             tags = {"auth"})
     @ApiResponse(responseCode = "200", description = "Operação feita com sucesso")
-    public ResponseEntity<?> logoutUser() ;
+    public ResponseEntity<?> logoutUser();
 }

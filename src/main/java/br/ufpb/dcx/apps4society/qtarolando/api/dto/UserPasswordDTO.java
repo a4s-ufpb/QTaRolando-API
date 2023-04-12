@@ -9,14 +9,15 @@ import java.io.Serializable;
 public class UserPasswordDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotEmpty(message="Preenchimento obrigatório")
+    @NotEmpty(message = "Preenchimento obrigatório")
     @Size(min = 8, message = "Senha deve conter no minimo 8 caracteres")
     @Schema(description = "nova senha do usuário", example = "87654321")
     private String password;
 
-    public UserPasswordDTO(){}
+    public UserPasswordDTO() {
+    }
 
-    public UserPasswordDTO(String password){
+    public UserPasswordDTO(String password) {
         this.password = password;
     }
 

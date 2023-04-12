@@ -2,12 +2,11 @@ package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.io.Serializable;
-import java.util.Set;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Set;
 
 public class UserAccountNewDTO implements Serializable {
     private static final long serialVersionUID = 1L;

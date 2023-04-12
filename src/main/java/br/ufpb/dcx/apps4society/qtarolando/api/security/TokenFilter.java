@@ -1,11 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.PrematureJwtException;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -33,7 +28,7 @@ public class TokenFilter extends GenericFilterBean {
 
         String header = request.getHeader("Authorization");
 
-        if (header == null || !header.startsWith("Bearer ")){
+        if (header == null || !header.startsWith("Bearer ")) {
             ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Missing or badly formatted token.");
             return;
@@ -42,8 +37,8 @@ public class TokenFilter extends GenericFilterBean {
         String token = header.substring(TOKEN_INDEX);
         try {
             Jwts.parser().setSigningKey(this.TOKEN_KEY).parseClaimsJws(token).getBody();
-        }catch (SignatureException | ExpiredJwtException | MalformedJwtException | PrematureJwtException
-                | UnsupportedJwtException | IllegalArgumentException error ){
+        } catch (SignatureException | ExpiredJwtException | MalformedJwtException | PrematureJwtException
+                 | UnsupportedJwtException | IllegalArgumentException error) {
             ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, error.getMessage());
             return;
         }

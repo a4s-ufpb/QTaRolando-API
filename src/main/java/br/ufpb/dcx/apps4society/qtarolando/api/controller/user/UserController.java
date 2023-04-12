@@ -1,14 +1,11 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller.user;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.CreateUserRoleDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.CreateRoleUserService;
+import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,18 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.CreateUserRoleDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.CreateRoleUserService;
-import br.ufpb.dcx.apps4society.qtarolando.api.service.UserAccountService;
+import javax.validation.Valid;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "api/users")
 @Log4j2
-public class UserController implements UserInterface{
+public class UserController implements UserInterface {
 
     @Autowired
     private UserAccountService service;
@@ -40,7 +33,7 @@ public class UserController implements UserInterface{
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserAccountDTO>> findPage(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize){
+            @RequestParam(value = "pageSize", defaultValue = "24") Integer pageSize) {
 
         Page<UserAccount> list = service.findPage(page, pageSize);
         Page<UserAccountDTO> listDto = list.map(obj -> new UserAccountDTO(obj));
