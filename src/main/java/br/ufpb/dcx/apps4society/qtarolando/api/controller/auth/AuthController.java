@@ -59,7 +59,7 @@ public class AuthController implements AuthInterface {
     }
 
     @Override
-    @PostMapping(value = "/signup")
+    @PostMapping(value = "/signupppppp")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> signUp(@Valid @RequestBody UserAccountNewDTO objDto) {
         service.insert(objDto);
