@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.config.ContainersEnvironment;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
@@ -31,15 +32,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@AutoConfigureTestDatabase
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class EventControllerIT {
+class EventControllerIT extends ContainersEnvironment {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
