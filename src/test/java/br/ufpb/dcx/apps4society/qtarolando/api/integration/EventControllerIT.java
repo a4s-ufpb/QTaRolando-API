@@ -222,8 +222,8 @@ class EventControllerIT extends ContainersEnvironment {
     @Test
     @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successful")
     void getEventsByTitleContaining_ShouldReturnListOfEvent() {
-        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
-        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
+        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
+        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
         Event savedEvent3 = eventRepository.save(EventCreator.customizedEventTitle("Passeio turisco"));
 
         String letters = "Pra";
