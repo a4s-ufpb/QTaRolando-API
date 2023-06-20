@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Category;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,11 +36,13 @@ public class EventDTO implements Serializable {
     private String description;
 
     @NotEmpty(message = "Preenchimento obrigatório")
-    @Schema(description = "Data de início do evento", example = "2023-01-01 08:00:00")
+    @Schema(description = "Data de início do evento", example = "01/01/2023 08:00")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime initialDate;
 
     @NotEmpty(message = "Preenchimento obrigatório")
-    @Schema(description = "Data de encerramento do evento", example = "2023-01-01 19:00:00")
+    @Schema(description = "Data de encerramento do evento", example = "01/01/2023 18:00")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime finalDate;
 
     @NotEmpty(message = "Preenchimento obrigatório")
