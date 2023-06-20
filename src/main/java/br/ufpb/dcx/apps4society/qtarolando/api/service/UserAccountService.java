@@ -65,11 +65,8 @@ public class UserAccountService {
             throw new AuthorizationException("Acesso negado");
         }
 
-        UserAccount obj = userRepository.findByUsername(userName);
-        if (obj == null) {
-            throw new ObjectNotFoundException("Usuário não encontrado!");
-        }
-        return obj;
+        Optional<UserAccount> obj = userRepository.findByUsername(userName);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado!"));
     }
 
     public Page<UserAccount> findPage(Integer page, Integer pageSize) {

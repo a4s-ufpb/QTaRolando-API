@@ -25,7 +25,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> 
 
     @Transactional(readOnly = true)
 //    @Query("SELECT u from UserAccount u JOIN FETCH u.events where u.username = :username ")
-    UserAccount findByUsername(String username);
+    Optional<UserAccount> findByUsername(String username);
 
     @Query("SELECT u from UserAccount u JOIN FETCH u.roles where u.email = :email ")
     UserAccount findByEmailFetchRoles(@Param("email") String email);
