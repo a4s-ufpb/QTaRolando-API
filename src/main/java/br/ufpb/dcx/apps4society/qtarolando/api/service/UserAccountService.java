@@ -55,11 +55,8 @@ public class UserAccountService {
             throw new AuthorizationException("Acesso negado");
         }
 
-        UserAccount obj = userRepository.findByEmail(email);
-        if (obj == null) {
-            throw new ObjectNotFoundException("Usuário não encontrado!");
-        }
-        return obj;
+        Optional<UserAccount> obj = userRepository.findByEmail(email);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado!"));
     }
 
     public UserAccount findByUsername(String userName) {
