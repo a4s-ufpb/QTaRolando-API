@@ -1,21 +1,5 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserPasswordDTO;
@@ -28,6 +12,16 @@ import br.ufpb.dcx.apps4society.qtarolando.api.security.UserPrincipal;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.AuthorizationException;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.DataIntegrityException;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.exceptions.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 public class UserAccountService {
@@ -49,6 +43,35 @@ public class UserAccountService {
         Optional<UserAccount> obj = userRepository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(
                 "Objeto não encontrado! Id: " + id + ", Tipo: " + UserAccount.class.getName()));
+    }
+
+    public List<UserAccount> findAll() {
+        return userRepository.findAll();
+    }
+
+    public UserAccount findByEmail(String email) {
+        UserPrincipal user = getUserAuthenticated();
+        if (user == null || !user.hasRole(Roles.ADMIN) && !email.equals(user.getEmail())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        Optional<UserAccount> obj = userRepository.findByEmail(email);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado!"));
+    }
+
+    public UserAccount findByUsername(String userName) {
+        UserPrincipal user = getUserAuthenticated();
+        if (user == null || !user.hasRole(Roles.ADMIN) && !userName.equals(user.getUsername())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        Optional<UserAccount> obj = userRepository.findByUsername(userName);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado!"));
+    }
+
+    public Page<UserAccount> findPage(Integer page, Integer pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return userRepository.findAll(pageable);
     }
 
     @Transactional
@@ -73,43 +96,8 @@ public class UserAccountService {
         if (!userRepository.findById(id).get().getEvents().isEmpty()) {
             throw new DataIntegrityException("Não é possível excluir porque há eventos relacionados");
         }
-        userRepository.deleteById(id);
-    }
+        userRepository.delete(find(id));
 
-    public List<UserAccount> findAll() {
-        return userRepository.findAll();
-    }
-
-    public UserAccount findByEmail(String email) {
-        UserPrincipal user = getUserAuthenticated();
-        if (user == null || !user.hasRole(Roles.ADMIN) && !email.equals(user.getEmail())) {
-            throw new AuthorizationException("Acesso negado");
-        }
-
-        UserAccount obj = userRepository.findByEmail(email);
-        if (obj == null) {
-            throw new ObjectNotFoundException("Usuário não encontrado!");
-        }
-        return obj;
-    }
-
-    public UserAccount findByUsername(String userName) {
-        UserPrincipal user = getUserAuthenticated();
-        if (user == null || !user.hasRole(Roles.ADMIN) && !userName.equals(user.getUsername())) {
-            throw new AuthorizationException("Acesso negado");
-        }
-
-        UserAccount obj = userRepository.findByUsername(userName);
-        if (obj == null) {
-            throw new ObjectNotFoundException("Usuário não encontrado!");
-        }
-        return obj;
-    }
-
-    //TODO: melhorar a paginacao e fazer funcionar
-    public Page<UserAccount> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-        Pageable pageable = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
-        return userRepository.findAll(pageable);
     }
 
     public UserAccount fromDTO(UserAccountDTO objDto) {

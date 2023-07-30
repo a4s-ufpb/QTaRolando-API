@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TokenDTO {
-  String token;
+    String token;
 }

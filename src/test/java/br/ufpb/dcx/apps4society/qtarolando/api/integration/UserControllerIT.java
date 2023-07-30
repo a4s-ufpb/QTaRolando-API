@@ -45,7 +45,7 @@
 //    @Test
 //    void findByEmail_returnsStatusOK_whenSuccessful(){
 //        String passwordWithoutCryptography = "12345678";
-//        UserAccountNewDTO user = new UserAccountNewDTO("t@gmail.com", "test", passwordWithoutCryptography);
+//        UserAccountNewDTO user = new UserAccountNewDTO("test@gmail.com", "test", passwordWithoutCryptography);
 //        UserAccount savedUser = userAccountService.insert(user);
 //
 //        String expectedEmail = savedUser.getEmail();
@@ -53,15 +53,10 @@
 //        CredentialsDTO credentials = new CredentialsDTO(savedUser.getEmail(), passwordWithoutCryptography);
 //
 //        ResponseEntity<UserInfoResponse> responseLogin = userTestRestTemplate.postForEntity(
-//                BASE_URL+ "/login", credentials, UserInfoResponse.class);
+//                "/api/auth/login", credentials, UserInfoResponse.class);
 //
 //        ResponseEntity<UserAccount> response = userTestRestTemplate.getForEntity(
-//                BASE_URL+ "/email?value=t@gmail.com", UserAccount.class);
-//
-////        ResponseEntity<UserAccount> response = userTestRestTemplate.exchange(
-////                "/api/users/email?value=test@gmail.com", HttpMethod.GET, null,
-////                new ParameterizedTypeReference<UserAccount>() {
-////                });
+//                BASE_URL+ "/email?value=test@gmail.com", UserAccount.class);
 //
 //        Assertions.assertThat(responseLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
 //        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -71,7 +66,7 @@
 //    void findByUserName_returnsStatusOK_whenSuccessful(){
 //
 //        ResponseEntity<UserAccount> response = userTestRestTemplate.getForEntity(
-//                BASE_URL+ "/api/users/userName?value=test", UserAccount.class);
+//                BASE_URL+ "/userName?value=test", UserAccount.class);
 //
 ////        ResponseEntity<UserAccount> responseee = userTestRestTemplate.exchange(
 ////                "/api/users/email?value=test@gmail.com", HttpMethod.GET, null,

@@ -2,6 +2,8 @@ package br.ufpb.dcx.apps4society.qtarolando.api.model;
 
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.EventModality;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,61 +20,85 @@ import java.util.List;
 @NoArgsConstructor
 public class Event {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String title;
-	private String subtitle;
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "event_categories", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-	private List<Category> categories = new ArrayList<>();
-	@Lob
-	private String description;
-	private LocalDateTime initialDate;
-	private LocalDateTime finalDate;
-	@Lob
-	private String imagePath;
-	private String modality;
-	private String location;
-	private String phone;
-	private String site;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(example = "1")
+    private Integer id;
 
-	public Event(EventDTO eventDTO) {
-		this.title = eventDTO.getTitle();
-		this.subtitle = eventDTO.getSubtitle();
-		this.categories = eventDTO.getCategories();
-		this.description = eventDTO.getDescription();
-		this.initialDate = eventDTO.getInitialDate();
-		this.finalDate = eventDTO.getFinalDate();
-		this.imagePath = eventDTO.getImagePath();
-		this.modality = eventDTO.getModality();
-		this.location = eventDTO.getLocation();
-	}
+    @Schema(example = "Passeio turistico")
+    private String title;
 
-	public Event(String title, String subtitle, List<Category> categories, String description, LocalDateTime initialDateConverted,
-				 LocalDateTime finalDateConverted, String imagePath, String eventModality,
-				 String location, String phone, String site) {
+    @Schema(example = "Pontos turisticos de João Pessoa")
+    private String subtitle;
 
-	this.title=title;
-	this.subtitle = subtitle;
-	this.categories = categories;
-	this.description = description;
-	this.initialDate = initialDateConverted;
-	this.finalDate = finalDateConverted;
-	this.imagePath = imagePath;
-	this.modality = eventModality;
-	this.location = location;
-	this.phone = phone;
-	this.site = site;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "event_categories", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories = new ArrayList<>();
 
-	}
+    @Lob
+    @Schema(example = "Passeio feito através dos pontos turisticos da capital da Paraíba")
+    private String description;
 
-	public void setModality(String modality) {
-		this.modality = EventModality.validate(modality);
-	}
+    @Schema(example = "01/01/2023 08:00")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime initialDate;
 
-	public EventModality getModality() {
-		return EventModality.toEnum(modality);
-	}
+    @Schema(example = "01/01/2023 18:00")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime finalDate;
+
+    @Lob
+    @Schema(example = "caminho da imagem")
+    private String imagePath;
+
+    @Schema(example = "PRESENCIAL")
+    private String modality;
+
+    @Schema(example = "Lagoa no centro de João Pessoa")
+    private String location;
+
+    @Schema(example = "83000000000")
+    private String phone;
+
+    @Schema(example = "www.exemplo.com.br")
+    private String site;
+
+    public Event(EventDTO eventDTO) {
+        this.title = eventDTO.getTitle();
+        this.subtitle = eventDTO.getSubtitle();
+        this.categories = eventDTO.getCategories();
+        this.description = eventDTO.getDescription();
+        this.initialDate = eventDTO.getInitialDate();
+        this.finalDate = eventDTO.getFinalDate();
+        this.imagePath = eventDTO.getImagePath();
+        this.modality = eventDTO.getModality();
+        this.location = eventDTO.getLocation();
+    }
+
+    public Event(String title, String subtitle, List<Category> categories, String description, LocalDateTime initialDateConverted,
+                 LocalDateTime finalDateConverted, String imagePath, String eventModality,
+                 String location, String phone, String site) {
+
+        this.title = title;
+        this.subtitle = subtitle;
+        this.categories = categories;
+        this.description = description;
+        this.initialDate = initialDateConverted;
+        this.finalDate = finalDateConverted;
+        this.imagePath = imagePath;
+        this.modality = eventModality;
+        this.location = location;
+        this.phone = phone;
+        this.site = site;
+
+    }
+
+    public void setModality(String modality) {
+        this.modality = EventModality.validate(modality);
+    }
+
+    public EventModality getModality() {
+        return EventModality.toEnum(modality);
+    }
 
 }

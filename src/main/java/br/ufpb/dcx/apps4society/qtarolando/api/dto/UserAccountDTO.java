@@ -1,25 +1,25 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.dto;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
+import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
-import br.ufpb.dcx.apps4society.qtarolando.api.model.Role;
-import br.ufpb.dcx.apps4society.qtarolando.api.model.UserAccount;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserAccountDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotEmpty(message = "Preenchimento obrigatório")
     @Email(message = "Email inválido")
+    @Schema(description = "Esse é o email do usuário", example = "teste@gmail.com")
     private String email;
 
     @NotEmpty(message = "Preenchimento obrigatório")
+    @Schema(description = "Esse é o nome do usuário", example = "teste")
     private String username;
 
     private Set<Role> roles = new HashSet<>();

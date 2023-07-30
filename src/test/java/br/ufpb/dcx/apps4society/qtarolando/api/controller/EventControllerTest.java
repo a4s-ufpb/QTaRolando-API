@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.controller;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.controller.event.EventController;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.Event;
 import br.ufpb.dcx.apps4society.qtarolando.api.service.EventService;
@@ -36,12 +37,6 @@ public class EventControllerTest {
 
         EventDTO eventDTO = EventCreator.defaultEventDTO();
 
-//        BDDMockito.when(eventServiceMock.listAllUsingPage(ArgumentMatchers.any()))
-//                .thenReturn(eventPage);
-//
-//        BDDMockito.when(eventServiceMock.getAllEvents())
-//                .thenReturn(events);
-
         BDDMockito.when(eventServiceMock.getEventsByFilter(ArgumentMatchers.anyString(), ArgumentMatchers.anyLong(),
                         ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(),
                         ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
@@ -54,38 +49,6 @@ public class EventControllerTest {
         BDDMockito.doNothing().when(eventServiceMock).deleteEvent(ArgumentMatchers.anyInt());
 
     }
-//
-//    @Test
-//    void listAll_ReturnsListOfEventInsidePage(){
-//        String expectedSubtitle = EventCreator.defaultEvent().getSubtitle();
-//
-//        Page<Event> eventPage = eventController.listAll(null).getBody();
-//
-//        Assertions.assertThat(eventPage).isNotNull();
-//
-//        Assertions.assertThat(eventPage.toList())
-//                .isNotEmpty()
-//                .hasSize(1);
-//
-//        Assertions.assertThat(eventPage.toList().get(0).getSubtitle())
-//                .isEqualTo(expectedSubtitle);
-//
-//    }
-//
-//    @Test
-//    void getAllEvents_ReturnsListOfEvents(){
-//        String expectedDescription = EventCreator.defaultEvent().getDescription();
-//
-//        List<Event> events = eventController.getAllEvents();
-//
-//        Assertions.assertThat(events)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(1);
-//
-//        Assertions.assertThat(events.get(0).getDescription())
-//                .isEqualTo(expectedDescription);
-//    }
 
     @Test
     void getEventsByFilter_ReturnsEventByTitle(){

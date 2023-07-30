@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.qtarolando.api.integration;
 
+import br.ufpb.dcx.apps4society.qtarolando.api.config.ContainersEnvironment;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.CredentialsDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.dto.UserAccountNewDTO;
@@ -31,24 +32,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@AutoConfigureTestDatabase
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class EventControllerIT {
+class EventControllerIT extends ContainersEnvironment {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Autowired
     private EventRepository eventRepository;
-
-    @Autowired
-    private UserAccountService userAccountService;
 
     private static final String BASE_URL = "/api/events";
 
@@ -220,8 +219,8 @@ class EventControllerIT {
     @Test
     @DisplayName("getEventsByTitleContaining returns a list of event with the letters specified when successful")
     void getEventsByTitleContaining_ShouldReturnListOfEvent() {
-        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
-        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
+        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitle("Praia"));
+        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitle("Praça"));
         Event savedEvent3 = eventRepository.save(EventCreator.customizedEventTitle("Passeio turisco"));
 
         String letters = "Pra";
@@ -323,43 +322,48 @@ class EventControllerIT {
                 .isEqualTo(savedEvent2.getFinalDate());
     }
 
-//    @Test
-//    void shouldFindOnlyOneEventByPeriodoHOJE() {
-//        LocalDateTime currentDateTime = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-//        String formattedInitialDateTime = currentDateTime.format(formatter);
-//
-//        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
-//
-//        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
-//                "Passeio Turisco", "2022-12-20T19:00:00", "2022-12-31T19:00:00"));
-//
-//        String url = "/api/events/filter?dateType=ESTE_MES";
-//
-//        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
-//                new ParameterizedTypeReference<PageableResponse<Event>>() {
-//                }).getBody();
-//
-//        Assertions.assertThat(response)
-//                .isNotNull()
-//                .isNotEmpty()
-//                .hasSize(1);
-//
-//        Assertions.assertThat(response.toList().get(0).getTitle())
-//                .isNotNull()
-//                .isNotEmpty()
-//                .isEqualTo("Passeio Turisco");
-//
-//        Assertions.assertThat(response.toList().get(0).getInitialDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getInitialDate());
-//
-//        Assertions.assertThat(response.toList().get(0).getFinalDate())
-//                .isNotNull()
-//                .isEqualTo(savedEvent.getFinalDate());
-//
-//    }
+    @Test
+    void shouldFindOnlyOneEventByPeriodoHOJE() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        String formattedInitialDateTime = currentDateTime.format(formatter);
+
+        LocalDateTime oneDayLaterDateTime = LocalDateTime.now().plusDays(1);
+
+        String formattedFinalDateTime = oneDayLaterDateTime.format(formatter);
+
+        Event savedEvent = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+                "Passeio Turisco", formattedInitialDateTime, formattedFinalDateTime));
+
+        Event savedEvent2 = eventRepository.save(EventCreator.customizedEventTitleAndDate(
+                "Circo", "2022-09-20T19:00:00", "2022-12-20T19:00:00"));
+
+
+        String url = "/api/events/filter?dateType=HOJE";
+
+        PageableResponse<Event> response = testRestTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<PageableResponse<Event>>() {
+                }).getBody();
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        Assertions.assertThat(response.toList().get(0).getTitle())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo("Passeio Turisco");
+
+        Assertions.assertThat(response.toList().get(0).getInitialDate())
+                .isNotNull()
+                .isEqualTo(savedEvent.getInitialDate());
+
+        Assertions.assertThat(response.toList().get(0).getFinalDate())
+                .isNotNull()
+                .isEqualTo(savedEvent.getFinalDate());
+
+    }
 
 //    @Test
 //    void shouldFindOnlyOneEventByPeriodoHOJE() {
