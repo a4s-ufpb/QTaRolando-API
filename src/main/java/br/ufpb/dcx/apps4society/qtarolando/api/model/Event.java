@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.qtarolando.api.dto.EventDTO;
 import br.ufpb.dcx.apps4society.qtarolando.api.model.enums.EventModality;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -63,6 +64,11 @@ public class Event {
     @Schema(example = "www.exemplo.com.br")
     private String site;
 
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"events"})
+    @ManyToOne
+    private UserAccount user;
+
     public Event(EventDTO eventDTO) {
         this.title = eventDTO.getTitle();
         this.subtitle = eventDTO.getSubtitle();
@@ -77,7 +83,7 @@ public class Event {
 
     public Event(String title, String subtitle, List<Category> categories, String description, LocalDateTime initialDateConverted,
                  LocalDateTime finalDateConverted, String imagePath, String eventModality,
-                 String location, String phone, String site) {
+                 String location, String phone, String site, UserAccount user) {
 
         this.title = title;
         this.subtitle = subtitle;
@@ -90,6 +96,7 @@ public class Event {
         this.location = location;
         this.phone = phone;
         this.site = site;
+        this.user = user;
 
     }
 
